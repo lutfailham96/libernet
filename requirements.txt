@@ -1,0 +1,13 @@
+bash
+librt
+libpthread
+coreutils
+coreutils-stdbuf
+screen
+jq
+ip-full
+php7
+php7-cgi
+php7-mod-json
+php7-mod-session
+python3

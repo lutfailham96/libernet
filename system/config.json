@@ -1,0 +1,41 @@
+{
+    "tunnel": {
+        "mode": 0,
+        "profile": {
+            "ssh": "",
+            "v2ray": ""
+        }
+    },
+    "server": "",
+    "dns_servers": [
+        "8.8.8.8",
+        "8.8.4.4",
+        "1.1.1.1",
+        "1.1.0.0",
+        "208.67.222.222",
+        "208.67.220.220",
+        "94.140.14.14",
+        "94.140.15.15"
+    ],
+    "proxy_servers": [],
+    "tun2socks": {
+        "legacy": false,
+        "dev": "tun1",
+        "mtu": 1420,
+        "address": "10.0.0.2",
+        "gateway": "10.0.0.1",
+        "netmask": "255.255.255.0",
+        "socks": {
+            "ip": "127.0.0.1",
+            "port": 1080
+        },
+        "udpgw": {
+            "ip": "127.0.0.1",
+            "port": 7300
+        }
+    },
+    "system": {
+        "username": "admin",
+        "password": "libernet"
+    }
+}
