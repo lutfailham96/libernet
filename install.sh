@@ -24,7 +24,7 @@ function install_requirements() {
     && opkg update \
     && install_packages \
     && echo -e "Copying proprietary binary" \
-    && cp -avp proprietary/* /usr/bin/
+    && cp -avpf proprietary/* /usr/bin/
 }
 
 function enable_uhttp_php() {
@@ -44,14 +44,17 @@ function install_libernet() {
   echo -e "Installing Libernet" \
     && mkdir -p "${LIBERNET_DIR}" \
     && echo -e "Copying binary" \
-    && cp -avp bin "${LIBERNET_DIR}/" \
+    && mkdir -p "${LIBERNET_DIR}/bin" \
+    && cp -avpf bin/* "${LIBERNET_DIR}/bin/" \
     && echo -e "Copying system" \
-    && cp -avp system "${LIBERNET_DIR}/" \
+    && mkdir -p "${LIBERNET_DIR}/system" \
+    && cp -avpf system/* "${LIBERNET_DIR}/system/" \
     && echo -e "Copying log" \
-    && cp -avp log "${LIBERNET_DIR}/" \
+    && mkdir -p "${LIBERNET_DIR}/log" \
+    && cp -avpf log/* "${LIBERNET_DIR}/log/" \
     && echo -e "Copying web files" \
     && mkdir -p "${LIBERNET_WWW}" \
-    && cp -avp web/* "${LIBERNET_WWW}/" \
+    && cp -avpf web/* "${LIBERNET_WWW}/" \
     && echo -e "Configuring Libernet" \
     && sed -i "s/LIBERNET_DIR/${LIBERNET_DIR_ESCAPED}/g" "${LIBERNET_WWW}/config.inc.php"
 }
