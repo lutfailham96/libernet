@@ -16,7 +16,7 @@ LIBERNET_WWW="/www/libernet"
 function install_packages() {
   while IFS= read -r line; do
     opkg install "${line}"
-  done < requirements.txt
+  done < ./requirements.txt
 }
 
 function install_requirements() {
@@ -24,7 +24,7 @@ function install_requirements() {
     && opkg update \
     && install_packages \
     && echo -e "Copying proprietary binary" \
-    && cp -avpf proprietary/* /usr/bin/
+    && cp -arvf ./proprietary/* /usr/bin/
 }
 
 function enable_uhttp_php() {
@@ -44,17 +44,14 @@ function install_libernet() {
   echo -e "Installing Libernet" \
     && mkdir -p "${LIBERNET_DIR}" \
     && echo -e "Copying binary" \
-    && mkdir -p "${LIBERNET_DIR}/bin" \
-    && cp -avpf bin/* "${LIBERNET_DIR}/bin/" \
+    && cp -arvf ./bin "${LIBERNET_DIR}/" \
     && echo -e "Copying system" \
-    && mkdir -p "${LIBERNET_DIR}/system" \
-    && cp -avpf system/* "${LIBERNET_DIR}/system/" \
+    && cp -arvf ./system "${LIBERNET_DIR}/" \
     && echo -e "Copying log" \
-    && mkdir -p "${LIBERNET_DIR}/log" \
-    && cp -avpf log/* "${LIBERNET_DIR}/log/" \
+    && cp -arvf ./log "${LIBERNET_DIR}/" \
     && echo -e "Copying web files" \
     && mkdir -p "${LIBERNET_WWW}" \
-    && cp -avpf web/* "${LIBERNET_WWW}/" \
+    && cp -arvf ./web/* "${LIBERNET_WWW}/" \
     && echo -e "Configuring Libernet" \
     && sed -i "s/LIBERNET_DIR/${LIBERNET_DIR_ESCAPED}/g" "${LIBERNET_WWW}/config.inc.php"
 }
