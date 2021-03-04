@@ -32,6 +32,10 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 - Fill your tunnel server & run Libernet
 - Don't forget to update firewall configuration on 'tun1' device to WAN via Luci
 
+## Updating
+- Just run updater script: ```bash update.sh```
+- Updater script will updating Libernet to latest version
+
 ## Default Username & Password
 - Username: admin
 - Password: libernet
