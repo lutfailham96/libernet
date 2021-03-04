@@ -233,6 +233,10 @@
                 } elseif ($v2ray_config->outbounds[0]->protocol === 'vmess') {
                     exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: vmess"');
                 }
+            } elseif ($system_config->tunnel->mode === 2) {
+                $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh-ssl/'.$system_config->tunnel->profile->ssh_ssl.'.json');
+                $sshl_config = json_decode($ssh_config);
+                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->ssh_ssl.', Mode: SSH-SSL"');
             }
             exec('export LIBERNET_DIR='.$libernet_dir.' && '.$libernet_dir.'/bin/service.sh -sl');
             json_response('Libernet service started');
