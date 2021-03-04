@@ -32,4 +32,4 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 - Password: libernet
 
 ## Additional Information
-In the home menu, check 'Use tun2socks legacy' to use badvpn-tun2socks or uncheck to use go-tun2socks instead.
+In home menu, check 'Use tun2socks legacy' to use badvpn-tun2socks or uncheck to use go-tun2socks instead.
