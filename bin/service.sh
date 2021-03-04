@@ -83,6 +83,10 @@ function stop_services() {
 }
 
 function start_services() {
+  # clear log service
+  "${LIBERNET_DIR}/bin/log.sh" -r
+  # write starting service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Startng Libernet service"
   # write service status: running
   "${LIBERNET_DIR}/bin/log.sh" -s 1
   if [[ $TUNNEL_MODE == "0" ]]; then
