@@ -32,6 +32,7 @@
                         <span>Working features:</span>
                         <ul class="m-2">
                             <li>SSH with proxy</li>
+                            <li>SSH-SSL</li>
                             <li>V2Ray trojan</li>
                             <li>V2Ray vmess</li>
                         </ul>
