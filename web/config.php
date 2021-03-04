@@ -463,7 +463,7 @@
                     if (protocol === temp.modes[1].protocols[0].value) {
                         const server = res.data.data.outbounds[0].settings.vnext[0]
                         const sni = res.data.data.outbounds[0].streamSettings.tlsSettings.serverName
-                        profile.ip = this.config.system.server
+                        profile.ip = res.data.data.etc.ip
                         profile.host = server.address
                         profile.port = server.port
                         profile.id = server.users[0].id
@@ -477,7 +477,7 @@
                     } else if (protocol === temp.modes[1].protocols[1].value) {
                         const server = res.data.data.outbounds[0].settings.servers[0]
                         const sni = res.data.data.outbounds[0].streamSettings.tlsSettings.serverName
-                        profile.ip = this.config.system.server
+                        profile.ip = res.data.data.etc.ip
                         profile.host = server.address
                         profile.port = server.port
                         profile.password = server.password
