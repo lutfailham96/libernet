@@ -8,6 +8,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 - Python 3
 - OpenSSH
 - sshpass
+- stunnel
 - V2Ray
 - go-tun2socks
 - badvpn-tun2socks (legacy)
@@ -18,6 +19,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 
 ## Working Features:
 - SSH with proxy
+- SSH-SSL
 - V2Ray trojan
 - V2Ray vmess
 
