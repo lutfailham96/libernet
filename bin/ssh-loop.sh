@@ -9,38 +9,38 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-SSH_PROFILE="$(jq -r '.tunnel.profile.ssh' < ${SYSTEM_CONFIG})"
-SSH_CONFIG="${LIBERNET_DIR}/bin/config/ssh/${SSH_PROFILE}.json"
-SSH_HOST="$(jq -r '.host' < ${SSH_CONFIG})"
-SSH_PORT="$(jq -r '.port' < ${SSH_CONFIG})"
-SSH_USER="$(jq -r '.username' < ${SSH_CONFIG})"
-SSH_PASS="$(jq -r '.password' < ${SSH_CONFIG})"
-PROXY_IP="$(jq -r '.http.ip' < ${SSH_CONFIG})"
-PROXY_PORT="$(jq -r '.http.port' < ${SSH_CONFIG})"
-DYNAMIC_PORT="$(jq -r '.tun2socks.socks.port' < ${SYSTEM_CONFIG})"
-ENABLE_HTTP="$(jq -r '.enable_http' < ${SSH_CONFIG})"
-
 function connect_ssh() {
-  if [[ $ENABLE_HTTP == 'true' ]]; then
-    sshpass -p "${SSH_PASS}" ssh \
-      -4CND "${DYNAMIC_PORT}" \
-      -p "${SSH_PORT}" \
-      -o ProxyCommand="/usr/bin/corkscrew ${PROXY_IP} ${PROXY_PORT} %h %p" \
-      -o StrictHostKeyChecking=no \
-      -o UserKnownHostsFile=/dev/null \
-      "${SSH_USER}@${SSH_HOST}"
-  else
-    sshpass -p "${SSH_PASS}" ssh \
-      -4CND "${DYNAMIC_PORT}" \
-      -p "${SSH_PORT}" \
-      -o StrictHostKeyChecking=no \
-      -o UserKnownHostsFile=/dev/null \
-      "${SSH_USER}@${SSH_HOST}"
-  fi
+  sshpass -p "${2}" ssh \
+    -4CND "${5}" \
+    -p "${4}" \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    "${1}@${3}"
 }
 
-while true; do
-  connect_ssh
-  sleep 3
-done
+function connect_ssh_with_proxy() {
+  sshpass -p "${2}" ssh \
+    -4CND "${5}" \
+    -p "${4}" \
+    -o ProxyCommand="/usr/bin/corkscrew ${6} ${7} %h %p" \
+    -o StrictHostKeyChecking=no \
+    -o UserKnownHostsFile=/dev/null \
+    "${1}@${3}"
+}
+
+case $1 in
+  -d)
+    while true; do
+      # command username password host port dynamic_port
+      connect_ssh $2 $3 $4 $5 $6
+      sleep 3
+    done
+    ;;
+  -e)
+    while true; do
+      # command username password host port dynamic_port proxy_ip proxy_port
+      connect_ssh_with_proxy $2 $3 $4 $5 $6 $7 $8
+      sleep 3
+    done
+    ;;
+esac
