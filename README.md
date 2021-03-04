@@ -30,7 +30,6 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 - Run installation script: ```cd libernet && bash install.sh```
 - Open Libernet on http://router-ip/libernet
 - Fill your tunnel server, save configuration & run Libernet
-- Don't forget to update firewall setting to WAN on interface 'tun1' via Luci
 
 ## Updating
 - Just run updater script: ```bash update.sh```
