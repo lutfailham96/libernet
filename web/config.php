@@ -52,8 +52,8 @@
                                 </div>
                                 <div v-if="config.temp.mode === 0" class="col-md-6 pt-lg-4 pl-lg-3 my-lg-auto">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" v-model="config.temp.modes[0].profile.enable_http" checked>
-                                        <label class="form-check-label">
+                                        <input class="form-check-input" type="checkbox" v-model="config.temp.modes[0].profile.enable_http" checked id="enable-http">
+                                        <label class="form-check-label" for="enable-http">
                                             Enable HTTP Proxy
                                         </label>
                                     </div>
