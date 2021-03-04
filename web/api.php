@@ -30,6 +30,19 @@
             $data = json_decode($ssh_config);
             json_response($data);
         }
+        if ($json['action'] === 'get_sshl_config') {
+            $data = null;
+            $sshl_config = null;
+            if (isset($json['profile'])) {
+                $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh-ssl/'.$json['profile'].'.json');
+            } else {
+                $system_config = file_get_contents($libernet_dir.'/system/config.json');
+                $system_config = json_decode($system_config);
+                $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh-ssl/'.$system_config->tunnel->profile->ssh_ssl.'.json');
+            }
+            $data = json_decode($sshl_config);
+            json_response($data);
+        }
         if ($json['action'] === 'get_v2ray_config') {
             $data = null;
             $v2ray_config = null;
@@ -67,6 +80,18 @@
             }
             json_response($profiles);
         }
+        if ($json['action'] === 'get_sshl_configs') {
+            $profiles = array();
+            if ($handle = opendir($libernet_dir.'/bin/config/ssh-ssl/')) {
+                while (false !== ($file = readdir($handle))) {
+                    if ($file != "." && $file != ".." && strtolower(substr($file, strrpos($file, '.') + 1)) == 'json') {
+                        array_push($profiles, preg_replace('/\\.[^.\\s]{3,4}$/', '', $file));
+                    }
+                }
+                closedir($handle);
+            }
+            json_response($profiles);
+        }
         if ($json['action'] == 'apply_config' && isset($json['data'])) {
             $system_config = file_get_contents($libernet_dir.'/system/config.json');
             $system_config = json_decode($system_config);
@@ -95,6 +120,13 @@
                 $system_config->tun2socks->udpgw->ip = $v2ray_config->etc->udpgw->ip;
                 $system_config->tun2socks->udpgw->port = $v2ray_config->etc->udpgw->port;
                 $system_config->tunnel->profile->v2ray = $profile;
+            } elseif ($mode == 2) {
+                $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh-ssl/'.$profile.'.json');
+                $sshl_config = json_decode($sshl_config);
+                $system_config->tunnel->profile->ssh_ssl = $profile;
+                $system_config->server = $sshl_config->ip;
+                $system_config->tun2socks->udpgw->ip = $sshl_config->udpgw->ip;
+                $system_config->tun2socks->udpgw->port = $sshl_config->udpgw->port;
             }
             $system_config->tunnel->mode = $mode;
             $system_config->tun2socks->legacy = $tun2socks_legacy;
@@ -112,6 +144,9 @@
             } elseif ($mode == 1) {
                 unlink($libernet_dir.'/bin/config/v2ray/'.$profile.'.json');
                 json_response('V2Ray config removed');
+            } elseif ($mode == 2) {
+                unlink($libernet_dir.'/bin/config/ssh-ssl/'.$profile.'.json');
+                json_response('SSH-SSL config removed');
             }
         }
         if ($json['action'] == 'save_config' && isset($json['data'])) {
@@ -129,7 +164,7 @@
                 $config = json_encode($config, JSON_UNESCAPED_SLASHES);
                 file_put_contents($libernet_dir.'/bin/config/ssh/'.$profile.'.json', $config);
                 json_response('SSH config saved');
-            } else if ($mode == 1) {
+            } elseif ($mode == 1) {
                 $config = $data['config'];
                 $host = $config['host'];
                 $id = $config['id'];
@@ -173,6 +208,11 @@
                     file_put_contents($libernet_dir.'/bin/config/v2ray/'.$profile.'.json', json_encode($trojan_config, JSON_PRETTY_PRINT));
                     json_response('V2Ray trojan config saved');
                 }
+            } elseif ($mode == 2) {
+                $config = $data['config'];
+                $config = json_encode($config, JSON_PRETTY_PRINT);
+                file_put_contents($libernet_dir . '/bin/config/ssh-ssl/' . $profile . '.json', $config);
+                json_response('SSH-SSL config saved');
             }
         }
         if ($json['action'] === 'start_libernet') {

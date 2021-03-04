@@ -74,7 +74,7 @@
                                             <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[0].profile.http.proxy.ip" required>
                                         </div>
                                         <div class="col-md-6">
-                                            <label>Port</label>
+                                            <label>Proxy Port</label>
                                             <input type="number" class="form-control" placeholder="8080" v-model.number="config.temp.modes[0].profile.http.proxy.port" required>
                                         </div>
                                     </div>
@@ -85,15 +85,15 @@
                                 </div>
                                 <div class="form-row pb-lg-2">
                                     <div class="col-md-3">
-                                        <label>IP</label>
+                                        <label>Server IP</label>
                                         <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[0].profile.ip" required>
                                     </div>
                                     <div class="col-md-6">
-                                        <label>Host</label>
+                                        <label>Server Host</label>
                                         <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[0].profile.host" required>
                                     </div>
                                     <div class="col-md-3">
-                                        <label>Port</label>
+                                        <label>Server Port</label>
                                         <input type="number" class="form-control" placeholder="443" v-model.number="config.temp.modes[0].profile.port" required>
                                     </div>
                                 </div>
@@ -112,18 +112,19 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div v-if="config.temp.mode === 1" class="v2ray">
                                 <div class="form-row pb-lg-2">
                                     <div class="col-md-3">
-                                        <label>IP</label>
+                                        <label>Server IP</label>
                                         <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[1].profile.ip" required>
                                     </div>
                                     <div class="col-md-5">
-                                        <label>Host</label>
+                                        <label>Server Host</label>
                                         <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[1].profile.host" required>
                                     </div>
                                     <div class="col-md-2">
-                                        <label>Port</label>
+                                        <label>Server Port</label>
                                         <input type="number" class="form-control" placeholder="443" v-model.number="config.temp.modes[1].profile.port" required>
                                     </div>
                                     <div class="col-md-2">
@@ -133,7 +134,7 @@
                                 </div>
                                 <div v-if="config.temp.modes[1].profile.protocol === config.temp.modes[1].protocols[1].value" class="form-row pb-3">
                                     <div class="col-md-6">
-                                        <label>Password</label>
+                                        <label>Trojan Password</label>
                                         <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[1].profile.password" required>
                                     </div>
                                     <div class="col-md-6">
@@ -143,11 +144,11 @@
                                 </div>
                                 <div v-if="config.temp.modes[1].profile.protocol === config.temp.modes[1].protocols[0].value" class="form-row pb-3">
                                     <div class="col-md-5">
-                                        <label>ID</label>
+                                        <label>VMess ID</label>
                                         <input type="text" class="form-control" placeholder="900c42c7-a23d-46dd-a1a0-72c37edf8a03" v-model="config.temp.modes[1].profile.id" required>
                                     </div>
                                     <div class="col-md-3">
-                                        <label>Security</label>
+                                        <label>VMess Security</label>
                                         <select class="custom-select" v-model="config.temp.modes[1].profile.security" required>
                                             <option v-for="security in config.temp.modes[1].protocols[0].security" :value="security">{{ security }}</option>
                                         </select>
@@ -155,6 +156,43 @@
                                     <div class="col-md-4">
                                         <label>SNI</label>
                                         <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model="config.temp.modes[1].profile.sni" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div v-if="config.temp.mode === 2" class="ssh-ssl pb-lg-2">
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-3">
+                                        <label>Server IP</label>
+                                        <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[2].profile.ip" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Server Host</label>
+                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[2].profile.host" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Server Port</label>
+                                        <input type="number" class="form-control" placeholder="443" v-model.number="config.temp.modes[2].profile.port" required>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Username</label>
+                                        <input type="text" class="form-control" placeholder="libernet" v-model="config.temp.modes[2].profile.username" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Password</label>
+                                        <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[2].profile.password" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label>UDPGW Port</label>
+                                        <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[2].profile.udpgw.port" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>SNI</label>
+                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[2].profile.sni" required>
                                     </div>
                                 </div>
                             </div>
@@ -254,6 +292,22 @@
                                         port: 7300
                                     }
                                 }
+                            },
+                            {
+                                value: 2,
+                                name: "SSH-SSL",
+                                profile: {
+                                    ip: "",
+                                    host: "",
+                                    port: 443,
+                                    username: "",
+                                    password: "",
+                                    sni: "",
+                                    udpgw: {
+                                        ip: "127.0.0.1",
+                                        port: 7300
+                                    }
+                                }
                             }
                         ]
                     },
@@ -261,8 +315,9 @@
                         tunnel: {
                             mode: 1,
                             profile: {
+                                ssh: "",
                                 v2ray: "",
-                                ssh: ""
+                                ssh_ssl: ""
                             }
                         },
                         server: "",
@@ -313,6 +368,8 @@
                     this.getSshProfiles()
                 } else if (mode === 1) {
                     this.getV2rayProfiles()
+                } else if (mode === 2) {
+                    this.getSshSslProfiles()
                 }
             },
             getSshProfiles() {
@@ -329,6 +386,13 @@
                     this.config.profiles = res.data.data
                 })
             },
+            getSshSslProfiles() {
+                axios.post('api.php', {
+                    action: "get_sshl_configs"
+                }).then((res) => {
+                    this.config.profiles = res.data.data
+                })
+            },
             getConfig() {
                 this.getSystemConfig().then((res) => {
                     this.config.system = res
@@ -336,6 +400,8 @@
                         this.getSshConfig()
                     } else if (this.config.mode === 1) {
                         this.getV2rayConfig()
+                    } else if (this.config.mode === 2) {
+                        this.getSshSslConfig()
                     }
                 })
             },
@@ -420,6 +486,17 @@
                     }
                 })
             },
+            getSshSslConfig() {
+                axios.post('api.php', {
+                    action: "get_sshl_config",
+                    profile: this.config.profile
+                }).then((res) => {
+                    const temp = this.config.temp
+                    temp.mode = 2
+                    temp.profile = this.config.profile
+                    temp.modes[2].profile = res.data.data
+                })
+            },
             getSystemConfig() {
                 return new Promise((resolve) => {
                     axios.post('api.php', {
@@ -434,6 +511,8 @@
                     this.saveSshConfig()
                 } else if (this.config.temp.mode === 1) {
                     this.saveV2rayConfig()
+                } else if(this.config.temp.mode === 2) {
+                    this.saveSshSslConfig()
                 }
             },
             saveSshConfig() {
@@ -471,6 +550,27 @@
                         position: 'center',
                         icon: 'success',
                         title: 'V2Ray config has been saved',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    this.config.profile = ""
+                    this.getProfiles(this.config.mode)
+                })
+            },
+            saveSshSslConfig() {
+                axios.post('api.php', {
+                    action: "save_config",
+                    data: {
+                        mode: this.config.temp.mode,
+                        profile: this.config.temp.profile,
+                        config: this.config.temp.modes[2].profile
+                    }
+                }).then(() => {
+                    console.log("SSH-SSL config saved")
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'SSH-SSL config has been saved',
                         showConfirmButton: false,
                         timer: 1500
                     })

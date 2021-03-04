@@ -99,66 +99,15 @@
                         modes: [
                             {
                                 value: 0,
-                                name: "SSH",
-                                profile: {
-                                    ip: "",
-                                    host: "",
-                                    port: 443,
-                                    username: "",
-                                    password: "",
-                                    udpgw: {
-                                        ip: "127.0.0.1",
-                                        port: 7300
-                                    },
-                                    enable_http: true,
-                                    http: {
-                                        buffer: 32767,
-                                        ip: "127.0.0.1",
-                                        port: 9876,
-                                        info: "HTTP Proxy",
-                                        payload: "",
-                                        proxy: {
-                                            ip: "",
-                                            port: 8080
-                                        }
-                                    }
-                                }
+                                name: "SSH"
                             },
                             {
                                 value: 1,
-                                name: "V2Ray",
-                                protocols: [
-                                    {
-                                        name: "VMess",
-                                        value: "vmess",
-                                        security: [
-                                            "auto",
-                                            "aes-128-gcm",
-                                            "chacha20-poly1305",
-                                            "none"
-                                        ]
-                                    },
-                                    {
-                                        name: "Trojan",
-                                        value: "trojan"
-                                    }
-                                ],
-                                profile: {
-                                    protocol: "",
-                                    ip: "",
-                                    host: "",
-                                    port: 443,
-                                    username: "",
-                                    password: "",
-                                    id: "",
-                                    level: 0,
-                                    security: "",
-                                    sni: "",
-                                    udpgw: {
-                                        ip: "127.0.0.1",
-                                        port: 7300
-                                    }
-                                }
+                                name: "V2Ray"
+                            },
+                            {
+                                value: 2,
+                                name: "SSH-SSL"
                             }
                         ]
                     },
@@ -218,6 +167,8 @@
                     this.getSshProfiles()
                 } else if (mode === 1) {
                     this.getV2rayProfiles()
+                } else if (mode === 2) {
+                    this.getSshSslProfiles()
                 }
             },
             getSshProfiles() {
@@ -234,6 +185,13 @@
                     this.config.profiles = res.data.data
                 })
             },
+            getSshSslProfiles() {
+                axios.post('api.php', {
+                    action: "get_sshl_configs"
+                }).then((res) => {
+                    this.config.profiles = res.data.data
+                })
+            },
             applyConfig() {
                 return new Promise((resolve) => {
                     axios.post('api.php', {
@@ -246,64 +204,6 @@
                     }).then((res) => {
                         resolve(res)
                     })
-                })
-            },
-            getConfig() {
-                this.getSystemConfig().then((res) => {
-                    this.config.system = res
-                    if (this.config.mode === 0) {
-                        this.getSshConfig()
-                    } else if (this.config.mode === 1) {
-                        this.getV2rayConfig()
-                    }
-                })
-            },
-            getSshConfig() {
-                axios.post('api.php', {
-                    action: "get_ssh_config",
-                    profile: this.config.profile
-                }).then((res) => {
-                    const temp = this.config.temp
-                    temp.mode = 0
-                    temp.profile = this.config.profile
-                    temp.modes[0].profile = res.data.data
-                })
-            },
-            getV2rayConfig() {
-                axios.post('api.php', {
-                    action: "get_v2ray_config",
-                    profile: this.config.profile
-                }).then((res) => {
-                    const temp = this.config.temp
-                    const profile = temp.modes[1].profile
-                    const protocol = res.data.data.outbounds[0].protocol
-                    temp.mode = 1
-                    temp.profile = this.config.profile
-                    temp.modes[1].profile.protocol = protocol
-                    if (protocol === temp.modes[1].protocols[0].value) {
-                        const server = res.data.data.outbounds[0].settings.vnext[0]
-                        const sni = res.data.data.outbounds[0].streamSettings.tlsSettings.serverName
-                        profile.ip = this.config.system.server
-                        profile.host = server.address
-                        profile.port = server.port
-                        profile.id = server.users[0].id
-                        profile.level = server.users[0].level
-                        for (let i=0; i<this.config.temp.modes[1].protocols[0].security.length; i++) {
-                            if (server.users[0].security === this.config.temp.modes[1].protocols[0].security[i]) {
-                                profile.security = this.config.temp.modes[1].protocols[0].security[i]
-                            }
-                        }
-                        profile.sni = sni
-                    } else if (protocol === temp.modes[1].protocols[1].value) {
-                        const server = res.data.data.outbounds[0].settings.servers[0]
-                        const sni = res.data.data.outbounds[0].streamSettings.tlsSettings.serverName
-                        profile.ip = this.config.system.server
-                        profile.host = server.address
-                        profile.port = server.port
-                        profile.password = server.password
-                        profile.level = server.level
-                        profile.sni = sni
-                    }
                 })
             },
             getSystemConfig() {
@@ -353,6 +253,8 @@
                     this.config.profile = res.tunnel.profile.ssh
                 } else if (mode === 1) {
                     this.config.profile = res.tunnel.profile.v2ray
+                } else if (mode === 2) {
+                    this.config.profile = res.tunnel.profile.ssh_ssl
                 }
             })
             this.getStatus()

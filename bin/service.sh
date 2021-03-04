@@ -42,20 +42,36 @@ function service_ssh() {
   ${LIBERNET_DIR}/bin/ssh.sh -r
 }
 
+function service_ssh_ssl() {
+  ${LIBERNET_DIR}/bin/ssh-ssl.sh -r
+}
+
 function stop_services() {
   if [[ $TUNNEL_MODE == "0" ]]; then
     # kill http proxy
     if [[ $ENABLE_HTTP == 'true' ]]; then
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping HTTP Proxy service"
       echo -e "Stopping HTTP Proxy service ..."
       ${LIBERNET_DIR}/bin/http.sh -s
     fi
     # kill ssh
+    # write to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH service"
     echo -e "Stopping SSH service ..."
     ${LIBERNET_DIR}/bin/ssh.sh -s
   elif [[ $TUNNEL_MODE == "1" ]]; then
     # kill v2ray
+    # write to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping V2Ray service"
     echo -e "Stopping V2Ray service ..."
     ${LIBERNET_DIR}/bin/v2ray.sh -s
+  elif [[ $TUNNEL_MODE == "2" ]]; then
+    # kill ssh-ssl
+    # write to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH-SSL service"
+    echo -e "Stopping SSH-SSL service ..."
+    ${LIBERNET_DIR}/bin/ssh-ssl.sh -s
   fi
   # kill tun2socks
   echo -e "Stopping Tun2socks service ..."
@@ -66,24 +82,32 @@ function stop_services() {
   ${LIBERNET_DIR}/bin/tun2socks.sh -d
 }
 
+function start_services() {
+  # write service status: running
+  "${LIBERNET_DIR}/bin/log.sh" -s 1
+  if [[ $TUNNEL_MODE == "0" ]]; then
+    # write v2ray to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Starting SSH service"
+    ${0} -sh
+  elif [[ $TUNNEL_MODE == "1" ]]; then
+    # write v2ray to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Starting V2Ray service"
+    ${0} -sv
+  elif [[ $TUNNEL_MODE == "2" ]]; then
+    # write ssh-ssl to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Starting SSH-SSL service"
+    ${0} -sshl
+  fi
+  # write service status: connected
+  "${LIBERNET_DIR}/bin/log.sh" -s 2
+  # write libernet to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: blue\">Libernet ready to used</span>"
+  echo -e "Libernet service started!"
+}
+
 case $1 in
   -sl)
-    # write service status: running
-    "${LIBERNET_DIR}/bin/log.sh" -s 1
-    if [[ $TUNNEL_MODE == "0" ]]; then
-      # write v2ray to service log
-      "${LIBERNET_DIR}/bin/log.sh" -w "Starting SSH service"
-      ${0} -sh
-    elif [[ $TUNNEL_MODE == "1" ]]; then
-      # write v2ray to service log
-      "${LIBERNET_DIR}/bin/log.sh" -w "Starting V2Ray service"
-      ${0} -sv
-    fi
-    # write service status: connected
-    "${LIBERNET_DIR}/bin/log.sh" -s 2
-    # write libernet to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: blue\">Libernet ready to used</span>"
-    echo -e "Libernet service started!"
+    start_services
     ;;
   -sh)
     if [[ $ENABLE_HTTP == 'true' ]]; then
@@ -92,6 +116,12 @@ case $1 in
     fi
     service_ssh > /dev/null 2>&1
     echo -e "SSH service started!"
+    service_tun2socks > /dev/null 2>&1
+    echo -e "Tun2socks service started!"
+    ;;
+  -sshl)
+    service_ssh_ssl > /dev/null 2>&1
+    echo -e "SSH-SSL service started!"
     service_tun2socks > /dev/null 2>&1
     echo -e "Tun2socks service started!"
     ;;
