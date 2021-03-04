@@ -24,6 +24,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 - V2Ray vmess
 
 ## Installation
+- If you don't have git on OpenWRT, please install first via terminal: ```opkg update && opkg install git```
 - Clone this repository on OpenWRT via terminal: ```mkdir -p ~/Downloads && cd ~/Downloads && git clone git://github.com/lutfailham96/libernet.git```
 - Run install script: ```cd libernet && bash install.sh```
 - Open Libernet on http://router-ip/libernet
