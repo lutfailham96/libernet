@@ -56,23 +56,25 @@ function install_libernet() {
 }
 
 function configure_libernet_firewall() {
-  echo "Configuring Libernet firewall" \
-    && uci set network.libernet=interface \
-    && uci set network.libernet.proto='none' \
-    && uci set network.libernet.ifname='tun1' \
-    && uci commit \
-    && uci add firewall zone \
-    && uci set firewall.@zone[-1].network='libernet' \
-    && uci set firewall.@zone[-1].name='libernet' \
-    && uci set firewall.@zone[-1].masq='1' \
-    && uci set firewall.@zone[-1].mtu_fix='1' \
-    && uci set firewall.@zone[-1].input='REJECT' \
-    && uci set firewall.@zone[-1].forward='REJECT' \
-    && uci set firewall.@zone[-1].output='ACCEPT' \
-    && uci add firewall forwarding \
-    && uci set firewall.@forwarding[-1].src='lan' \
-    && uci set firewall.@forwarding[-1].dest='libernet' \
-    && uci commit
+  if ! uci get network.libernet > /dev/null 2>&1; then
+    echo "Configuring Libernet firewall" \
+      && uci set network.libernet=interface \
+      && uci set network.libernet.proto='none' \
+      && uci set network.libernet.ifname='tun1' \
+      && uci commit \
+      && uci add firewall zone \
+      && uci set firewall.@zone[-1].network='libernet' \
+      && uci set firewall.@zone[-1].name='libernet' \
+      && uci set firewall.@zone[-1].masq='1' \
+      && uci set firewall.@zone[-1].mtu_fix='1' \
+      && uci set firewall.@zone[-1].input='REJECT' \
+      && uci set firewall.@zone[-1].forward='REJECT' \
+      && uci set firewall.@zone[-1].output='ACCEPT' \
+      && uci add firewall forwarding \
+      && uci set firewall.@forwarding[-1].src='lan' \
+      && uci set firewall.@forwarding[-1].dest='libernet' \
+      && uci commit
+  fi
 }
 
 function finish_install() {
