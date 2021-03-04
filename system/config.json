@@ -3,7 +3,8 @@
         "mode": 0,
         "profile": {
             "ssh": "",
-            "v2ray": ""
+            "v2ray": "",
+            "ssh_ssl": ""
         }
     },
     "server": "",
