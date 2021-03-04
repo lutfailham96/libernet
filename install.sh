@@ -35,8 +35,10 @@ function enable_uhttp_php() {
 }
 
 function add_libernet_environment() {
-  echo -e "Adding Libernet environment" \
-    && echo -e "# Libernet\nexport LIBERNET_DIR=${LIBERNET_DIR}" | tee -a '/etc/profile'
+  if ! grep -q LIBERNET_DIR /etc/profile; then
+    echo -e "Adding Libernet environment" \
+      && echo -e "# Libernet\nexport LIBERNET_DIR=${LIBERNET_DIR}" | tee -a '/etc/profile'
+  fi
 }
 
 function install_libernet() {
