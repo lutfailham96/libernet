@@ -19,6 +19,7 @@ function connect_ssh_ssl() {
 }
 
 while true; do
+  # command username password dynamic_port
   connect_ssh_ssl $1 $2 $3
   sleep 3
 done
