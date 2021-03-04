@@ -218,6 +218,9 @@
         if ($json['action'] === 'start_libernet') {
             $system_config = file_get_contents($libernet_dir.'/system/config.json');
             $system_config = json_decode($system_config);
+            // clear service log
+            exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -r');
+            exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Startng Libernet service"');
             if ($system_config->tunnel->mode === 0) {
                 $ssh_config = file_get_contents($libernet_dir.'/bin/config/ssh/'.$system_config->tunnel->profile->ssh.'.json');
                 $ssh_config = json_decode($ssh_config);
