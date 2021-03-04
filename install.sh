@@ -10,7 +10,6 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 LIBERNET_DIR="/root/libernet"
-LIBERNET_DIR_ESCAPED="\/root\/libernet"
 LIBERNET_WWW="/www/libernet"
 
 function install_packages() {
@@ -53,11 +52,11 @@ function install_libernet() {
     && mkdir -p "${LIBERNET_WWW}" \
     && cp -arvf ./web/* "${LIBERNET_WWW}/" \
     && echo -e "Configuring Libernet" \
-    && sed -i "s/LIBERNET_DIR/${LIBERNET_DIR_ESCAPED}/g" "${LIBERNET_WWW}/config.inc.php"
+    && sed -i "s/LIBERNET_DIR/$(echo ${LIBERNET_DIR} | sed 's/\//\\\//g')/g" "${LIBERNET_WWW}/config.inc.php"
 }
 
 function finish_install() {
-    echo -e "Libernet successfully installed!\nURL: http://router-ip/libernet"
+    echo -e "Libernet successfully installed!\nLibernet URL: http://router-ip/libernet"
 }
 
 install_requirements \
