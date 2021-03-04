@@ -27,8 +27,9 @@ function start_ssh_ssl() {
 }
 
 function stop_ssh_ssl() {
-  kill $(screen -list | grep ssh-ssl-stunnel | awk -F '[.]' {'print $1'})
   kill $(screen -list | grep ssh-ssl-connector | awk -F '[.]' {'print $1'})
+  kill $(screen -list | grep ssh-ssl-stunnel | awk -F '[.]' {'print $1'})
+  killall stunnel
 }
 
 function configure_ssh_ssl() {
