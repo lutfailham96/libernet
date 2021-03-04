@@ -29,11 +29,11 @@
                         <form @submit.prevent="runLibernet">
                             <div class="form-group form-row my-auto">
                                 <label class="my-auto mx-1">Mode</label>
-                                <select class="form-control w-25 mx-1" v-model.number="config.mode" :disabled="status === true">
+                                <select class="form-control w-25 mx-1" v-model.number="config.mode" :disabled="status === true" required>
                                     <option v-for="mode in config.temp.modes" :value="mode.value">{{ mode.name }}</option>
                                 </select>
                                 <label class="my-auto mx-1">Config</label>
-                                <select class="form-control w-25 mx-1" v-model="config.profile" :disabled="status === true">
+                                <select class="form-control w-25 mx-1" v-model="config.profile" :disabled="status === true" required>
                                     <option v-for="profile in config.profiles" :value="profile">{{ profile }}</option>
                                 </select>
                                 <button type="submit" class="btn mx-1" :class="{ 'btn-danger': status, 'btn-primary': !status }">{{ statusText }}</button>
