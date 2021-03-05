@@ -217,8 +217,8 @@
             },
             getWanIp() {
                 setInterval(() => {
-                    axios.get('https://ipinfo.io/?token=7bba3f87a0a5ac').then((res) => {
-                        this.wan_ip = res.data.ip
+                    axios.get('http://ip-api.com/json').then((res) => {
+                        this.wan_ip = res.data.query
                     })
                 }, 5000)
             },
