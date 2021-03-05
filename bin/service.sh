@@ -29,9 +29,7 @@ function service_v2ray() {
 }
 
 function service_tun2socks() {
-  ${LIBERNET_DIR}/bin/tun2socks.sh -i \
-    && ${LIBERNET_DIR}/bin/tun2socks.sh -y \
-    && ${LIBERNET_DIR}/bin/tun2socks.sh -r
+  ${LIBERNET_DIR}/bin/tun2socks.sh -v
 }
 
 function service_http_proxy() {
@@ -74,12 +72,7 @@ function stop_services() {
     ${LIBERNET_DIR}/bin/ssh-ssl.sh -s
   fi
   # kill tun2socks
-  echo -e "Stopping Tun2socks service ..."
-  ${LIBERNET_DIR}/bin/tun2socks.sh -s
-  echo -e "Removing routes ..."
-  ${LIBERNET_DIR}/bin/tun2socks.sh -z
-  echo -e "Removing tun device ..."
-  ${LIBERNET_DIR}/bin/tun2socks.sh -d
+  ${LIBERNET_DIR}/bin/tun2socks.sh -w
 }
 
 function start_services() {

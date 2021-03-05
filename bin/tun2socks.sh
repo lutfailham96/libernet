@@ -53,27 +53,42 @@ function stop_tun2socks {
 }
 
 function route_add_ip {
-  route add ${SERVER_IP} gw ${GATEWAY} metric 4
+  route add ${SERVER_IP} gw ${GATEWAY} metric 4 &
   for IP in "${PROXY_IPS[@]}"; do
-    route add ${IP} gw ${GATEWAY} metric 4
+    route add ${IP} gw ${GATEWAY} metric 4 &
   done
   for IP in "${DNS_IPS[@]}"; do
-    route add ${IP} gw ${GATEWAY} metric 4
+    route add ${IP} gw ${GATEWAY} metric 4 &
   done
 }
 
 function route_del_ip {
   for IP in "${DNS_IPS[@]}"; do
-    route del ${IP} gw ${GATEWAY} metric 4
+    route del ${IP} gw ${GATEWAY} metric 4 &
   done
   for IP in "${PROXY_IPS[@]}"; do
-    route del ${IP} gw ${GATEWAY} metric 4
+    route del ${IP} gw ${GATEWAY} metric 4 &
   done
-  route del ${SERVER_IP} gw ${GATEWAY} metric 4
+  route del ${SERVER_IP} gw ${GATEWAY} metric 4 &
 }
 
-while getopts ":idrsyz" opt; do
+while getopts ":idrsyzvw" opt; do
   case ${opt} in
+  v)
+    # start tun2socks service
+    ${LIBERNET_DIR}/bin/tun2socks.sh -i \
+      && ${LIBERNET_DIR}/bin/tun2socks.sh -y \
+      && ${LIBERNET_DIR}/bin/tun2socks.sh -r
+    ;;
+  w)
+    # stop tun2socks service
+    echo -e "Stopping Tun2socks service ..."
+    ${LIBERNET_DIR}/bin/tun2socks.sh -s
+    echo -e "Removing routes ..."
+    ${LIBERNET_DIR}/bin/tun2socks.sh -z
+    echo -e "Removing tun device ..."
+    ${LIBERNET_DIR}/bin/tun2socks.sh -d
+    ;;
   i)
     # write to service log
     "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: initializing tun device"
