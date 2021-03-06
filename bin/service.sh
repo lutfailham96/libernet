@@ -15,7 +15,7 @@ declare -x SSH_PROFILE
 declare -x SSH_CONFIG
 declare -x ENABLE_HTTP
 CONNECTED=false
-DYNAMIC_PORT="$(jq -r '.tun2socks.socks.port' < ${SYSTEM_CONFIG)})"
+DYNAMIC_PORT="$(jq -r '.tun2socks.socks.port' < ${SYSTEM_CONFIG})"
 
 if [[ $TUNNEL_MODE == "0" ]]; then
   SSH_PROFILE="$(jq -r '.tunnel.profile.ssh' < ${SYSTEM_CONFIG})"
@@ -180,7 +180,39 @@ function check_connection() {
   fi
 }
 
+function auto_start() {
+  while true; do
+    if ip route show | grep -q default; then
+      start_services
+      break
+    fi
+    echo -e "Waiting available connection, try again"
+    sleep 3
+  done
+}
+
+function enable_auto_start() {
+  if ! grep -q "service.sh -as" /etc/rc.local; then
+    echo -e "Enable Libernet auto start"
+    sed -i "s/exit 0/$(echo "export LIBERNET_DIR=\"${LIBERNET_DIR}\" \&\& ${LIBERNET_DIR}/bin/service.sh -as > /dev/null 2>\&1 \&" | sed 's/\//\\\//g')\nexit 0/g" /etc/rc.local
+  fi
+}
+
+function disable_auto_start() {
+  echo -e "Disable Libernet auto start"
+  sed -i "/service.sh -as/d" /etc/rc.local
+}
+
 case $1 in
+  -as)
+    auto_start
+    ;;
+  -ea)
+    enable_auto_start
+    ;;
+  -da)
+    disable_auto_start
+    ;;
   -cl)
     cancel_services
     ;;
