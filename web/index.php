@@ -43,11 +43,19 @@
                     <div class="card-body">
                         <div class="card-body py-0">
                             <div class="row">
-                                <div class="col-12 pb-2">
+                                <div class="col-6 pb-2">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" v-model="config.system.tun2socks.legacy" :disabled="status === true" id="tun2socks-legacy">
                                         <label class="form-check-label" for="tun2socks-legacy">
                                             Use tun2socks legacy
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-6 pb-2">
+                                    <div class="form-check float-right">
+                                        <input class="form-check-input" type="checkbox" v-model="config.system.tunnel.autostart" :disabled="status === true" id="autostart">
+                                        <label class="form-check-label" for="autostart">
+                                            Auto start Libernet
                                         </label>
                                     </div>
                                 </div>
@@ -112,6 +120,9 @@
                         ]
                     },
                     system: {
+                        tunnel: {
+                            autostart: false
+                        },
                         tun2socks: {
                             legacy: false
                         }
@@ -152,14 +163,29 @@
                         }).then(() => {
                             console.log('Libernet service started!')
                         })
+                        // set auto start Libernet
+                        axios.post('api.php', {
+                            action: "set_auto_start",
+                            status: this.config.system.tunnel.autostart
+                        })
                     })
                 } else {
-                    axios.post('api.php', {
-                        action: "stop_libernet"
-                    }).then(() => {
-                        // this.status = false
-                        console.log('Libernet service stopped!')
-                    })
+                    switch (this.connection) {
+                        case 1:
+                            axios.post('api.php', {
+                                action: "cancel_libernet"
+                            }).then(() => {
+                                console.log('Libernet service canceled!')
+                            })
+                            break
+                        case 2:
+                            axios.post('api.php', {
+                                action: "stop_libernet"
+                            }).then(() => {
+                                console.log('Libernet service stopped!')
+                            })
+                            break
+                    }
                 }
             },
             getProfiles(mode) {
