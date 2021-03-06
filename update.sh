@@ -15,7 +15,7 @@ function update_libernet_web() {
     && git clone git://github.com/lutfailham96/libernet.git \
     && cd "${libernet_tmp}" \
     && bash install.sh \
-    && cd /tmp
+    && cd /tmp \
     && rm -rf "${libernet_tmp}"
 }
 
