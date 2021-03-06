@@ -24,16 +24,24 @@ readarray -t PROXY_IPS < <(jq -r '.proxy_servers[]' < ${SYSTEM_CONFIG})
 readarray -t DNS_IPS < <(jq -r '.dns_servers[]' < ${SYSTEM_CONFIG})
 
 function init_tun_dev {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: initializing tun device"
   ip tuntap add dev ${TUN_DEV} mode tun
   ifconfig ${TUN_DEV} mtu ${TUN_MTU}
+  echo -e "Tun device initialized!"
 }
 
 function destroy_tun_dev {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: removing tun device"
   ifconfig ${TUN_DEV} down
   ip tuntap del dev ${TUN_DEV} mode tun
+  echo -e "Tun device removed!"
 }
 
 function start_tun2socks {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Starting tun2socks service"
   ifconfig ${TUN_DEV} ${TUN_GATEWAY} netmask ${TUN_NETMASK} up
   if [[ $TUN2SOCKS_MODE == "false" ]]; then
     screen -AmdS go-tun2socks go-tun2socks -loglevel error -proxyServer "${SOCKS_SERVER}" -proxyType socks -tunName "${TUN_DEV}" -tunAddr "${TUN_ADDRESS}" -tunGw "${TUN_GATEWAY}" -tunMask "${TUN_NETMASK}"
@@ -41,18 +49,24 @@ function start_tun2socks {
     screen -AmdS badvpn-tun2socks badvpn-tun2socks --tundev ${TUN_DEV} --netif-ipaddr ${TUN_ADDRESS} --netif-netmask ${TUN_NETMASK} --socks-server-addr ${SOCKS_SERVER} --udpgw-remote-server-addr "${UDPGW}"
   fi
   route add default gw ${TUN_ADDRESS} metric 6
+  echo -e "Tun2socks started!"
 }
 
 function stop_tun2socks {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Stopping tun2socks service"
   if [[ $TUN2SOCKS_MODE == "false" ]]; then
     kill $(screen -list | grep go-tun2socks | awk -F '[.]' {'print $1'})
   else
     kill $(screen -list | grep badvpn-tun2socks | awk -F '[.]' {'print $1'})
   fi
   route del default gw ${TUN_ADDRESS} metric 6
+  echo -e "Tun2socks stopped!"
 }
 
 function route_add_ip {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: routing server, proxy and DNS IPs"
   route add ${SERVER_IP} gw ${GATEWAY} metric 4 &
   for IP in "${PROXY_IPS[@]}"; do
     route add ${IP} gw ${GATEWAY} metric 4 &
@@ -60,9 +74,12 @@ function route_add_ip {
   for IP in "${DNS_IPS[@]}"; do
     route add ${IP} gw ${GATEWAY} metric 4 &
   done
+  echo -e "Routes initialized!"
 }
 
 function route_del_ip {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: removing routes"
   for IP in "${DNS_IPS[@]}"; do
     route del ${IP} gw ${GATEWAY} metric 4 &
   done
@@ -70,60 +87,43 @@ function route_del_ip {
     route del ${IP} gw ${GATEWAY} metric 4 &
   done
   route del ${SERVER_IP} gw ${GATEWAY} metric 4 &
+  echo -e "Routes removed!"
 }
 
 while getopts ":idrsyzvw" opt; do
   case ${opt} in
   v)
     # start tun2socks service
-    ${LIBERNET_DIR}/bin/tun2socks.sh -i \
-      && ${LIBERNET_DIR}/bin/tun2socks.sh -y \
-      && ${LIBERNET_DIR}/bin/tun2socks.sh -r
+    init_tun_dev \
+      && route_add_ip \
+      && start_tun2socks
     ;;
   w)
     # stop tun2socks service
     echo -e "Stopping Tun2socks service ..."
-    ${LIBERNET_DIR}/bin/tun2socks.sh -s
+    stop_tun2socks
     echo -e "Removing routes ..."
-    ${LIBERNET_DIR}/bin/tun2socks.sh -z
+    route_del_ip
     echo -e "Removing tun device ..."
-    ${LIBERNET_DIR}/bin/tun2socks.sh -d
+    destroy_tun_dev
     ;;
   i)
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: initializing tun device"
-    init_tun_dev > /dev/null 2>&1
-    echo -e "Tun device initialized!"
+    init_tun_dev
     ;;
   d)
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: removing tun device"
-    destroy_tun_dev > /dev/null 2>&1
-    echo -e "Tun device removed!"
+    destroy_tun_dev
     ;;
   r)
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Starting tun2socks service"
-    start_tun2socks > /dev/null 2>&1
-    echo -e "Tun2socks started!"
+    start_tun2socks
     ;;
   s)
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping tun2socks service"
-    stop_tun2socks > /dev/null 2>&1
-    echo -e "Tun2socks stopped!"
+    stop_tun2socks
     ;;
   y)
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: routing server, proxy and DNS IPs"
-    route_add_ip > /dev/null 2>&1
-    echo -e "Routes initialized!"
+    route_add_ip
     ;;
   z)
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: removing routes"
-    route_del_ip > /dev/null 2>&1
-    echo -e "Routes removed!"
+    route_del_ip
     ;;
   *)
     echo -e "Usage:"
