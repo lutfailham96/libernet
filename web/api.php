@@ -258,7 +258,7 @@
             $output = null;
             $retval = null;
             exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/update.sh -web', $output, $retval);
-            if ($retval != null) {
+            if (!$retval) {
                 json_response('Libernet updated!');
             }
         }
