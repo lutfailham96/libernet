@@ -254,5 +254,13 @@
             $log = file_get_contents($libernet_dir.'/log/service.log');
             json_response(array('log' => $log));
         }
+        if ($json['action'] === 'check_update') {
+            $output = null;
+            $retval = null;
+            exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/update.sh -web', $output, $retval);
+            if ($retval != null) {
+                json_response('Libernet updated!');
+            }
+        }
     }
 ?>

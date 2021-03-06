@@ -44,6 +44,8 @@ function add_libernet_environment() {
 function install_libernet() {
   echo -e "Installing Libernet" \
     && mkdir -p "${LIBERNET_DIR}" \
+    && echo -e "Copying updater script" \
+    && cp -avf ./update.sh "${LIBERNET_DIR}/" \
     && echo -e "Copying binary" \
     && cp -arvf ./bin "${LIBERNET_DIR}/" \
     && echo -e "Copying system" \
