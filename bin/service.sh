@@ -164,16 +164,16 @@ function check_connection() {
     if curl -so /dev/null -x "socks://127.0.0.1:${DYNAMIC_PORT}"  "http://google.com"; then
       CONNECTED=true
       # write connection success to service log
-      "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">Connection available</span>"
-      echo -e "Connection available"
+      "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">Socks connection available</span>"
+      echo -e "Socks connection available"
       break
     fi
     counter=$[counter + 1]
   done
   if ! $CONNECTED; then
     # write not connectivity to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Connection unavailable</span>"
-    echo -e "Connection unavailable"
+    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
+    echo -e "Socks connection unavailable"
     # cancel Libernet service
     cancel_services
     exit 1
