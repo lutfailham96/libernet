@@ -10,6 +10,18 @@
         header("Content-Type: application/json; charset=UTF-8");
         echo json_encode($resp);
     }
+
+    function set_v2ray_config($config, $type, $sni, $path, $udpgw_ip, $udpgw_port) {
+        if ($type == 'none') {
+            $config->outbounds[0]->streamSettings->tcpSettings->header->request->headers->Host[0] = $sni;
+            $config->outbounds[0]->streamSettings->tcpSettings->header->request->path[0] = $path;
+        } elseif ($type == 'tls') {
+            $config->outbounds[0]->streamSettings->tlsSettings->serverName = $sni;
+        }
+        $config->etc->udpgw->ip = $udpgw_ip;
+        $config->etc->udpgw->port = $udpgw_port;
+    }
+
     if (isset($_POST)) {
         $json = json_decode(file_get_contents('php://input'), true);
         if ($json['action'] === 'get_system_config') {
@@ -166,6 +178,8 @@
                 json_response('SSH config saved');
             } elseif ($mode == 1) {
                 $config = $data['config'];
+                $type = $config['type'];
+                $path = $config['path'];
                 $host = $config['host'];
                 $id = $config['id'];
                 $ip = $config['ip'];
@@ -179,22 +193,29 @@
                 $udpgw_ip = $config['udpgw']['ip'];
                 $udpgw_port = $config['udpgw']['port'];
                 if ($protocol == "vmess") {
-                    $vmess_config = file_get_contents($libernet_dir.'/bin/config/v2ray/templates/vmess.json');
+                    $vmess_config = null;
+                    if ($type == 'none') {
+                        $vmess_config = file_get_contents($libernet_dir.'/bin/config/v2ray/templates/vmess-http.json');
+                    } elseif ($type == 'tls') {
+                        $vmess_config = file_get_contents($libernet_dir.'/bin/config/v2ray/templates/vmess.json');
+                    }
                     $vmess_config = json_decode($vmess_config);
                     $vmess_config->etc->ip = $ip;
-//                    $vmess_config->outbounds[0]->settings->vnext[0]->ip = $ip;
                     $vmess_config->outbounds[0]->settings->vnext[0]->address = $host;
                     $vmess_config->outbounds[0]->settings->vnext[0]->port = $port;
                     $vmess_config->outbounds[0]->settings->vnext[0]->users[0]->id = $id;
                     $vmess_config->outbounds[0]->settings->vnext[0]->users[0]->security = $security;
                     $vmess_config->outbounds[0]->settings->vnext[0]->users[0]->level = $level;
-                    $vmess_config->outbounds[0]->streamSettings->tlsSettings->serverName = $sni;
-                    $vmess_config->etc->udpgw->ip = $udpgw_ip;
-                    $vmess_config->etc->udpgw->port = $udpgw_port;
+                    set_v2ray_config($vmess_config, $type, $sni, $path, $udpgw_ip, $udpgw_port);
                     file_put_contents($libernet_dir.'/bin/config/v2ray/'.$profile.'.json', json_encode($vmess_config, JSON_PRETTY_PRINT));
                     json_response('V2Ray vmess config saved');
                 } elseif ($protocol == "trojan") {
-                    $trojan_config = file_get_contents($libernet_dir.'/bin/config/v2ray/templates/trojan.json');
+                    $trojan_config = null;
+                    if ($type == 'none') {
+                        $trojan_config = file_get_contents($libernet_dir.'/bin/config/v2ray/templates/trojan-http.json');
+                    } elseif ($type == 'tls') {
+                        $trojan_config = file_get_contents($libernet_dir.'/bin/config/v2ray/templates/trojan.json');
+                    }
                     $trojan_config = json_decode($trojan_config);
                     $trojan_config->etc->ip = $ip;
 //                    $trojan_config->outbounds[0]->settings->servers[0]->ip = $ip;
@@ -202,9 +223,7 @@
                     $trojan_config->outbounds[0]->settings->servers[0]->port = $port;
                     $trojan_config->outbounds[0]->settings->servers[0]->password = $password;
                     $trojan_config->outbounds[0]->settings->servers[0]->level = $level;
-                    $trojan_config->outbounds[0]->streamSettings->tlsSettings->serverName = $sni;
-                    $trojan_config->etc->udpgw->ip = $udpgw_ip;
-                    $trojan_config->etc->udpgw->port = $udpgw_port;
+                    set_v2ray_config($trojan_config, $type, $sni, $path, $udpgw_ip, $udpgw_port);
                     file_put_contents($libernet_dir.'/bin/config/v2ray/'.$profile.'.json', json_encode($trojan_config, JSON_PRETTY_PRINT));
                     json_response('V2Ray trojan config saved');
                 }

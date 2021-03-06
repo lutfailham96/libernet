@@ -80,7 +80,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label>Payload</label>
-                                        <textarea class="form-control" v-model="config.temp.modes[0].profile.http.payload" rows="5" placeholder="GET http://libernet/ HTTP/1.1[crlf][crlf]CONNECT [host_port] HTTP/1.1[crlf]Connection: keep-allive[crlf][crlf]" required></textarea>
+                                        <textarea class="form-control" v-model="config.temp.modes[0].profile.http.payload" rows="5" placeholder="GET http://libernet.tld/ HTTP/1.1[crlf][crlf]CONNECT [host_port] HTTP/1.1[crlf]Connection: keep-allive[crlf][crlf]" required></textarea>
                                     </div>
                                 </div>
                                 <div class="form-row pb-lg-2">
@@ -132,30 +132,38 @@
                                         <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[1].profile.udpgw.port" required>
                                     </div>
                                 </div>
-                                <div v-if="config.temp.modes[1].profile.protocol === config.temp.modes[1].protocols[1].value" class="form-row pb-3">
+                                <div v-if="config.temp.modes[1].profile.protocol === config.temp.modes[1].protocols[1].value" class="form-row pb-lg-2 v2ray-trojan">
                                     <div class="col-md-6">
                                         <label>Trojan Password</label>
                                         <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[1].profile.password" required>
                                     </div>
-                                    <div class="col-md-6">
-                                        <label>SNI</label>
-                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model="config.temp.modes[1].profile.sni" required>
-                                    </div>
                                 </div>
-                                <div v-if="config.temp.modes[1].profile.protocol === config.temp.modes[1].protocols[0].value" class="form-row pb-3">
-                                    <div class="col-md-5">
+                                <div v-if="config.temp.modes[1].profile.protocol === config.temp.modes[1].protocols[0].value" class="form-row pb-lg-2 v2ray-vmess">
+                                    <div class="col-md-8">
                                         <label>VMess ID</label>
                                         <input type="text" class="form-control" placeholder="900c42c7-a23d-46dd-a1a0-72c37edf8a03" v-model="config.temp.modes[1].profile.id" required>
                                     </div>
-                                    <div class="col-md-3">
+                                    <div class="col-md-4">
                                         <label>VMess Security</label>
                                         <select class="custom-select" v-model="config.temp.modes[1].profile.security" required>
                                             <option v-for="security in config.temp.modes[1].protocols[0].security" :value="security">{{ security }}</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4">
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-sm-3">
+                                        <label>Security</label>
+                                        <select class="custom-select" v-model="config.temp.modes[1].profile.type" required>
+                                            <option v-for="type in config.temp.modes[1].types" :value="type.value">{{ type.name }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
                                         <label>SNI</label>
                                         <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model="config.temp.modes[1].profile.sni" required>
+                                    </div>
+                                    <div v-if="config.temp.modes[1].profile.type === 'none'" class="col-md-3">
+                                        <label>Path</label>
+                                        <input type="text" class="form-control" placeholder="/" v-model="config.temp.modes[1].profile.path" required>
                                     </div>
                                 </div>
                             </div>
@@ -276,7 +284,19 @@
                                         value: "trojan"
                                     }
                                 ],
+                                types: [
+                                    {
+                                        name: "HTTP",
+                                        value: "none"
+                                    },
+                                    {
+                                        name: "TLS",
+                                        value: "tls"
+                                    }
+                                ],
                                 profile: {
+                                    type: "",
+                                    path: "",
                                     protocol: "",
                                     ip: "",
                                     host: "",
@@ -456,34 +476,38 @@
                     const temp = this.config.temp
                     const profile = temp.modes[1].profile
                     const protocol = res.data.data.outbounds[0].protocol
+                    const streamSecurity = res.data.data.outbounds[0].streamSettings.security
+                    let server
+                    let sni
+                    let path
+                    if (streamSecurity === "none") {
+                        sni = res.data.data.outbounds[0].streamSettings.tcpSettings.header.request.headers.Host[0]
+                        path = res.data.data.outbounds[0].streamSettings.tcpSettings.header.request.path[0]
+                        profile.path = path
+                    } else if(streamSecurity === "tls") {
+                        sni = res.data.data.outbounds[0].streamSettings.tlsSettings.serverName
+                    }
                     temp.mode = 1
                     temp.profile = this.config.profile
                     temp.modes[1].profile.protocol = protocol
                     temp.modes[1].profile.udpgw.port = res.data.data.etc.udpgw.port
                     if (protocol === temp.modes[1].protocols[0].value) {
-                        const server = res.data.data.outbounds[0].settings.vnext[0]
-                        const sni = res.data.data.outbounds[0].streamSettings.tlsSettings.serverName
-                        profile.ip = res.data.data.etc.ip
+                        server = res.data.data.outbounds[0].settings.vnext[0]
                         profile.host = server.address
                         profile.port = server.port
                         profile.id = server.users[0].id
                         profile.level = server.users[0].level
-                        for (let i=0; i<this.config.temp.modes[1].protocols[0].security.length; i++) {
-                            if (server.users[0].security === this.config.temp.modes[1].protocols[0].security[i]) {
-                                profile.security = this.config.temp.modes[1].protocols[0].security[i]
-                            }
-                        }
-                        profile.sni = sni
+                        profile.security = server.users[0].security
                     } else if (protocol === temp.modes[1].protocols[1].value) {
-                        const server = res.data.data.outbounds[0].settings.servers[0]
-                        const sni = res.data.data.outbounds[0].streamSettings.tlsSettings.serverName
-                        profile.ip = res.data.data.etc.ip
+                        server = res.data.data.outbounds[0].settings.servers[0]
                         profile.host = server.address
                         profile.port = server.port
                         profile.password = server.password
                         profile.level = server.level
-                        profile.sni = sni
                     }
+                    profile.type = streamSecurity
+                    profile.ip = res.data.data.etc.ip
+                    profile.sni = sni
                 })
             },
             getSshSslConfig() {
