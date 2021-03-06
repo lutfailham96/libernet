@@ -22,6 +22,23 @@
         $config->etc->udpgw->port = $udpgw_port;
     }
 
+    function set_auto_start($status) {
+        global $libernet_dir;
+        $system_config = file_get_contents($libernet_dir.'/system/config.json');
+        $system_config = json_decode($system_config);
+        if ($status) {
+            // enable auto start
+            exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/service.sh -ea');
+            $system_config->tunnel->autostart = true;
+        } else {
+            // disable auto start
+            exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/service.sh -da');
+            $system_config->tunnel->autostart = false;
+        }
+        $system_config = json_encode($system_config, JSON_PRETTY_PRINT);
+        file_put_contents($libernet_dir.'/system/config.json', $system_config);
+    }
+
     if (isset($_POST)) {
         $json = json_decode(file_get_contents('php://input'), true);
         if ($json['action'] === 'get_system_config') {
@@ -265,6 +282,10 @@
             exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/service.sh -ds');
             json_response('Libernet service stopped');
         }
+        if ($json['action'] === 'cancel_libernet') {
+            exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/service.sh -cl');
+            json_response('Libernet service canceled');
+        }
         if ($json['action'] === 'get_service_status') {
             $status = file_get_contents($libernet_dir.'/log/status.log');
             json_response(array('status' => intval($status)));
@@ -279,6 +300,15 @@
             exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/update.sh -web', $output, $retval);
             if (!$retval) {
                 json_response('Libernet updated!');
+            }
+        }
+        if ($json['action'] === 'set_auto_start') {
+            $status = $json['status'];
+            set_auto_start($status);
+            if ($status) {
+                json_response("Libernet service auto start enabled");
+            } else {
+                json_response("Libernet service auto start disabled");
             }
         }
     }
