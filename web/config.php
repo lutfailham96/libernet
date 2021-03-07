@@ -413,7 +413,7 @@
         },
         methods: {
             getProfiles(mode) {
-                switch () {
+                switch (mode) {
                     case 0:
                         this.getSshProfiles()
                         break
