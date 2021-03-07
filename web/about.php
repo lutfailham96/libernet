@@ -63,12 +63,13 @@
         el: "#app",
         computed: {
             statusText() {
-                if (this.status === 0) {
-                    return 'Update'
-                } else if (this.status === 1) {
-                    return 'Updating'
-                } else if (this.status === 2) {
-                    return 'Updated'
+                switch (this.status) {
+                    case 0:
+                        return 'Update'
+                    case 1:
+                        return 'Updating'
+                    case 2:
+                        return 'Updated'
                 }
             }
         },
