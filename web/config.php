@@ -175,7 +175,7 @@
                                     </div>
                                     <div v-if="config.temp.modes[1].profile.network !== 'tcp'" class="col-md-4">
                                         <label>Path</label>
-                                        <input type="text" class="form-control" placeholder="/" v-model="config.temp.modes[1].profile.stream.path" required>
+                                        <input type="text" class="form-control" placeholder="/" v-model="config.temp.modes[1].profile.stream.path" @input="decodePath" required>
                                     </div>
                                 </div>
                             </div>
@@ -409,9 +409,16 @@
             'config.mode': function (mode) {
                 this.getProfiles(mode)
                 this.config.profile = ""
+            },
+            'config.temp.modes[1].profile.stream.path': function (val) {
+                console.log(val)
+                console.log('hello')
             }
         },
         methods: {
+            decodePath() {
+                this.config.temp.modes[1].profile.stream.path = decodeURIComponent(JSON.parse('"' + this.config.temp.modes[1].profile.stream.path + '"'))
+            },
             getProfiles(mode) {
                 switch (mode) {
                     case 0:
