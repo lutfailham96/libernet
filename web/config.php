@@ -371,7 +371,7 @@
                     },
                     system: {
                         tunnel: {
-                            mode: 1,
+                            mode: 0,
                             profile: {
                                 ssh: "",
                                 v2ray: "",
