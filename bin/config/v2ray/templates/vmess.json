@@ -57,11 +57,23 @@
       },
       "tag": "vmess",
       "streamSettings": {
-        "network": "tcp",
-        "security": "tls",
+        "network": "",
+        "security": "",
         "tlsSettings": {
           "allowInsecure": true,
           "serverName": ""
+        },
+        "wsSettings": {
+          "path": "",
+          "headers": {
+            "Host": ""
+          }
+        },
+        "httpSettings": {
+          "host": [
+            ""
+          ],
+          "path": ""
         }
       }
     }
