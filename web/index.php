@@ -135,14 +135,15 @@
                 return this.status === true ? 'Stop' : 'Start'
             },
             connectionText() {
-                if (this.connection === 0) {
-                    return 'ready'
-                } else if (this.connection === 1) {
-                    return 'connecting'
-                } else if (this.connection === 2) {
-                    return 'connected'
-                } else if (this.connection === 3) {
-                    return  'stopping'
+                switch (this.connection) {
+                    case 0:
+                        return 'ready'
+                    case 1:
+                        return 'connecting'
+                    case 2:
+                        return 'connected'
+                    case 3:
+                        return  'stopping'
                 }
             }
         },
@@ -189,12 +190,16 @@
                 }
             },
             getProfiles(mode) {
-                if (mode === 0) {
-                    this.getSshProfiles()
-                } else if (mode === 1) {
-                    this.getV2rayProfiles()
-                } else if (mode === 2) {
-                    this.getSshSslProfiles()
+                switch (mode) {
+                    case 0:
+                        this.getSshProfiles()
+                        break
+                    case 1:
+                        this.getV2rayProfiles()
+                        break
+                    case 2:
+                        this.getSshSslProfiles()
+                        break
                 }
             },
             getSshProfiles() {
@@ -275,12 +280,16 @@
                 this.config.system = res
                 this.config.mode = mode
                 this.getProfiles(mode)
-                if (mode === 0) {
-                    this.config.profile = res.tunnel.profile.ssh
-                } else if (mode === 1) {
-                    this.config.profile = res.tunnel.profile.v2ray
-                } else if (mode === 2) {
-                    this.config.profile = res.tunnel.profile.ssh_ssl
+                switch (mode) {
+                    case 0:
+                        this.config.profile = res.tunnel.profile.ssh
+                        break
+                    case 1:
+                        this.config.profile = res.tunnel.profile.v2ray
+                        break
+                    case 2:
+                        this.config.profile = res.tunnel.profile.ssh_ssl
+                        break
                 }
             })
             this.getStatus()
