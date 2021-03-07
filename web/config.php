@@ -256,12 +256,12 @@
                                 profile: {
                                     ip: "",
                                     host: "",
-                                    port: 443,
+                                    port: 0,
                                     username: "",
                                     password: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 7300
+                                        port: 0
                                     },
                                     enable_http: true,
                                     http: {
@@ -272,7 +272,7 @@
                                         payload: "",
                                         proxy: {
                                             ip: "",
-                                            port: 8080
+                                            port: 0
                                         }
                                     }
                                 }
@@ -357,13 +357,13 @@
                                 profile: {
                                     ip: "",
                                     host: "",
-                                    port: 443,
+                                    port: 0,
                                     username: "",
                                     password: "",
                                     sni: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 7300
+                                        port: 0
                                     }
                                 }
                             }
@@ -379,16 +379,7 @@
                             }
                         },
                         server: "",
-                        dns_servers: [
-                            "8.8.8.8",
-                            "8.8.4.4",
-                            "1.1.1.1",
-                            "1.1.0.0",
-                            "208.67.222.222",
-                            "208.67.220.220",
-                            "94.140.14.14",
-                            "94.140.15.15"
-                        ],
+                        dns_servers: [],
                         proxy_servers: [],
                         tun2socks: {
                             legacy: false,
@@ -399,11 +390,11 @@
                             netmask: "255.255.255.0",
                             socks: {
                                 ip: "127.0.0.1",
-                                port: 1080
+                                port: 0
                             },
                             udpgw: {
                                 ip: "127.0.0.1",
-                                port: 7300
+                                port: 0
                             }
                         },
                         system: {
@@ -422,12 +413,16 @@
         },
         methods: {
             getProfiles(mode) {
-                if (mode === 0) {
-                    this.getSshProfiles()
-                } else if (mode === 1) {
-                    this.getV2rayProfiles()
-                } else if (mode === 2) {
-                    this.getSshSslProfiles()
+                switch () {
+                    case 0:
+                        this.getSshProfiles()
+                        break
+                    case 1:
+                        this.getV2rayProfiles()
+                        break
+                    case 2:
+                        this.getSshSslProfiles()
+                        break
                 }
             },
             getSshProfiles() {
@@ -454,12 +449,16 @@
             getConfig() {
                 this.getSystemConfig().then((res) => {
                     this.config.system = res
-                    if (this.config.mode === 0) {
-                        this.getSshConfig()
-                    } else if (this.config.mode === 1) {
-                        this.getV2rayConfig()
-                    } else if (this.config.mode === 2) {
-                        this.getSshSslConfig()
+                    switch (this.config.mode) {
+                        case 0:
+                            this.getSshConfig()
+                            break
+                        case 1:
+                            this.getV2rayConfig()
+                            break
+                        case 2:
+                            this.getSshSslConfig()
+                            break
                     }
                 })
             },
@@ -590,12 +589,16 @@
                 })
             },
             saveConfig() {
-                if (this.config.temp.mode === 0) {
-                    this.saveSshConfig()
-                } else if (this.config.temp.mode === 1) {
-                    this.saveV2rayConfig()
-                } else if(this.config.temp.mode === 2) {
-                    this.saveSshSslConfig()
+                switch (this.config.temp.mode) {
+                    case 0:
+                        this.saveSshConfig()
+                        break
+                    case 1:
+                        this.saveV2rayConfig()
+                        break
+                    case 2:
+                        this.saveSshSslConfig()
+                        break
                 }
             },
             saveSshConfig() {
