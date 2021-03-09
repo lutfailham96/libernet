@@ -29,7 +29,7 @@ while getopts ":rs" opt; do
     echo -e "Trojan started!"
     ;;
   s)
-    start_trojan > /dev/null 2>&1
+    stop_trojan > /dev/null 2>&1
     echo -e "Trojan stopped!"
     ;;
   *)
