@@ -116,6 +116,10 @@
                             {
                                 value: 2,
                                 name: "SSH-SSL"
+                            },
+                            {
+                                value: 3,
+                                name: "Trojan"
                             }
                         ]
                     },
@@ -200,6 +204,9 @@
                     case 2:
                         this.getSshSslProfiles()
                         break
+                    case 3:
+                        this.getTrojanProfiles()
+                        break
                 }
             },
             getSshProfiles() {
@@ -219,6 +226,13 @@
             getSshSslProfiles() {
                 axios.post('api.php', {
                     action: "get_sshl_configs"
+                }).then((res) => {
+                    this.config.profiles = res.data.data
+                })
+            },
+            getTrojanProfiles() {
+                axios.post('api.php', {
+                    action: "get_trojan_configs"
                 }).then((res) => {
                     this.config.profiles = res.data.data
                 })
@@ -290,6 +304,8 @@
                     case 2:
                         this.config.profile = res.tunnel.profile.ssh_ssl
                         break
+                    case 3:
+                        this.config.profile = res.tunnel.profile.trojan
                 }
             })
             this.getStatus()
