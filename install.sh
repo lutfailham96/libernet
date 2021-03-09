@@ -9,21 +9,32 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
+ARCH="$(grep 'DISTRIB_ARCH' /etc/openwrt_release | awk -F '=' '{print $2}' | sed "s/'//g")"
 LIBERNET_DIR="/root/libernet"
 LIBERNET_WWW="/www/libernet"
 
 function install_packages() {
   while IFS= read -r line; do
     opkg install "${line}"
-  done < ./requirements.txt
+  done < requirements.txt
+}
+
+function install_proprietary_binaries() {
+  echo -e "Copying proprietary binaries" \
+    && cp -arvf proprietary/${ARCH}/binaries/* /usr/bin/
+}
+
+function install_proprietary_packages() {
+  echo -e "Installing proprietary packages" \
+    && opkg install proprietary/${ARCH}/packages/*.ipk
 }
 
 function install_requirements() {
   echo -e "Installing packages" \
     && opkg update \
     && install_packages \
-    && echo -e "Copying proprietary binary" \
-    && cp -arvf ./proprietary/* /usr/bin/
+    && install_proprietary_binaries \
+    && install_proprietary_packages
 }
 
 function enable_uhttp_php() {
@@ -45,16 +56,16 @@ function install_libernet() {
   echo -e "Installing Libernet" \
     && mkdir -p "${LIBERNET_DIR}" \
     && echo -e "Copying updater script" \
-    && cp -avf ./update.sh "${LIBERNET_DIR}/" \
+    && cp -avf update.sh "${LIBERNET_DIR}/" \
     && echo -e "Copying binary" \
-    && cp -arvf ./bin "${LIBERNET_DIR}/" \
+    && cp -arvf bin "${LIBERNET_DIR}/" \
     && echo -e "Copying system" \
-    && cp -arvf ./system "${LIBERNET_DIR}/" \
+    && cp -arvf system "${LIBERNET_DIR}/" \
     && echo -e "Copying log" \
-    && cp -arvf ./log "${LIBERNET_DIR}/" \
+    && cp -arvf log "${LIBERNET_DIR}/" \
     && echo -e "Copying web files" \
     && mkdir -p "${LIBERNET_WWW}" \
-    && cp -arvf ./web/* "${LIBERNET_WWW}/" \
+    && cp -arvf web/* "${LIBERNET_WWW}/" \
     && echo -e "Configuring Libernet" \
     && sed -i "s/LIBERNET_DIR/$(echo ${LIBERNET_DIR} | sed 's/\//\\\//g')/g" "${LIBERNET_WWW}/config.inc.php"
 }
