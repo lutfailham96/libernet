@@ -25,11 +25,11 @@ function stop_trojan() {
 while getopts ":rs" opt; do
   case ${opt} in
   r)
-    start_ssh > /dev/null 2>&1
+    start_trojan > /dev/null 2>&1
     echo -e "Trojan started!"
     ;;
   s)
-    stop_ssh > /dev/null 2>&1
+    start_trojan > /dev/null 2>&1
     echo -e "Trojan stopped!"
     ;;
   *)
