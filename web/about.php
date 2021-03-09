@@ -37,6 +37,7 @@
                                 <li>V2Ray VMess</li>
                                 <li>V2Ray VLESS</li>
                                 <li>V2Ray Trojan</li>
+                                <li>Trojan</li>
                             </ul>
                             <p>
                                 Some features still under development!
