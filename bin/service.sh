@@ -62,33 +62,52 @@ function service_ssh_ssl() {
   echo -e "Tun2socks service started!"
 }
 
+function service_trojan() {
+  ${LIBERNET_DIR}/bin/trojan.sh -r /dev/null 2>&1
+  echo -e "Trojan service started!"
+  check_connection
+  service_tun2socks > /dev/null 2>&1
+  echo -e "Tun2socks service started!"
+}
+
 function stop_services() {
-  if [[ $TUNNEL_MODE == "0" ]]; then
-    # kill http proxy
-    if [[ $ENABLE_HTTP == 'true' ]]; then
+  case $TUNNEL_MODE in
+    "0")
+      # kill http proxy
+      if [[ $ENABLE_HTTP == 'true' ]]; then
+        # write to service log
+        "${LIBERNET_DIR}/bin/log.sh" -w "Stopping HTTP Proxy service"
+        echo -e "Stopping HTTP Proxy service ..."
+        ${LIBERNET_DIR}/bin/http.sh -s
+      fi
+      # kill ssh
       # write to service log
-      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping HTTP Proxy service"
-      echo -e "Stopping HTTP Proxy service ..."
-      ${LIBERNET_DIR}/bin/http.sh -s
-    fi
-    # kill ssh
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH service"
-    echo -e "Stopping SSH service ..."
-    ${LIBERNET_DIR}/bin/ssh.sh -s
-  elif [[ $TUNNEL_MODE == "1" ]]; then
-    # kill v2ray
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping V2Ray service"
-    echo -e "Stopping V2Ray service ..."
-    ${LIBERNET_DIR}/bin/v2ray.sh -s
-  elif [[ $TUNNEL_MODE == "2" ]]; then
-    # kill ssh-ssl
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH-SSL service"
-    echo -e "Stopping SSH-SSL service ..."
-    ${LIBERNET_DIR}/bin/ssh-ssl.sh -s
-  fi
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH service"
+      echo -e "Stopping SSH service ..."
+      ${LIBERNET_DIR}/bin/ssh.sh -s
+      ;;
+    "1")
+      # kill v2ray
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping V2Ray service"
+      echo -e "Stopping V2Ray service ..."
+      ${LIBERNET_DIR}/bin/v2ray.sh -s
+      ;;
+    "2")
+      # kill ssh-ssl
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH-SSL service"
+      echo -e "Stopping SSH-SSL service ..."
+      ${LIBERNET_DIR}/bin/ssh-ssl.sh -s
+      ;;
+    "3")
+      # kill trojan
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping Trojan service"
+      echo -e "Stopping Trojan service ..."
+      ${LIBERNET_DIR}/bin/trojan.sh -s
+      ;;
+  esac
   # kill tun2socks
   ${LIBERNET_DIR}/bin/tun2socks.sh -w
 }
@@ -96,19 +115,28 @@ function stop_services() {
 function start_services() {
   # write service status: running
   "${LIBERNET_DIR}/bin/log.sh" -s 1
-  if [[ $TUNNEL_MODE == "0" ]]; then
-    # write v2ray to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Starting SSH service"
-    service_ssh
-  elif [[ $TUNNEL_MODE == "1" ]]; then
-    # write v2ray to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Starting V2Ray service"
-    service_v2ray
-  elif [[ $TUNNEL_MODE == "2" ]]; then
-    # write ssh-ssl to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Starting SSH-SSL service"
-    service_ssh_ssl
-  fi
+  case $TUNNEL_MODE in
+    "0")
+      # write v2ray to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Starting SSH service"
+      service_ssh
+      ;;
+    "1")
+      # write v2ray to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Starting V2Ray service"
+      service_v2ray
+      ;;
+    "2")
+      # write ssh-ssl to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Starting SSH-SSL service"
+      service_ssh_ssl
+      ;;
+    "3")
+      # write trojan to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Starting Trojan service"
+      service_trojan
+      ;;
+  esac
   # write service status: connected
   "${LIBERNET_DIR}/bin/log.sh" -s 2
   # write libernet to service log
@@ -121,32 +149,43 @@ function cancel_services() {
   "${LIBERNET_DIR}/bin/log.sh" -s 3
   # write stopping to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping Libernet service"
-    if [[ $TUNNEL_MODE == "0" ]]; then
-    # kill http proxy
-    if [[ $ENABLE_HTTP == 'true' ]]; then
+  case $TUNNEL_MODE in
+    "0")
+      # kill http proxy
+      if [[ $ENABLE_HTTP == 'true' ]]; then
+        # write to service log
+        "${LIBERNET_DIR}/bin/log.sh" -w "Stopping HTTP Proxy service"
+        echo -e "Stopping HTTP Proxy service ..."
+        ${LIBERNET_DIR}/bin/http.sh -s
+      fi
+      # kill ssh
       # write to service log
-      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping HTTP Proxy service"
-      echo -e "Stopping HTTP Proxy service ..."
-      ${LIBERNET_DIR}/bin/http.sh -s
-    fi
-    # kill ssh
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH service"
-    echo -e "Stopping SSH service ..."
-    ${LIBERNET_DIR}/bin/ssh.sh -s
-  elif [[ $TUNNEL_MODE == "1" ]]; then
-    # kill v2ray
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping V2Ray service"
-    echo -e "Stopping V2Ray service ..."
-    ${LIBERNET_DIR}/bin/v2ray.sh -s
-  elif [[ $TUNNEL_MODE == "2" ]]; then
-    # kill ssh-ssl
-    # write to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH-SSL service"
-    echo -e "Stopping SSH-SSL service ..."
-    ${LIBERNET_DIR}/bin/ssh-ssl.sh -s
-  fi
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH service"
+      echo -e "Stopping SSH service ..."
+      ${LIBERNET_DIR}/bin/ssh.sh -s
+      ;;
+    "1")
+      # kill v2ray
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping V2Ray service"
+      echo -e "Stopping V2Ray service ..."
+      ${LIBERNET_DIR}/bin/v2ray.sh -s
+      ;;
+    "2")
+      # kill ssh-ssl
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping SSH-SSL service"
+      echo -e "Stopping SSH-SSL service ..."
+      ${LIBERNET_DIR}/bin/ssh-ssl.sh -s
+      ;;
+    "3")
+      # kill trojan
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping Trojan service"
+      echo -e "Stopping Trojan service ..."
+      ${LIBERNET_DIR}/bin/trojan.sh -s
+      ;;
+  esac
   # write service status: stop
   "${LIBERNET_DIR}/bin/log.sh" -s 0
   # write libernet to service log
@@ -227,6 +266,9 @@ case $1 in
     ;;
   -sv)
     service_v2ray
+    ;;
+  -tr)
+    service_trojan
     ;;
   -ds)
     # write service status: stopping

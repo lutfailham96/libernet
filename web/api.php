@@ -12,6 +12,35 @@
         echo json_encode($resp, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     }
 
+    function get_profiles($mode) {
+        global $libernet_dir;
+        $profiles = array();
+        if ($handle = opendir($libernet_dir.'/bin/config/'.$mode.'/')) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file != "." && $file != ".." && strtolower(substr($file, strrpos($file, '.') + 1)) == 'json') {
+                    array_push($profiles, preg_replace('/\\.[^.\\s]{3,4}$/', '', $file));
+                }
+            }
+            closedir($handle);
+        }
+        json_response($profiles);
+    }
+
+    function get_config($mode, $profile) {
+        global $libernet_dir;
+        $data = null;
+        $config = null;
+        if ($profile) {
+            $config = file_get_contents($libernet_dir.'/bin/config/'.$mode.'/'.$profile.'.json');
+        } else {
+            $system_config = file_get_contents($libernet_dir.'/system/config.json');
+            $system_config = json_decode($system_config);
+            $config = file_get_contents($libernet_dir.'/bin/config/'.$mode.'/'.$system_config->tunnel->profile->$mode.'.json');
+        }
+        $data = json_decode($config);
+        json_response($data);
+    }
+
     function set_v2ray_config($config, $protocol, $network, $security, $sni, $path, $ip, $udpgw_ip, $udpgw_port) {
         $config->outbounds[0]->protocol = $protocol;
         $config->outbounds[0]->streamSettings->network = $network;
@@ -60,79 +89,32 @@
                 json_response($data);
                 break;
             case 'get_ssh_config':
-                $data = null;
-                $ssh_config = null;
-                if (isset($json['profile'])) {
-                    $ssh_config = file_get_contents($libernet_dir.'/bin/config/ssh/'.$json['profile'].'.json');
-                } else {
-                    $system_config = file_get_contents($libernet_dir.'/system/config.json');
-                    $system_config = json_decode($system_config);
-                    $ssh_config = file_get_contents($libernet_dir.'/bin/config/ssh/'.$system_config->tunnel->profile->ssh.'.json');
-                }
-                $data = json_decode($ssh_config);
-                json_response($data);
+                $profile = $json['profile'];
+                get_config('ssh', $profile);
                 break;
             case 'get_sshl_config':
-                $data = null;
-                $sshl_config = null;
-                if (isset($json['profile'])) {
-                    $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh-ssl/'.$json['profile'].'.json');
-                } else {
-                    $system_config = file_get_contents($libernet_dir.'/system/config.json');
-                    $system_config = json_decode($system_config);
-                    $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh-ssl/'.$system_config->tunnel->profile->ssh_ssl.'.json');
-                }
-                $data = json_decode($sshl_config);
-                json_response($data);
+                $profile = $json['profile'];
+                get_config('ssh_ssl', $profile);
                 break;
             case 'get_v2ray_config':
-                $data = null;
-                $v2ray_config = null;
-                if (isset($json['profile'])) {
-                    $v2ray_config = file_get_contents($libernet_dir.'/bin/config/v2ray/'.$json['profile'].'.json');
-                } else {
-                    $system_config = file_get_contents($libernet_dir.'/system/config.json');
-                    $system_config = json_decode($system_config);
-                    $v2ray_config = file_get_contents($libernet_dir.'/bin/config/v2ray/'.$system_config->tunnel->profile->v2ray.'.json');
-                }
-                $data = json_decode($v2ray_config);
-                json_response($data);
+                $profile = $json['profile'];
+                get_config('v2ray', $profile);
+                break;
+            case 'get_trojan_config':
+                $profile = $json['profile'];
+                get_config('trojan', $profile);
                 break;
             case 'get_v2ray_configs':
-                $profiles = array();
-                if ($handle = opendir($libernet_dir.'/bin/config/v2ray/')) {
-                    while (false !== ($file = readdir($handle))) {
-                        if ($file != "." && $file != ".." && strtolower(substr($file, strrpos($file, '.') + 1)) == 'json') {
-                            array_push($profiles, preg_replace('/\\.[^.\\s]{3,4}$/', '', $file));
-                        }
-                    }
-                    closedir($handle);
-                }
-                json_response($profiles);
+                get_profiles('v2ray');
                 break;
             case 'get_ssh_configs':
-                $profiles = array();
-                if ($handle = opendir($libernet_dir.'/bin/config/ssh/')) {
-                    while (false !== ($file = readdir($handle))) {
-                        if ($file != "." && $file != ".." && strtolower(substr($file, strrpos($file, '.') + 1)) == 'json') {
-                            array_push($profiles, preg_replace('/\\.[^.\\s]{3,4}$/', '', $file));
-                        }
-                    }
-                    closedir($handle);
-                }
-                json_response($profiles);
+                get_profiles('ssh');
                 break;
             case 'get_sshl_configs':
-                $profiles = array();
-                if ($handle = opendir($libernet_dir.'/bin/config/ssh-ssl/')) {
-                    while (false !== ($file = readdir($handle))) {
-                        if ($file != "." && $file != ".." && strtolower(substr($file, strrpos($file, '.') + 1)) == 'json') {
-                            array_push($profiles, preg_replace('/\\.[^.\\s]{3,4}$/', '', $file));
-                        }
-                    }
-                    closedir($handle);
-                }
-                json_response($profiles);
+                get_profiles('ssh_ssl');
+                break;
+            case 'get_trojan_configs':
+                get_profiles('trojan');
                 break;
             case 'start_libernet':
                 $system_config = file_get_contents($libernet_dir.'/system/config.json');
@@ -160,9 +142,15 @@
                         break;
                     // ssh-ssl
                     case 2:
-                        $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh-ssl/'.$system_config->tunnel->profile->ssh_ssl.'.json');
+                        $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh_ssl/'.$system_config->tunnel->profile->ssh_ssl.'.json');
                         $sshl_config = json_decode($sshl_config);
                         exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->ssh_ssl.', Mode: SSH-SSL"');
+                        break;
+                    // trojan
+                    case 3:
+                        $trojan_config = file_get_contents($libernet_dir.'/bin/config/trojan/'.$system_config->tunnel->profile->trojan.'.json');
+                        $$trojan_config = json_decode($trojan_config);
+                        exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->trojan.', Mode: Trojan"');
                         break;
                 }
                 exec('export LIBERNET_DIR='.$libernet_dir.' && '.$libernet_dir.'/bin/service.sh -sl');
@@ -191,17 +179,15 @@
                     $data = $json['data'];
                     $mode = $data['mode'];
                     $profile = $data['profile'];
+                    $config = $data['config'];
                     switch ($mode) {
                         // ssh
                         case 0:
-                            $config = $data['config'];
-                            $config = json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-                            file_put_contents($libernet_dir.'/bin/config/ssh/'.$profile.'.json', $config);
+                            file_put_contents($libernet_dir.'/bin/config/ssh/'.$profile.'.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                             json_response('SSH config saved');
                             break;
                         // v2ray
                         case 1:
-                            $config = $data['config'];
                             $protocol = $config['protocol'];
                             $network = $config['network'];
                             $security = $config['security'];
@@ -263,10 +249,22 @@
                             break;
                         // ssh-ssl
                         case 2:
-                            $config = $data['config'];
-                            $config = json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-                            file_put_contents($libernet_dir . '/bin/config/ssh-ssl/' . $profile . '.json', $config);
+                            file_put_contents($libernet_dir.'/bin/config/ssh_ssl/'.$profile.'.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                             json_response('SSH-SSL config saved');
+                            break;
+                        // trojan
+                        case 3:
+                            $trojan_config = file_get_contents($libernet_dir.'/bin/config/trojan/templates/trojan.json');
+                            $trojan_config = json_decode($trojan_config);
+                            $trojan_config->remote_addr = $config['host'];
+                            $trojan_config->remote_port = $config['port'];
+                            $trojan_config->password[0] = $config['password'];
+                            $trojan_config->ssl->sni = $config['sni'];
+                            $trojan_config->etc->ip = $config['ip'];
+                            $trojan_config->etc->udpgw->ip = $config['udpgw']['ip'];;
+                            $trojan_config->etc->udpgw->port = $config['udpgw']['port'];
+                            file_put_contents($libernet_dir.'/bin/config/trojan/'.$profile.'.json', json_encode($trojan_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                            json_response('Trojan config saved');
                             break;
                     }
                 }
@@ -293,20 +291,29 @@
                         case 1:
                             $v2ray_config = file_get_contents($libernet_dir.'/bin/config/v2ray/'.$profile.'.json');
                             $v2ray_config = json_decode($v2ray_config);
-                            $protocol = $v2ray_config->outbounds[0]->protocol;
+//                            $protocol = $v2ray_config->outbounds[0]->protocol;
+                            $system_config->tunnel->profile->v2ray = $profile;
                             $system_config->server = $v2ray_config->etc->ip;
                             $system_config->tun2socks->udpgw->ip = $v2ray_config->etc->udpgw->ip;
                             $system_config->tun2socks->udpgw->port = $v2ray_config->etc->udpgw->port;
-                            $system_config->tunnel->profile->v2ray = $profile;
                             break;
                         // ssh-ssl
                         case 2:
-                            $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh-ssl/'.$profile.'.json');
+                            $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh_ssl/'.$profile.'.json');
                             $sshl_config = json_decode($sshl_config);
                             $system_config->tunnel->profile->ssh_ssl = $profile;
                             $system_config->server = $sshl_config->ip;
                             $system_config->tun2socks->udpgw->ip = $sshl_config->udpgw->ip;
                             $system_config->tun2socks->udpgw->port = $sshl_config->udpgw->port;
+                            break;
+                        // trojan
+                        case 3:
+                            $trojan_config = file_get_contents($libernet_dir.'/bin/config/trojan/'.$profile.'.json');
+                            $trojan_config = json_decode($trojan_config);
+                            $system_config->tunnel->profile->trojan = $profile;
+                            $system_config->server = $trojan_config->etc->ip;
+                            $system_config->tun2socks->udpgw->ip = $trojan_config->etc->udpgw->ip;
+                            $system_config->tun2socks->udpgw->port = $trojan_config->etc->udpgw->port;
                             break;
                     }
                     $system_config->tunnel->mode = $mode;
@@ -331,8 +338,12 @@
                             json_response('V2Ray config removed');
                             break;
                         case 2:
-                            unlink($libernet_dir.'/bin/config/ssh-ssl/'.$profile.'.json');
+                            unlink($libernet_dir.'/bin/config/ssh_ssl/'.$profile.'.json');
                             json_response('SSH-SSL config removed');
+                            break;
+                        case 3:
+                            unlink($libernet_dir.'/bin/config/trojan/'.$profile.'.json');
+                            json_response('Trojan config removed');
                             break;
                     }
                 }

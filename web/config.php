@@ -223,6 +223,39 @@
                                 </div>
                             </div>
 
+                            <div v-if="config.temp.mode === 3" class="trojan pb-lg-2">
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-3">
+                                        <label>Server IP</label>
+                                        <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[3].profile.ip" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Server Host</label>
+                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[3].profile.host" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Server Port</label>
+                                        <input type="number" class="form-control" placeholder="443" v-model.number="config.temp.modes[3].profile.port" required>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Trojan Password</label>
+                                        <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[3].profile.password" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-6">
+                                        <label>UDPGW Port</label>
+                                        <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[3].profile.udpgw.port" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>SNI</label>
+                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[3].profile.sni" required>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group pb-lg-2 text-center">
                                 <label>Config Name</label>
                                 <input type="text" class="form-control text-center" placeholder="bypass-filter" v-model="config.temp.profile" required>
@@ -379,6 +412,21 @@
                                         port: 0
                                     }
                                 }
+                            },
+                            {
+                                value: 3,
+                                name: "Trojan",
+                                profile: {
+                                    ip: "",
+                                    host: "",
+                                    port: 0,
+                                    password: "",
+                                    sni: "",
+                                    udpgw: {
+                                        ip: "127.0.0.1",
+                                        port: 0
+                                    }
+                                }
                             }
                         ]
                     },
@@ -422,10 +470,6 @@
             'config.mode': function (mode) {
                 this.getProfiles(mode)
                 this.config.profile = ""
-            },
-            'config.temp.modes[1].profile.stream.path': function (val) {
-                console.log(val)
-                console.log('hello')
             }
         },
         methods: {
@@ -442,6 +486,9 @@
                         break
                     case 2:
                         this.getSshSslProfiles()
+                        break
+                    case 3:
+                        this.getTrojanProfiles()
                         break
                 }
             },
@@ -466,6 +513,13 @@
                     this.config.profiles = res.data.data
                 })
             },
+            getTrojanProfiles() {
+                axios.post('api.php', {
+                    action: "get_trojan_configs"
+                }).then((res) => {
+                    this.config.profiles = res.data.data
+                })
+            },
             getConfig() {
                 this.getSystemConfig().then((res) => {
                     this.config.system = res
@@ -478,6 +532,9 @@
                             break
                         case 2:
                             this.getSshSslConfig()
+                            break
+                        case 3:
+                            this.getTrojanConfig()
                             break
                     }
                 })
@@ -607,6 +664,24 @@
                     temp.modes[2].profile = res.data.data
                 })
             },
+            getTrojanConfig() {
+                axios.post('api.php', {
+                    action: "get_trojan_config",
+                    profile: this.config.profile
+                }).then((res) => {
+                    const temp = this.config.temp
+                    const profile = temp.modes[3].profile
+                    const data = res.data.data
+                    temp.mode = 3
+                    temp.profile = this.config.profile
+                    profile.ip = data.etc.ip
+                    profile.host = data.remote_addr
+                    profile.port = data.remote_port
+                    profile.password = data.password[0]
+                    profile.sni = data.ssl.sni
+                    profile.udpgw.port = data.etc.udpgw.port
+                })
+            },
             getSystemConfig() {
                 return new Promise((resolve) => {
                     axios.post('api.php', {
@@ -626,6 +701,9 @@
                         break
                     case 2:
                         this.saveSshSslConfig()
+                        break
+                    case 3:
+                        this.saveTrojanConfig()
                         break
                 }
             },
@@ -685,6 +763,27 @@
                         position: 'center',
                         icon: 'success',
                         title: 'SSH-SSL config has been saved',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    this.config.profile = ""
+                    this.getProfiles(this.config.mode)
+                })
+            },
+            saveTrojanConfig() {
+                axios.post('api.php', {
+                    action: "save_config",
+                    data: {
+                        mode: this.config.temp.mode,
+                        profile: this.config.temp.profile,
+                        config: this.config.temp.modes[3].profile
+                    }
+                }).then(() => {
+                    console.log("Trojan config saved")
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Trojan config has been saved',
                         showConfirmButton: false,
                         timer: 1500
                     })

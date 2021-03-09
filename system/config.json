@@ -5,7 +5,8 @@
         "profile": {
             "ssh": "",
             "v2ray": "",
-            "ssh_ssl": ""
+            "ssh_ssl": "",
+            "trojan": ""
         }
     },
     "server": "",
