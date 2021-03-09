@@ -132,13 +132,13 @@
                                         <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[1].profile.etc.udpgw.port" required>
                                     </div>
                                 </div>
-                                <div v-if="config.temp.modes[1].profile.protocol === config.temp.modes[1].protocols[1].value" class="form-row pb-lg-2 v2ray-trojan">
+                                <div v-if="config.temp.modes[1].profile.protocol === 'trojan'" class="form-row pb-lg-2 v2ray-trojan">
                                     <div class="col-md-6">
                                         <label>Trojan Password</label>
                                         <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[1].profile.server.user.trojan.password" required>
                                     </div>
                                 </div>
-                                <div v-if="config.temp.modes[1].profile.protocol === config.temp.modes[1].protocols[0].value" class="form-row pb-lg-2 v2ray-vmess">
+                                <div v-if="config.temp.modes[1].profile.protocol === 'vmess'" class="form-row pb-lg-2 v2ray-vmess">
                                     <div class="col-md-8">
                                         <label>VMess ID</label>
                                         <input type="text" class="form-control" placeholder="900c42c7-a23d-46dd-a1a0-72c37edf8a03" v-model="config.temp.modes[1].profile.server.user.vmess.id" required>
@@ -150,6 +150,12 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div v-if="config.temp.modes[1].profile.protocol === 'vless'" class="form-row pb-lg-2 v2ray-vless">
+                                    <div class="col-md-8">
+                                        <label>VLESS ID</label>
+                                        <input type="text" class="form-control" placeholder="900c42c7-a23d-46dd-a1a0-72c37edf8a03" v-model="config.temp.modes[1].profile.server.user.vless.id" required>
+                                    </div>
+                                </div>
                                 <div class="form-row pb-lg-2">
                                     <div class="col-md-2">
                                         <label>Network</label>
@@ -159,10 +165,10 @@
                                     </div>
                                     <div class="col-md-2">
                                         <label>Security</label>
-                                        <select v-if="config.temp.modes[1].profile.network === config.temp.modes[1].networks[0].value" class="custom-select" v-model="config.temp.modes[1].profile.security" required>
+                                        <select v-if="config.temp.modes[1].profile.network === 'tcp'" class="custom-select" v-model="config.temp.modes[1].profile.security" required>
                                             <option :value="config.temp.modes[1].securities[1].value">{{ config.temp.modes[1].securities[1].name }}</option>
                                         </select>
-                                        <select v-else-if="config.temp.modes[1].profile.network === config.temp.modes[1].networks[2].value" class="custom-select" v-model="config.temp.modes[1].profile.security" required>
+                                        <select v-else-if="config.temp.modes[1].profile.network === 'http'" class="custom-select" v-model="config.temp.modes[1].profile.security" required>
                                             <option :value="config.temp.modes[1].securities[0].value">{{ config.temp.modes[1].securities[0].name }}</option>
                                         </select>
                                         <select v-else class="custom-select" v-model="config.temp.modes[1].profile.security" required>
@@ -292,6 +298,10 @@
                                         ]
                                     },
                                     {
+                                        name: "VLESS",
+                                        value: "vless"
+                                    },
+                                    {
                                         name: "Trojan",
                                         value: "trojan"
                                     }
@@ -332,6 +342,9 @@
                                             vmess: {
                                                 id: "",
                                                 security: ""
+                                            },
+                                            vless: {
+                                                id: ""
                                             },
                                             trojan: {
                                                 password: ""
@@ -535,7 +548,7 @@
                     profile.security = security
                     switch (protocol) {
                         // vmess
-                        case temp.modes[1].protocols[0].value:
+                        case "vmess":
                             remote = res.data.data.outbounds[0].settings.vnext[0]
                             profile.server.host = remote.address
                             profile.server.port = remote.port
@@ -543,8 +556,16 @@
                             profile.server.user.vmess.id = remote.users[0].id
                             profile.server.user.vmess.security = remote.users[0].security
                             break
+                        // vless
+                        case "vless":
+                            remote = res.data.data.outbounds[0].settings.vnext[0]
+                            profile.server.host = remote.address
+                            profile.server.port = remote.port
+                            profile.server.user.level = remote.users[0].level
+                            profile.server.user.vless.id = remote.users[0].id
+                            break
                         // trojan
-                        case temp.modes[1].protocols[1].value:
+                        case "trojan":
                             remote = res.data.data.outbounds[0].settings.servers[0]
                             profile.server.host = remote.address
                             profile.server.port = remote.port
@@ -554,16 +575,16 @@
                     }
                     switch (network) {
                         // tcp
-                        case temp.modes[1].networks[0].value:
+                        case "tcp":
                             sni = res.data.data.outbounds[0].streamSettings.tlsSettings.serverName
                             break
                         // ws
-                        case temp.modes[1].networks[1].value:
+                        case "ws":
                             sni = res.data.data.outbounds[0].streamSettings.wsSettings.headers.Host
                             path = res.data.data.outbounds[0].streamSettings.wsSettings.path
                             break
                         // http
-                        case temp.modes[1].networks[2].value:
+                        case "http":
                             sni = res.data.data.outbounds[0].streamSettings.httpSettings.host[0]
                             path = res.data.data.outbounds[0].streamSettings.httpSettings.path
                             break

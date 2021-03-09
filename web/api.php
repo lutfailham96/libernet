@@ -211,6 +211,7 @@
                             // user settings
                             $user_level = $config['server']['user']['level'];
                             $vmess_id = $config['server']['user']['vmess']['id'];
+                            $vless_id = $config['server']['user']['vless']['id'];
                             $vmess_security = $config['server']['user']['vmess']['security'];
                             $trojan_password = $config['server']['user']['trojan']['password'];
                             // stream settings
@@ -233,6 +234,18 @@
                                     set_v2ray_config($vmess_config, $protocol, $network, $security, $sni, $path, $ip, $udpgw_ip, $udpgw_port);
                                     file_put_contents($libernet_dir.'/bin/config/v2ray/'.$profile.'.json', json_encode($vmess_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                                     json_response('V2Ray vmess config saved');
+                                    break;
+                                // vless
+                                case "vless":
+                                    $vless_config = file_get_contents($libernet_dir.'/bin/config/v2ray/templates/vless.json');
+                                    $vless_config = json_decode($vless_config);
+                                    $vless_config->outbounds[0]->settings->vnext[0]->address = $host;
+                                    $vless_config->outbounds[0]->settings->vnext[0]->port = $port;
+                                    $vless_config->outbounds[0]->settings->vnext[0]->users[0]->level = $user_level;
+                                    $vless_config->outbounds[0]->settings->vnext[0]->users[0]->id = $vless_id;
+                                    set_v2ray_config($vless_config, $protocol, $network, $security, $sni, $path, $ip, $udpgw_ip, $udpgw_port);
+                                    file_put_contents($libernet_dir.'/bin/config/v2ray/'.$profile.'.json', json_encode($vless_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                                    json_response('V2Ray vless config saved');
                                     break;
                                 // trojan
                                 case "trojan":
