@@ -200,7 +200,7 @@ function check_connection() {
     # write connection checking to service log
     "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $[$counter + 1]"
     echo -e "Checking connection, attempt: $[$counter + 1]"
-    if curl -so /dev/null -x "socks://127.0.0.1:${DYNAMIC_PORT}"  "http://bing.com"; then
+    if curl -so /dev/null -x "socks5://127.0.0.1:${DYNAMIC_PORT}"  "http://bing.com"; then
       CONNECTED=true
       # write connection success to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">Socks connection available</span>"
