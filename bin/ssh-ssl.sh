@@ -11,13 +11,13 @@ fi
 
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 SSH_SSL_PROFILE="$(jq -r '.tunnel.profile.ssh_ssl' < ${SYSTEM_CONFIG})"
-SSH_SSL_CONFIG="${LIBERNET_DIR}/bin/config/ssh-ssl/${SSH_SSL_PROFILE}.json"
+SSH_SSL_CONFIG="${LIBERNET_DIR}/bin/config/ssh_ssl/${SSH_SSL_PROFILE}.json"
 SSH_SSL_HOST="$(jq -r '.host' < ${SSH_SSL_CONFIG})"
 SSH_SSL_PORT="$(jq -r '.port' < ${SSH_SSL_CONFIG})"
 SSH_SSL_USER="$(jq -r '.username' < ${SSH_SSL_CONFIG})"
 SSH_SSL_PASS="$(jq -r '.password' < ${SSH_SSL_CONFIG})"
 SSH_SSL_SNI="$(jq -r '.sni' < ${SSH_SSL_CONFIG})"
-STUNNEL_CONFIG="${LIBERNET_DIR}/bin/config/ssh-ssl/${SSH_SSL_PROFILE}.conf"
+STUNNEL_CONFIG="${LIBERNET_DIR}/bin/config/ssh_ssl/${SSH_SSL_PROFILE}.conf"
 DYNAMIC_PORT="$(jq -r '.tun2socks.socks.port' < ${SYSTEM_CONFIG})"
 
 function start_ssh_ssl() {
@@ -34,13 +34,13 @@ function stop_ssh_ssl() {
 
 function configure_ssh_ssl() {
   # copying from template
-  cp -af "${LIBERNET_DIR}/bin/config/ssh-ssl/templates/ssh-ssl.conf" "${STUNNEL_CONFIG}"
+  cp -af "${LIBERNET_DIR}/bin/config/ssh_ssl/templates/ssh-ssl.conf" "${STUNNEL_CONFIG}"
   # updating host & port value
   sed -i "s/^connect = .*/connect = ${SSH_SSL_HOST}:${SSH_SSL_PORT}/g" "${STUNNEL_CONFIG}"
   # updating sni value
   sed -i "s/^sni = .*/sni = ${SSH_SSL_SNI}/g" "${STUNNEL_CONFIG}"
   # updating cert value
-  sed -i "s/^cert = .*/cert = $(echo ${LIBERNET_DIR}/bin/config/ssh-ssl/ssh-ssl.pem | sed 's/\//\\\//g')/g" "${STUNNEL_CONFIG}"
+  sed -i "s/^cert = .*/cert = $(echo ${LIBERNET_DIR}/bin/config/ssh_ssl/ssh-ssl.pem | sed 's/\//\\\//g')/g" "${STUNNEL_CONFIG}"
 }
 
 while getopts ":rs" opt; do
