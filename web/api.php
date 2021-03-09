@@ -261,6 +261,7 @@
                             $trojan_config->password[0] = $config['password'];
                             $trojan_config->ssl->sni = $config['sni'];
                             $trojan_config->etc->ip = $config['ip'];
+                            $trojan_config->local_port = $config['udpgw']['port'];
                             $trojan_config->etc->udpgw->ip = $config['udpgw']['ip'];;
                             $trojan_config->etc->udpgw->port = $config['udpgw']['port'];
                             file_put_contents($libernet_dir.'/bin/config/trojan/'.$profile.'.json', json_encode($trojan_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
@@ -291,7 +292,6 @@
                         case 1:
                             $v2ray_config = file_get_contents($libernet_dir.'/bin/config/v2ray/'.$profile.'.json');
                             $v2ray_config = json_decode($v2ray_config);
-//                            $protocol = $v2ray_config->outbounds[0]->protocol;
                             $system_config->tunnel->profile->v2ray = $profile;
                             $system_config->server = $v2ray_config->etc->ip;
                             $system_config->tun2socks->udpgw->ip = $v2ray_config->etc->udpgw->ip;
