@@ -300,7 +300,7 @@
                                     password: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 0
+                                        port: 1080
                                     },
                                     enable_http: true,
                                     http: {
@@ -392,7 +392,7 @@
                                         ip: "",
                                         udpgw: {
                                             ip: "127.0.0.1",
-                                            port: 0
+                                            port: 1080
                                         }
                                     }
                                 }
@@ -409,7 +409,7 @@
                                     sni: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 0
+                                        port: 1080
                                     }
                                 }
                             },
@@ -424,45 +424,13 @@
                                     sni: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 0
+                                        port: 1080
                                     }
                                 }
                             }
                         ]
                     },
-                    system: {
-                        tunnel: {
-                            mode: 0,
-                            profile: {
-                                ssh: "",
-                                v2ray: "",
-                                ssh_ssl: ""
-                            }
-                        },
-                        server: "",
-                        dns_servers: [],
-                        proxy_servers: [],
-                        tun2socks: {
-                            legacy: false,
-                            dev: "tun1",
-                            mtu: 1420,
-                            address: "10.0.0.2",
-                            gateway: "10.0.0.1",
-                            netmask: "255.255.255.0",
-                            socks: {
-                                ip: "127.0.0.1",
-                                port: 0
-                            },
-                            udpgw: {
-                                ip: "127.0.0.1",
-                                port: 0
-                            }
-                        },
-                        system: {
-                            username: "",
-                            password: ""
-                        }
-                    }
+                    system: {}
                 }
             }
         },
