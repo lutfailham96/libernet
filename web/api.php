@@ -261,7 +261,6 @@
                             $trojan_config->password[0] = $config['password'];
                             $trojan_config->ssl->sni = $config['sni'];
                             $trojan_config->etc->ip = $config['ip'];
-                            $trojan_config->local_port = $config['udpgw']['port'];
                             $trojan_config->etc->udpgw->ip = $config['udpgw']['ip'];;
                             $trojan_config->etc->udpgw->port = $config['udpgw']['port'];
                             file_put_contents($libernet_dir.'/bin/config/trojan/'.$profile.'.json', json_encode($trojan_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
