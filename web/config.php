@@ -300,7 +300,7 @@
                                     password: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 1080
+                                        port: 0
                                     },
                                     enable_http: true,
                                     http: {
@@ -392,7 +392,7 @@
                                         ip: "",
                                         udpgw: {
                                             ip: "127.0.0.1",
-                                            port: 1080
+                                            port: 0
                                         }
                                     }
                                 }
@@ -409,7 +409,7 @@
                                     sni: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 1080
+                                        port: 0
                                     }
                                 }
                             },
@@ -424,7 +424,7 @@
                                     sni: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 1080
+                                        port: 0
                                     }
                                 }
                             }
