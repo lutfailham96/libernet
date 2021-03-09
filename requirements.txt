@@ -6,6 +6,7 @@ coreutils-stdbuf
 screen
 jq
 ip-full
+openssh-client
 php7
 php7-cgi
 php7-mod-json
