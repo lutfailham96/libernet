@@ -1,6 +1,6 @@
 {
   "log": {
-    "loglevel": "error"
+    "loglevel": "none"
   },
   "policy": {
     "levels": {
