@@ -6,6 +6,7 @@ coreutils-stdbuf
 screen
 jq
 ip-full
+kmod-tun
 openssh-client
 php7
 php7-cgi
