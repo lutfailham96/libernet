@@ -85,6 +85,7 @@ function configure_libernet_firewall() {
       && uci set firewall.@zone[-1].input='REJECT' \
       && uci set firewall.@zone[-1].forward='REJECT' \
       && uci set firewall.@zone[-1].output='ACCEPT' \
+      && uci commit \
       && uci add firewall forwarding \
       && uci set firewall.@forwarding[-1].src='lan' \
       && uci set firewall.@forwarding[-1].dest='libernet' \
