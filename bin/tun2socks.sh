@@ -22,6 +22,8 @@ GATEWAY="$(ip route | grep -v tun | awk '/default/ { print $3 }')"
 SERVER_IP="$(jq -r '.server' < ${SYSTEM_CONFIG})"
 readarray -t PROXY_IPS < <(jq -r '.proxy_servers[]' < ${SYSTEM_CONFIG})
 readarray -t DNS_IPS < <(jq -r '.dns_servers[]' < ${SYSTEM_CONFIG})
+ROUTE_LOG="${LIBERNET_DIR}/log/route.log"
+DEFAULT_ROUTE="$(ip route show | grep default)"
 
 function init_tun_dev {
   # write to service log
@@ -48,6 +50,11 @@ function start_tun2socks {
   else
     screen -AmdS badvpn-tun2socks badvpn-tun2socks --tundev ${TUN_DEV} --netif-ipaddr ${TUN_ADDRESS} --netif-netmask ${TUN_NETMASK} --socks-server-addr ${SOCKS_SERVER} --udpgw-remote-server-addr "${UDPGW}"
   fi
+  # change default route metric to 8
+  echo ${DEFAULT_ROUTE} > ${ROUTE_LOG} \
+    && ip route del ${DEFAULT_ROUTE} \
+    && ip route add ${DEFAULT_ROUTE} metric 8
+  # add default route to tun2socks
   route add default gw ${TUN_ADDRESS} metric 6
   echo -e "Tun2socks started!"
 }
@@ -60,6 +67,11 @@ function stop_tun2socks {
   else
     kill $(screen -list | grep badvpn-tun2socks | awk -F '[.]' {'print $1'})
   fi
+  # recover default route
+  ip route del $(cat "${ROUTE_LOG}") metric 8 \
+    && ip route add $(cat "${ROUTE_LOG}") \
+    && rm -rf "${ROUTE_LOG}"
+  # remove default route to tun2socks
   route del default gw ${TUN_ADDRESS} metric 6
   echo -e "Tun2socks stopped!"
 }
