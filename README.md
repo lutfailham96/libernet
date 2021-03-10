@@ -4,6 +4,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 ## Requirements
 - bash
 - screen
+- sudo
 - jq
 - Python 3
 - OpenSSH

@@ -4,6 +4,7 @@ libpthread
 coreutils
 coreutils-stdbuf
 screen
+sudo
 jq
 ip-full
 kmod-tun
