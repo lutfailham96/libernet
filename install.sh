@@ -89,12 +89,13 @@ function configure_libernet_firewall() {
       && uci add firewall forwarding \
       && uci set firewall.@forwarding[-1].src='lan' \
       && uci set firewall.@forwarding[-1].dest='libernet' \
-      && uci commit
+      && uci commit \
+      && /etc/init.d/network restart
   fi
 }
 
 function finish_install() {
-    echo -e "Libernet successfully installed!\nLibernet URL: http://router-ip/libernet"
+  echo -e "Libernet successfully installed!\nLibernet URL: http://router-ip/libernet"
 }
 
 install_requirements \
