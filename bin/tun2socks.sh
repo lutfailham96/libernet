@@ -112,6 +112,8 @@ while getopts ":idrsyzvw" opt; do
     # stop tun2socks service
     echo -e "Stopping Tun2socks service ..."
     stop_tun2socks
+    # retrieve old gateway
+    GATEWAY="$(ip route | grep -v tun | awk '/default/ { print $3 }')"
     echo -e "Removing routes ..."
     route_del_ip
     echo -e "Removing tun device ..."
