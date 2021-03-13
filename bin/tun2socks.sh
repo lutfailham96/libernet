@@ -81,12 +81,12 @@ function stop_tun2socks {
 function route_add_ip {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: routing server, proxy and DNS IPs"
-  route add ${SERVER_IP} gw ${GATEWAY} metric 4
+  route add ${SERVER_IP} gw ${GATEWAY} metric 4 &
   for IP in "${PROXY_IPS[@]}"; do
-    route add ${IP} gw ${GATEWAY} metric 4
+    route add ${IP} gw ${GATEWAY} metric 4 &
   done
   for IP in "${DNS_IPS[@]}"; do
-    route add ${IP} gw ${GATEWAY} metric 4
+    route add ${IP} gw ${GATEWAY} metric 4 &
   done
   echo -e "Routes initialized!"
 }
@@ -95,12 +95,12 @@ function route_del_ip {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: removing routes"
   for IP in "${DNS_IPS[@]}"; do
-    route del ${IP} gw ${GATEWAY} metric 4
+    route del ${IP} gw ${GATEWAY} metric 4 &
   done
   for IP in "${PROXY_IPS[@]}"; do
-    route del ${IP} gw ${GATEWAY} metric 4
+    route del ${IP} gw ${GATEWAY} metric 4 &
   done
-  route del ${SERVER_IP} gw ${GATEWAY} metric 4
+  route del ${SERVER_IP} gw ${GATEWAY} metric 4 &
   echo -e "Routes removed!"
 }
 
