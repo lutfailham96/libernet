@@ -23,7 +23,7 @@ function setup_dns() {
 
 function start_dns() {
   setup_dns \
-    && /etc/init.d/https-dns-proxy start
+    && /etc/init.d/https-dns-proxy restart
 }
 
 function stop_dns() {
