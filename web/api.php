@@ -277,6 +277,7 @@
                     $profile = $data['profile'];
                     $mode = $data['mode'];
                     $tun2socks_legacy = $data['tun2socks_legacy'];
+                    $dns_resolver = $data['dns_resolver'];
                     switch ($mode) {
                         // ssh
                         case 0:
@@ -317,6 +318,7 @@
                     }
                     $system_config->tunnel->mode = $mode;
                     $system_config->tun2socks->legacy = $tun2socks_legacy;
+                    $system_config->tunnel->dns_resolver = $dns_resolver;
                     $system_config = json_encode($system_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                     file_put_contents($libernet_dir.'/system/config.json', $system_config);
                     json_response('Configuration applied');

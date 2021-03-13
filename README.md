@@ -12,6 +12,8 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 - V2Ray
 - go-tun2socks
 - badvpn-tun2socks (legacy)
+- dnsmasq
+- https-dns-proxy
 - php7
 - php7-cgi
 - php7-mod-session

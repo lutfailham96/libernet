@@ -94,6 +94,12 @@ function configure_libernet_firewall() {
   fi
 }
 
+function configure_libernet_service() {
+  echo -e "Configuring Libernet service"
+  # disable dns resolver startup
+  /etc/init.d/https-dns-proxy disable
+}
+
 function finish_install() {
   echo -e "Libernet successfully installed!\nLibernet URL: http://router-ip/libernet"
 }
@@ -103,4 +109,5 @@ install_requirements \
   && add_libernet_environment \
   && enable_uhttp_php \
   && configure_libernet_firewall \
+  && configure_libernet_service \
   && finish_install

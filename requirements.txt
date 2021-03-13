@@ -8,6 +8,8 @@ jq
 ip-full
 kmod-tun
 openssh-client
+dnsmasq
+https-dns-proxy
 php7
 php7-cgi
 php7-mod-json

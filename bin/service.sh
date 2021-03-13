@@ -10,27 +10,38 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-TUNNEL_MODE="$(jq -r '.tunnel.mode' < ${SYSTEM_CONFIG})"
+TUNNEL_MODE="$(grep 'mode' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g')"
 declare -x SSH_PROFILE
 declare -x SSH_CONFIG
 declare -x ENABLE_HTTP
 CONNECTED=false
-DYNAMIC_PORT="$(jq -r '.tun2socks.socks.port' < ${SYSTEM_CONFIG})"
+DYNAMIC_PORT="$(grep 'port' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g' | head -1)"
+DNS_RESOLVER="$(grep 'dns_resolver' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g')"
 
 if [[ $TUNNEL_MODE == "0" ]]; then
-  SSH_PROFILE="$(jq -r '.tunnel.profile.ssh' < ${SYSTEM_CONFIG})"
+  SSH_PROFILE="$(grep 'ssh' ${SYSTEM_CONFIG}) | awk '{print $2}' | sed 's/,//g' | head -1)"
   SSH_CONFIG="${LIBERNET_DIR}/bin/config/ssh/${SSH_PROFILE}.json"
-  ENABLE_HTTP="$(jq -r '.enable_http' < ${SSH_CONFIG})"
+  ENABLE_HTTP="$(grep 'enable_http' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g')"
 fi
 
 # Restore failing service first
 usbmode -s > /dev/null 2>&1
+
+function service_dns_resolver() {
+  if [[ $DNS_RESOLVER == 'true' ]]; then
+    # write to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Starting DNS resolver service"
+    ${LIBERNET_DIR}/bin/dns.sh -r > /dev/null 2>&1
+    echo -e "DNS resolver service started!"
+  fi
+}
 
 function service_v2ray() {
   ${LIBERNET_DIR}/bin/v2ray.sh -r > /dev/null 2>&1
   echo -e "V2Ray service started!"
   check_connection
   service_tun2socks > /dev/null 2>&1
+  service_dns_resolver > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -51,6 +62,7 @@ function service_ssh() {
   echo -e "SSH service started!"
   check_connection
   service_tun2socks > /dev/null 2>&1
+  service_dns_resolver > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -59,6 +71,7 @@ function service_ssh_ssl() {
   echo -e "SSH-SSL service started!"
   check_connection
   service_tun2socks > /dev/null 2>&1
+  service_dns_resolver > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -67,6 +80,7 @@ function service_trojan() {
   echo -e "Trojan service started!"
   check_connection
   service_tun2socks > /dev/null 2>&1
+  service_dns_resolver > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -110,6 +124,11 @@ function stop_services() {
   esac
   # kill tun2socks
   ${LIBERNET_DIR}/bin/tun2socks.sh -w
+  # kill dns resolver
+  if [[ $DNS_RESOLVER == 'true' ]]; then
+    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping DNS resolver service"
+    ${LIBERNET_DIR}/bin/dns.sh -s
+  fi
 }
 
 function start_services() {
@@ -222,6 +241,8 @@ function check_connection() {
 function auto_start() {
   while true; do
     if ip route show | grep -q default; then
+      # reset service log
+      "${LIBERNET_DIR}/bin/log.sh" -r
       start_services
       break
     fi

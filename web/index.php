@@ -43,7 +43,7 @@
                     <div class="card-body">
                         <div class="card-body py-0">
                             <div class="row">
-                                <div class="col-6 pb-2">
+                                <div class="col-lg-6 col-md-6 pb-2">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" v-model="config.system.tun2socks.legacy" :disabled="status === true" id="tun2socks-legacy">
                                         <label class="form-check-label" for="tun2socks-legacy">
@@ -51,11 +51,19 @@
                                         </label>
                                     </div>
                                 </div>
-                                <div class="col-6 pb-2">
+                                <div class="col-lg-6 col-md-6 pb-2">
                                     <div class="form-check float-right">
                                         <input class="form-check-input" type="checkbox" v-model="config.system.tunnel.autostart" :disabled="status === true" id="autostart">
                                         <label class="form-check-label" for="autostart">
-                                            Auto start Libernet
+                                            Auto start Libernet on boot
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-6 pb-2">
+                                    <div class="form-check float-left">
+                                        <input class="form-check-input" type="checkbox" v-model="config.system.tunnel.dns_resolver" :disabled="status === true" id="dns-resolver">
+                                        <label class="form-check-label" for="dns-resolver">
+                                            DNS resolver
                                         </label>
                                     </div>
                                 </div>
@@ -125,7 +133,8 @@
                     },
                     system: {
                         tunnel: {
-                            autostart: false
+                            autostart: false,
+                            dns_resolver: false
                         },
                         tun2socks: {
                             legacy: false
@@ -244,7 +253,8 @@
                         data: {
                             mode: this.config.mode,
                             profile: this.config.profile,
-                            tun2socks_legacy: this.config.system.tun2socks.legacy
+                            tun2socks_legacy: this.config.system.tun2socks.legacy,
+                            dns_resolver: this.config.system.tunnel.dns_resolver
                         }
                     }).then((res) => {
                         resolve(res)
