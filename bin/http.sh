@@ -10,9 +10,9 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-SSH_PROFILE="$(jq -r '.tunnel.profile.ssh' < ${SYSTEM_CONFIG})"
+SSH_PROFILE="$(grep 'ssh":' ${SYSTEM_CONFIG}  | awk '{print $2}' | sed 's/,//g; s/"//g')"
 SSH_CONFIG="${LIBERNET_DIR}/bin/config/ssh/${SSH_PROFILE}.json"
-LISTEN_PORT="$(jq -r '.http.port' < ${SSH_CONFIG})"
+LISTEN_PORT="$(grep 'port":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '3p')"
 
 function start_http() {
   screen -AmdS http-proxy python3 -u "${LIBERNET_DIR}/bin/http.py" "${SSH_CONFIG}" -l ${LISTEN_PORT}

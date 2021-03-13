@@ -10,16 +10,16 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-SSH_PROFILE="$(jq -r '.tunnel.profile.ssh' < ${SYSTEM_CONFIG})"
+SSH_PROFILE="$(grep 'ssh":' ${SYSTEM_CONFIG}  | awk '{print $2}' | sed 's/,//g; s/"//g')"
 SSH_CONFIG="${LIBERNET_DIR}/bin/config/ssh/${SSH_PROFILE}.json"
-SSH_HOST="$(jq -r '.host' < ${SSH_CONFIG})"
-SSH_PORT="$(jq -r '.port' < ${SSH_CONFIG})"
-SSH_USER="$(jq -r '.username' < ${SSH_CONFIG})"
-SSH_PASS="$(jq -r '.password' < ${SSH_CONFIG})"
-PROXY_IP="$(jq -r '.http.ip' < ${SSH_CONFIG})"
-PROXY_PORT="$(jq -r '.http.port' < ${SSH_CONFIG})"
-DYNAMIC_PORT="$(jq -r '.tun2socks.socks.port' < ${SYSTEM_CONFIG})"
-ENABLE_HTTP="$(jq -r '.enable_http' < ${SSH_CONFIG})"
+SSH_HOST="$(grep 'host":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+SSH_PORT="$(grep 'port":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '1p')"
+SSH_USER="$(grep 'username":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+SSH_PASS="$(grep 'password":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+PROXY_IP="$(grep 'ip":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '4p')"
+PROXY_PORT="$(grep 'port":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '4p'))"
+DYNAMIC_PORT="$(grep 'port":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '1p')"
+ENABLE_HTTP="$(grep 'enable_http":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 
 function start_ssh() {
   if [[ $ENABLE_HTTP == 'true' ]]; then
