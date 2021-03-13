@@ -10,18 +10,18 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-TUNNEL_MODE="$(grep 'mode' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+TUNNEL_MODE="$(grep 'mode:"' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 declare -x SSH_PROFILE
 declare -x SSH_CONFIG
 declare -x ENABLE_HTTP
 CONNECTED=false
-DYNAMIC_PORT="$(grep 'port' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
-DNS_RESOLVER="$(grep 'dns_resolver' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+DYNAMIC_PORT="$(grep 'port:"' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
+DNS_RESOLVER="$(grep 'dns_resolver:"' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 
 if [[ $TUNNEL_MODE == "0" ]]; then
-  SSH_PROFILE="$(grep 'ssh' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
+  SSH_PROFILE="$(grep 'ssh:"' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
   SSH_CONFIG="${LIBERNET_DIR}/bin/config/ssh/${SSH_PROFILE}.json"
-  ENABLE_HTTP="$(grep 'enable_http' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+  ENABLE_HTTP="$(grep 'enable_http:"' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 fi
 
 # Restore failing service first
