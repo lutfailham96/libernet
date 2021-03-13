@@ -10,7 +10,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-TROJAN_PROFILE="$(jq -r '.tunnel.profile.trojan' < ${SYSTEM_CONFIG})"
+TROJAN_PROFILE="$(grep 'trojan":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 TROJAN_CONFIG="${LIBERNET_DIR}/bin/config/trojan/${TROJAN_PROFILE}.json"
 
 function start_trojan() {
