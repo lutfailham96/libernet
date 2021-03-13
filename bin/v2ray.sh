@@ -14,7 +14,7 @@ declare -x V2RAY_PROFILE
 
 function start_v2ray() {
   if [[ -z ${1} ]];then
-    V2RAY_PROFILE="$(grep 'v2ray' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+    V2RAY_PROFILE="$(grep 'v2ray:"' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
     screen -AmdS v2ray-client v2ray -c "${LIBERNET_DIR}/bin/config/v2ray/${V2RAY_PROFILE}.json"
   else
     screen -AmdS v2ray-client v2ray -c "${LIBERNET_DIR}/bin/config/v2ray/${1}.json"
