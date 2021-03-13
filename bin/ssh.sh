@@ -17,7 +17,7 @@ SSH_PORT="$(grep 'port":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g
 SSH_USER="$(grep 'username":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 SSH_PASS="$(grep 'password":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 PROXY_IP="$(grep 'ip":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '4p')"
-PROXY_PORT="$(grep 'port":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '4p'))"
+PROXY_PORT="$(grep 'port":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '4p')"
 DYNAMIC_PORT="$(grep 'port":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '1p')"
 ENABLE_HTTP="$(grep 'enable_http":' ${SSH_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 
