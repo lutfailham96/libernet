@@ -805,6 +805,7 @@
                         profile.stream.path = path
                         break
                 }
+                this.resolveServerHost()
             },
             importTrojanConfig() {
                 const importUrl = this.config.temp.modes[3].import_url
@@ -818,6 +819,7 @@
                 profile.port = port
                 profile.password = password
                 profile.sni = sni
+                this.resolveServerHost()
             },
             resolveServerHost: _.debounce(function () {
                 switch (this.config.temp.mode) {
