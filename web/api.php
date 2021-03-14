@@ -122,7 +122,7 @@
                 // clear service log
                 exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -r');
                 // write starting service log
-                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Startng Libernet service"');
+                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Starting Libernet service"');
                 switch ($system_config->tunnel->mode) {
                     // ssh
                     case 0:
@@ -262,7 +262,7 @@
                             $trojan_config->password[0] = $config['password'];
                             $trojan_config->ssl->sni = $config['sni'];
                             $trojan_config->etc->ip = $config['ip'];
-                            $trojan_config->etc->udpgw->ip = $config['udpgw']['ip'];;
+                            $trojan_config->etc->udpgw->ip = $config['udpgw']['ip'];
                             $trojan_config->etc->udpgw->port = $config['udpgw']['port'];
                             file_put_contents($libernet_dir.'/bin/config/trojan/'.$profile.'.json', json_encode($trojan_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                             json_response('Trojan config saved');
