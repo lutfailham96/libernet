@@ -1,11 +1,19 @@
 #!/bin/bash
 
 function update_libernet() {
+  if git branch > /dev/null 2>&1; then
+    update_libernet_cli
+  else
+    echo -e "This is Libernet working directory, please use installer directory instead!"
+  fi
+}
+
+function update_libernet_cli() {
   echo -e "Updating Libernet ..." \
-  && git fetch origin master \
-  && git reset --hard FETCH_HEAD \
-  && bash ./install.sh \
-  && echo -e "\nLibernet successfully updated!"
+    && git fetch origin master \
+    && git reset --hard FETCH_HEAD \
+    && bash ./install.sh \
+    && echo -e "\nLibernet successfully updated!"
 }
 
 function update_libernet_web() {

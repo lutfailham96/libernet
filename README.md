@@ -36,7 +36,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenW
 - Fill your tunnel server, save configuration & run Libernet
 
 ## Updating
-- Just run updater script: ```bash update.sh```
+- Just run updater script: ```cd ~/Downloads/libernet && bash update.sh```
 - Updater script will updating Libernet to latest version
 
 ## Default Username & Password
