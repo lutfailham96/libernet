@@ -798,7 +798,7 @@
                         profile.server.port = port
                         profile.network = network
                         profile.security = security
-                        profile.server.user.level = alterId
+                        profile.server.user.level = parseInt(alterId)
                         profile.server.user.vmess.id = vmess_id
                         profile.server.user.vmess.security = vmess_security
                         profile.stream.sni = sni
@@ -816,7 +816,7 @@
                 const password = config.split("@")[0]
                 const sni = config.split("@")[1].split(":")[1].split("/")[1]
                 profile.host = host
-                profile.port = port
+                profile.port = parseInt(port)
                 profile.password = password
                 profile.sni = sni
                 this.resolveServerHost()
