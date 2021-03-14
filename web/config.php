@@ -84,13 +84,13 @@
                                     </div>
                                 </div>
                                 <div class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Server Host</label>
+                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[0].profile.host" @input="resolveServerHost" required>
+                                    </div>
                                     <div class="col-md-3">
                                         <label>Server IP</label>
                                         <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[0].profile.ip" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Server Host</label>
-                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[0].profile.host" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label>Server Port</label>
@@ -124,13 +124,13 @@
                                     </div>
                                 </div>
                                 <div class="form-row pb-lg-2">
+                                    <div class="col-md-5">
+                                        <label>Server Host</label>
+                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[1].profile.server.host" @input="resolveServerHost" required>
+                                    </div>
                                     <div class="col-md-3">
                                         <label>Server IP</label>
                                         <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[1].profile.etc.ip" required>
-                                    </div>
-                                    <div class="col-md-5">
-                                        <label>Server Host</label>
-                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[1].profile.server.host" required>
                                     </div>
                                     <div class="col-md-2">
                                         <label>Server Port</label>
@@ -197,13 +197,13 @@
 
                             <div v-if="config.temp.mode === 2" class="ssh-ssl pb-lg-2">
                                 <div class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Server Host</label>
+                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[2].profile.host" @input="resolveServerHost" required>
+                                    </div>
                                     <div class="col-md-3">
                                         <label>Server IP</label>
                                         <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[2].profile.ip" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Server Host</label>
-                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[2].profile.host" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label>Server Port</label>
@@ -243,13 +243,13 @@
                                     </div>
                                 </div>
                                 <div class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Server Host</label>
+                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[3].profile.host" @input="resolveServerHost" required>
+                                    </div>
                                     <div class="col-md-3">
                                         <label>Server IP</label>
                                         <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[3].profile.ip" required>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label>Server Host</label>
-                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[3].profile.host" required>
                                     </div>
                                     <div class="col-md-3">
                                         <label>Server Port</label>
@@ -289,11 +289,7 @@
         <?php include('footer.php'); ?>
     </div>
 </div>
-<script src="lib/vendor/jquery/jquery-3.6.0.slim.min.js"></script>
-<script src="lib/vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="lib/vendor/vuejs/vue.min.js"></script>
-<script src="lib/vendor/axios/axios.min.js"></script>
-<script src="lib/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+<?php include('js.php'); ?>
 <script>
     let vm = new Vue({
         el: '#app',
@@ -461,9 +457,9 @@
             }
         },
         methods: {
-            decodePath() {
+            decodePath: _.debounce(function () {
                 this.config.temp.modes[1].profile.stream.path = decodeURIComponent(JSON.parse('"' + this.config.temp.modes[1].profile.stream.path + '"'))
-            },
+            }, 500),
             getProfiles(mode) {
                 switch (mode) {
                     case 0:
@@ -819,7 +815,46 @@
                 profile.port = port
                 profile.password = password
                 profile.sni = sni
-            }
+            },
+            resolveServerHost: _.debounce(function () {
+                switch (this.config.temp.mode) {
+                    case 0:
+                        axios.post('api.php', {
+                            action: 'resolve_host',
+                            host: this.config.temp.modes[0].profile.host
+                        }).then((res) => {
+                            this.config.temp.modes[0].profile.ip = res.data.data[0]
+                        })
+                        break
+                    // v2ray
+                    case 1:
+                        axios.post('api.php', {
+                            action: 'resolve_host',
+                            host: this.config.temp.modes[1].profile.server.host
+                        }).then((res) => {
+                            this.config.temp.modes[1].profile.etc.ip = res.data.data[0]
+                        })
+                        break
+                    // ssh-ssl
+                    case 2:
+                        axios.post('api.php', {
+                            action: 'resolve_host',
+                            host: this.config.temp.modes[2].profile.host
+                        }).then((res) => {
+                            this.config.temp.modes[2].profile.ip = res.data.data[0]
+                        })
+                        break
+                    // trojan
+                    case 3:
+                        axios.post('api.php', {
+                            action: 'resolve_host',
+                            host: this.config.temp.modes[3].profile.host
+                        }).then((res) => {
+                            this.config.temp.modes[3].profile.ip = res.data.data[0]
+                        })
+                        break
+                }
+            }, 500)
         },
         created() {
             this.getProfiles(0)

@@ -366,6 +366,14 @@
                     json_response('Libernet updated!');
                 }
                 break;
+            case 'resolve_host':
+                $output = null;
+                $retval = null;
+                $host = $json['host'];
+                exec("ping -c 1 ".$host." | grep PING | awk '{print $3}' | sed 's/(//g; s/)//g' | sed -n '1p'", $output, $retval);
+                if (!$retval) {
+                    json_response($output);
+                }
         }
     }
 ?>
