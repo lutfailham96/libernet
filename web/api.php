@@ -215,6 +215,7 @@
                                     $vmess_config->outbounds[0]->settings->vnext[0]->address = $host;
                                     $vmess_config->outbounds[0]->settings->vnext[0]->port = $port;
                                     $vmess_config->outbounds[0]->settings->vnext[0]->users[0]->level = $user_level;
+                                    $vmess_config->outbounds[0]->settings->vnext[0]->users[0]->alterId = $user_level;
                                     $vmess_config->outbounds[0]->settings->vnext[0]->users[0]->id = $vmess_id;
                                     $vmess_config->outbounds[0]->settings->vnext[0]->users[0]->security = $vmess_security;
                                     set_v2ray_config($vmess_config, $protocol, $network, $security, $sni, $path, $ip, $udpgw_ip, $udpgw_port);
