@@ -114,6 +114,15 @@
                             </div>
 
                             <div v-if="config.temp.mode === 1" class="v2ray">
+                                <div v-if="config.temp.modes[1].profile.protocol === 'vmess'" class="form-row pt-lg-2 pb-lg-2 v2ray-vmess">
+                                    <div class="col">
+                                        <label>Import VMess from URL</label>
+                                        <div class="d-flex">
+                                            <input type="text" class="form-control mr-1" placeholder="vmess://xxxxxxxxxxxx" v-model="config.temp.modes[1].import_url" required>
+                                            <button type="button" class="btn btn-primary ml-1" @click="importV2rayConfig">Import</button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-row pb-lg-2">
                                     <div class="col-md-3">
                                         <label>Server IP</label>
@@ -224,6 +233,15 @@
                             </div>
 
                             <div v-if="config.temp.mode === 3" class="trojan pb-lg-2">
+                                <div class="form-row pt-lg-2 pb-lg-2">
+                                    <div class="col">
+                                        <label>Import Trojan from URL</label>
+                                        <div class="d-flex">
+                                            <input type="text" class="form-control mr-1" placeholder="trojan://xxxxxxxxxxxx" v-model="config.temp.modes[3].import_url" required>
+                                            <button type="button" class="btn btn-primary ml-1" @click="importTrojanConfig">Import</button>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="form-row pb-lg-2">
                                     <div class="col-md-3">
                                         <label>Server IP</label>
@@ -363,6 +381,7 @@
                                         value: "tls"
                                     }
                                 ],
+                                import_url: "",
                                 profile: {
                                     protocol: "",
                                     network: "",
@@ -426,7 +445,8 @@
                                         ip: "127.0.0.1",
                                         port: 0
                                     }
-                                }
+                                },
+                                import_url: ""
                             }
                         ]
                     },
@@ -758,6 +778,47 @@
                     this.config.profile = ""
                     this.getProfiles(this.config.mode)
                 })
+            },
+            importV2rayConfig() {
+                const protocol = this.config.temp.modes[1].profile.protocol
+                const importUrl = this.config.temp.modes[1].import_url
+                const config = JSON.parse(atob(importUrl.split("://")[1]))
+                const profile = this.config.temp.modes[1].profile
+                switch (protocol) {
+                    case "vmess":
+                        const host = config.ps
+                        const port = config.port
+                        const network = config.net
+                        const security = config.tls
+                        const alterId = config.aid
+                        const vmess_id = config.id
+                        const vmess_security = config.type
+                        const sni = config.host
+                        const path = config.path
+                        profile.server.host = host
+                        profile.server.port = port
+                        profile.network = network
+                        profile.security = security
+                        profile.server.user.level = alterId
+                        profile.server.user.vmess.id = vmess_id
+                        profile.server.user.vmess.security = vmess_security
+                        profile.stream.sni = sni
+                        profile.stream.path = path
+                        break
+                }
+            },
+            importTrojanConfig() {
+                const importUrl = this.config.temp.modes[3].import_url
+                const config = importUrl.split("://")[1]
+                const profile = this.config.temp.modes[3].profile
+                const host = config.split("@")[1].split(":")[0]
+                const port = config.split("@")[1].split(":")[1].split("/")[0]
+                const password = config.split("@")[0]
+                const sni = config.split("@")[1].split(":")[1].split("/")[1]
+                profile.host = host
+                profile.port = port
+                profile.password = password
+                profile.sni = sni
             }
         },
         created() {
