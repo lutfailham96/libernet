@@ -281,7 +281,7 @@
                         this.status = res.data.data.status !== 0
                         this.connection = res.data.data.status
                     })
-                }, 500)
+                }, 1000)
             },
             getLog() {
                 setInterval(() => {
@@ -291,7 +291,7 @@
                         this.log = res.data.data.log
                         this.$refs.log.scrollTop = this.$refs.log.scrollHeight
                     })
-                }, 500)
+                }, 1000)
             }
         },
         created() {

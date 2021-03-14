@@ -75,7 +75,7 @@
                     }).then((res) => {
                         this.status = parseInt(res.data.data)
                     })
-                }, 500)
+                }, 1000)
             },
             updateLibernet() {
                 if (this.status !== 1) {
