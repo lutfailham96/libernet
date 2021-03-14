@@ -360,9 +360,13 @@
                 }
                 break;
             case 'check_update':
+                $update_status = file_get_contents($libernet_dir.'/log/update.log');
+                json_response($update_status);
+                break;
+            case 'update_libernet':
                 $output = null;
                 $retval = null;
-                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/update.sh -web', $output, $retval);
+                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/update.sh -web > /dev/null 2>&1 &', $output, $retval);
                 if (!$retval) {
                     json_response('Libernet updated!');
                 }

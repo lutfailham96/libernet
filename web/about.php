@@ -46,7 +46,10 @@
                             <p class="text-right m-0">Author: <a href="https://facebook.com/lutfailham"><i>Lutfa Ilham</i></a></p>
                         </div>
                         <div class="text-center">
-                            <button class="btn btn-primary" :disabled="status === 1" @click="checkUpdate">{{ statusText }}</button>
+                            <p v-if="status === 3" class="text-danger mt-0 mb-1">Update failed!</p>
+                            <p v-else-if="status === 2" class="text-success mt-0 mb-1">Updated to latest version!</p>
+                            <p v-else-if="status === 1" class="text-secondary mt-0 mb-1">Updating ...</p>
+                            <button class="btn btn-primary" :disabled="status === 1" @click="updateLibernet">Update</button>
                         </div>
                     </div>
                 </div>
@@ -55,26 +58,10 @@
         <?php include('footer.php'); ?>
     </div>
 </div>
-<script src="lib/vendor/jquery/jquery-3.6.0.slim.min.js"></script>
-<script src="lib/vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="lib/vendor/vuejs/vue.min.js"></script>
-<script src="lib/vendor/axios/axios.min.js"></script>
-<script src="lib/vendor/sweetalert2/sweetalert2.all.min.js"></script>
+<?php include('js.php'); ?>
 <script>
     let vm = new Vue({
         el: "#app",
-        computed: {
-            statusText() {
-                switch (this.status) {
-                    case 0:
-                        return 'Update'
-                    case 1:
-                        return 'Updating'
-                    case 2:
-                        return 'Updated'
-                }
-            }
-        },
         data() {
             return {
                 status: 0
@@ -82,33 +69,24 @@
         },
         methods: {
             checkUpdate() {
-                this.status = 1
-                axios.post("api.php", {
-                    action: "check_update"
-                }).then((res) => {
-                    if (res.data.status === 'OK') {
-                        this.status = 2
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'success',
-                            title: 'Updated!',
-                            text: "You're now using latest version",
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    } else {
-                        this.status = 0
-                        Swal.fire({
-                            position: 'center',
-                            icon: 'error',
-                            title: 'Failed!',
-                            text: "Update failed, please check your internet connection",
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                    }
-                })
+                setInterval(() => {
+                    axios.post('api.php', {
+                        action: 'check_update'
+                    }).then((res) => {
+                        this.status = parseInt(res.data.data)
+                    })
+                }, 500)
+            },
+            updateLibernet() {
+                if (this.status !== 1) {
+                    axios.post('api.php', {
+                        action: 'update_libernet'
+                    })
+                }
             }
+        },
+        created() {
+            this.checkUpdate()
         }
     })
 </script>
