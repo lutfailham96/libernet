@@ -10,7 +10,7 @@ function update_libernet() {
 
 function update_libernet_web() {
   libernet_tmp="/tmp/libernet"
-  echo 1 > "${LIBERNET_DIR}/log/update.log" \
+  "${LIBERNET_DIR}/bin/log.sh" -u 1 \
     && cd /tmp \
     && rm -rf "${libernet_tmp}" \
     && git clone git://github.com/lutfailham96/libernet.git \
@@ -18,12 +18,12 @@ function update_libernet_web() {
     && bash install.sh \
     && cd /tmp \
     && rm -rf "${libernet_tmp}" \
-    && echo 2 > "${LIBERNET_DIR}/log/update.log"
+    && "${LIBERNET_DIR}/bin/log.sh" -u 2
 }
 
 case $1 in
   -web)
-    update_libernet_web || echo 3 > "${LIBERNET_DIR}/log/update.log"
+    update_libernet_web || "${LIBERNET_DIR}/bin/log.sh" -u 3
     ;;
   *)
     update_libernet
