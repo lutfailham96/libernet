@@ -243,6 +243,9 @@ function auto_start() {
     if ip route show | grep -q default; then
       # reset service log
       "${LIBERNET_DIR}/bin/log.sh" -r
+      # reset update status
+      rm "${LIBERNET_DIR}/log/update.log"
+      # start Libernet service
       start_services
       break
     fi
