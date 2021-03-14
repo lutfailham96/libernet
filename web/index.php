@@ -273,21 +273,13 @@
                     })
                 }, 5000)
             },
-            getStatus() {
+            getDashboardInfo() {
                 setInterval(() => {
                     axios.post('api.php', {
-                        action: "get_service_status"
+                        action: "get_dashboard_info"
                     }).then((res) => {
                         this.status = res.data.data.status !== 0
                         this.connection = res.data.data.status
-                    })
-                }, 1000)
-            },
-            getLog() {
-                setInterval(() => {
-                    axios.post('api.php', {
-                        action: "get_service_log"
-                    }).then((res) => {
                         this.log = res.data.data.log
                         this.$refs.log.scrollTop = this.$refs.log.scrollHeight
                     })
@@ -314,8 +306,7 @@
                         this.config.profile = res.tunnel.profile.trojan
                 }
             })
-            this.getStatus()
-            this.getLog()
+            this.getDashboardInfo()
             this.getWanIp()
         }
     })

@@ -164,13 +164,13 @@
                 exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/service.sh -ds');
                 json_response('Libernet service stopped');
                 break;
-            case 'get_service_status':
+            case 'get_dashboard_info':
                 $status = file_get_contents($libernet_dir.'/log/status.log');
-                json_response(array('status' => intval($status)));
-                break;
-            case 'get_service_log':
                 $log = file_get_contents($libernet_dir.'/log/service.log');
-                json_response(array('log' => $log));
+                json_response(array(
+                    'status' => intval($status),
+                    'log' => $log
+                ));
                 break;
             case 'save_config':
                 if (isset($json['data'])) {
