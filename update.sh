@@ -19,6 +19,8 @@ function update_libernet_web() {
     && cd /tmp \
     && rm -rf "${libernet_tmp}" \
     && echo 2 > "${LIBERNET_DIR}/log/update.log"
+  killall git
+  killall update.sh
 }
 
 case $1 in
