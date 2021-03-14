@@ -118,7 +118,7 @@
                                     <div class="col">
                                         <label>Import VMess from URL</label>
                                         <div class="d-flex">
-                                            <input type="text" class="form-control mr-1" placeholder="vmess://xxxxxxxxxxxx" v-model="config.temp.modes[1].import_url" required>
+                                            <input type="text" class="form-control mr-1" placeholder="vmess://xxxxxxxxxxxx" v-model="config.temp.modes[1].import_url">
                                             <button type="button" class="btn btn-primary ml-1" @click="importV2rayConfig">Import</button>
                                         </div>
                                     </div>
@@ -237,7 +237,7 @@
                                     <div class="col">
                                         <label>Import Trojan from URL</label>
                                         <div class="d-flex">
-                                            <input type="text" class="form-control mr-1" placeholder="trojan://xxxxxxxxxxxx" v-model="config.temp.modes[3].import_url" required>
+                                            <input type="text" class="form-control mr-1" placeholder="trojan://xxxxxxxxxxxx" v-model="config.temp.modes[3].import_url">
                                             <button type="button" class="btn btn-primary ml-1" @click="importTrojanConfig">Import</button>
                                         </div>
                                     </div>
