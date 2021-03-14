@@ -795,7 +795,7 @@
                         const sni = config.host
                         const path = config.path
                         profile.server.host = host
-                        profile.server.port = port
+                        profile.server.port = parseInt(port)
                         profile.network = network
                         profile.security = security
                         profile.server.user.level = parseInt(alterId)
