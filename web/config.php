@@ -454,6 +454,9 @@
             'config.mode': function (mode) {
                 this.getProfiles(mode)
                 this.config.profile = ""
+            },
+            'config.temp.profile': function (val) {
+                this.config.temp.profile = val.split(' ').join('_')
             }
         },
         methods: {
