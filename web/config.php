@@ -309,12 +309,12 @@
                                 profile: {
                                     ip: "",
                                     host: "",
-                                    port: 0,
+                                    port: null,
                                     username: "",
                                     password: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 0
+                                        port: null
                                     },
                                     enable_http: true,
                                     http: {
@@ -325,7 +325,7 @@
                                         payload: "",
                                         proxy: {
                                             ip: "",
-                                            port: 0
+                                            port: null
                                         }
                                     }
                                 }
@@ -384,7 +384,7 @@
                                     security: "",
                                     server: {
                                         host: "",
-                                        port: 0,
+                                        port: null,
                                         user: {
                                             level: 0,
                                             vmess: {
@@ -407,7 +407,7 @@
                                         ip: "",
                                         udpgw: {
                                             ip: "127.0.0.1",
-                                            port: 0
+                                            port: null
                                         }
                                     }
                                 }
@@ -418,13 +418,13 @@
                                 profile: {
                                     ip: "",
                                     host: "",
-                                    port: 0,
+                                    port: null,
                                     username: "",
                                     password: "",
                                     sni: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 0
+                                        port: null
                                     }
                                 }
                             },
@@ -434,12 +434,12 @@
                                 profile: {
                                     ip: "",
                                     host: "",
-                                    port: 0,
+                                    port: null,
                                     password: "",
                                     sni: "",
                                     udpgw: {
                                         ip: "127.0.0.1",
-                                        port: 0
+                                        port: null
                                     }
                                 },
                                 import_url: ""
