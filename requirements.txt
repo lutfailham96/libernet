@@ -9,7 +9,7 @@ ip-full
 kmod-tun
 openssh-client
 shadowsocks-libev-ss-local
-dnsmasq
+dnsmasq-full
 https-dns-proxy
 php7
 php7-cgi
