@@ -13,6 +13,13 @@ ARCH="$(grep 'DISTRIB_ARCH' /etc/openwrt_release | awk -F '=' '{print $2}' | sed
 LIBERNET_DIR="/root/libernet"
 LIBERNET_WWW="/www/libernet"
 
+function remove_packages() {
+  if opkg list-installed | grep -c dnsmasq = "0";
+    then opkg update
+    else opkg remove dnsmasq && opkg update
+  fi
+}
+
 function install_packages() {
   while IFS= read -r line; do
     opkg install "${line}"
@@ -31,7 +38,7 @@ function install_proprietary_packages() {
 
 function install_requirements() {
   echo -e "Installing packages" \
-    && opkg update \
+    && remove_packages \
     && install_packages \
     && install_proprietary_binaries \
     && install_proprietary_packages
