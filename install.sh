@@ -33,8 +33,9 @@ function install_prerequisites() {
   # update packages index
   opkg update
   # replace dnsmasq to dnsmasq-full
-  [[ $(opkg list-installed dnsmasq | grep -c dnsmasq) != "0" ]] \
-    && opkg remove dnsmasq
+  if [[ $(opkg list-installed dnsmasq | grep -c dnsmasq) != "0" ]]; then
+    opkg remove dnsmasq
+  fi
 }
 
 function install_requirements() {
