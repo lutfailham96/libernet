@@ -71,6 +71,7 @@
                                     <div class="col-md-6">
                                         <div class="float-left">
                                             <span>Status: </span><span :class="{ 'text-secondary': connection === 0, 'text-warning': connection === 1, 'text-success': connection === 2, 'text-info': connection === 3 }">{{ connectionText }}</span>
+                                            <span v-if="connection === 2" class="text-secondary">{{ connectedTime }}</span>
                                         </div>
                                     </div>
                                     <div class="col-md-6 pr-0 mr-0">
@@ -100,6 +101,13 @@
                 status: false,
                 connection: 0,
                 log: "",
+                connected: {
+                    timestamp: 0,
+                    days: 0,
+                    hours: 0,
+                    minutes: 0,
+                    seconds: 0
+                },
                 wan_ip: "",
                 config: {
                     mode: 0,
@@ -154,6 +162,9 @@
                     case 3:
                         return  'stopping'
                 }
+            },
+            connectedTime() {
+                return '[' + this.pad(this.connected.days, 2) + ':' + this.pad(this.connected.hours, 2) + ':' + this.pad(this.connected.minutes, 2) + ':' + this.pad(this.connected.seconds, 2) + ']'
             }
         },
         watch: {
@@ -280,6 +291,10 @@
                     }).then((res) => {
                         this.status = res.data.data.status !== 0
                         this.connection = res.data.data.status
+                        if (parseFloat(res.data.data.connected) > 0) {
+                            this.connected.timestamp = res.data.data.connected
+                            this.updateConnectedTime()
+                        }
                         this.log = res.data.data.log
                         this.$refs.log.scrollTop = this.$refs.log.scrollHeight
                         resolve(res)
@@ -290,6 +305,26 @@
                 setInterval(() => {
                     this.getDashboardInfo()
                 }, 1000)
+            },
+            updateConnectedTime() {
+                const now = Math.round(new Date().getTime() / 1000)
+                let difference = Math.abs(now - this.connected.timestamp)
+                const daysDifference = Math.floor(difference/60/60/24)
+                difference -= daysDifference*60*60*24
+                const hoursDifference = Math.floor(difference/60/60)
+                difference -= hoursDifference*60*60
+                const minutesDifference = Math.floor(difference/60)
+                difference -= minutesDifference*60
+                const secondsDifference = Math.floor(difference)
+                this.connected.days = daysDifference
+                this.connected.hours = hoursDifference
+                this.connected.minutes = minutesDifference
+                this.connected.seconds = secondsDifference
+            },
+            pad(n, width, z) {
+                z = z || '0'
+                n = n + ''
+                return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n
             }
         },
         created() {

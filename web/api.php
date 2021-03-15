@@ -167,9 +167,11 @@
             case 'get_dashboard_info':
                 $status = file_get_contents($libernet_dir.'/log/status.log');
                 $log = file_get_contents($libernet_dir.'/log/service.log');
+                $connected = file_get_contents($libernet_dir.'/log/connected.log');
                 json_response(array(
                     'status' => intval($status),
-                    'log' => $log
+                    'log' => $log,
+                    'connected' => $connected
                 ));
                 break;
             case 'save_config':

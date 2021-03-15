@@ -60,6 +60,8 @@ function start_tun2socks {
   # add default route to tun2socks
   route add default gw ${TUN_ADDRESS} metric 6
   echo -e "Tun2socks started!"
+  # write connected time
+  "${LIBERNET_DIR}/bin/log.sh" -c "$(date +"%s")"
 }
 
 function stop_tun2socks {
