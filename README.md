@@ -30,15 +30,26 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan,
 - Shadowsocks
 
 ## Installation
-- If you don't have git on OpenWRT, please install first: ```opkg update && opkg install git```
-- Prepare installation directory: ```mkdir -p ~/Downloads && cd ~/Downloads```
-- Clone this repository: ```git clone git://github.com/lutfailham96/libernet.git```
-- Run installation script: ```cd libernet && bash install.sh```
+- Prepare installation directory: 
+```sh
+mkdir -p ~/Downloads && cd ~/Downloads
+```
+- Clone this repository: 
+```sh
+git clone git://github.com/lutfailham96/libernet.git
+```
+- Run installation script:
+```sh
+cd libernet && bash install.sh
+```
 - Open Libernet on http://router-ip/libernet
 - Fill your tunnel server, save configuration & run Libernet
 
 ## Updating
-- Just run updater script: ```cd ~/Downloads/libernet && bash update.sh```
+- Just run updater script: 
+```sh
+cd ~/Downloads/libernet && bash update.sh
+```
 - Updater script will updating Libernet to latest version
 
 ## Default Username & Password
