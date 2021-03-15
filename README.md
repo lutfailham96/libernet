@@ -1,5 +1,5 @@
 # Libernet
-Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenWRT with ease.
+Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan on OpenWRT with ease.
 
 ## Requirements
 - bash
