@@ -106,7 +106,8 @@ function configure_libernet_service() {
 }
 
 function finish_install() {
-  echo -e "Libernet successfully installed!\nLibernet URL: http://router-ip/libernet"
+  router_ip="$(ifconfig br-lan | grep 'inet addr:' | awk '{print $2}' | awk -F ':' '{print $2}')"
+  echo -e "Libernet successfully installed!\nLibernet URL: http://${router_ip}/libernet"
 }
 
 install_requirements \
