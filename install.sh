@@ -36,6 +36,10 @@ function install_prerequisites() {
   if [[ $(opkg list-installed dnsmasq | grep -c dnsmasq) != "0" ]]; then
     opkg remove dnsmasq
   fi
+  # install git if it's unavailable
+  if [[ $(opkg list-installed git | grep -c git) != "1" ]]; then
+    opkg install git
+  fi
 }
 
 function install_requirements() {
