@@ -30,11 +30,11 @@ function install_proprietary_packages() {
 }
 
 function install_prerequisites() {
+  # update packages index
+  opkg update
   # replace dnsmasq to dnsmasq-full
   [[ $(opkg list-installed dnsmasq | grep -c dnsmasq) != "0" ]] \
     && opkg remove dnsmasq
-  # update packages index
-  opkg update
 }
 
 function install_requirements() {
