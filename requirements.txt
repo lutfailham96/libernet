@@ -8,6 +8,7 @@ jq
 ip-full
 kmod-tun
 openssh-client
+shadowsocks-libev-ss-local
 dnsmasq
 https-dns-proxy
 php7
