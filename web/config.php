@@ -222,12 +222,12 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-6">
-                                        <label>UDPGW Port</label>
-                                        <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[2].profile.udpgw.port" required>
-                                    </div>
-                                    <div class="col-md-6">
                                         <label>SNI</label>
                                         <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[2].profile.sni" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>UDPGW Port</label>
+                                        <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[2].profile.udpgw.port" required>
                                     </div>
                                 </div>
                             </div>
@@ -264,12 +264,72 @@
                                 </div>
                                 <div class="form-row">
                                     <div class="col-md-6">
+                                        <label>SNI</label>
+                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[3].profile.sni" required>
+                                    </div>
+                                    <div class="col-md-6">
                                         <label>UDPGW Port</label>
                                         <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[3].profile.udpgw.port" required>
                                     </div>
+                                </div>
+                            </div>
+
+                            <div v-if="config.temp.mode === 4" class="shadowsocks pb-lg-2">
+                                <div class="form-row pt-lg-2 pb-lg-2">
+                                    <div class="col">
+                                        <label>Import Shadowsocks from URL</label>
+                                        <div class="d-flex">
+                                            <input type="text" class="form-control mr-1" placeholder="ss://xxxxxxxxxxxx" v-model="config.temp.modes[4].import_url">
+                                            <button type="button" class="btn btn-primary ml-1" @click="importShadowsocksConfig">Import</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
                                     <div class="col-md-6">
+                                        <label>Server Host</label>
+                                        <input type="text" class="form-control" placeholder="node1.libernet.tld" v-model="config.temp.modes[4].profile.host" @input="resolveServerHost" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Server IP</label>
+                                        <input type="text" class="form-control" placeholder="192.168.1.1" v-model="config.temp.modes[4].profile.ip" required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>Server Port</label>
+                                        <input type="number" class="form-control" placeholder="443" v-model.number="config.temp.modes[4].profile.port" required>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-8">
+                                        <label>Password</label>
+                                        <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[4].profile.password" required>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label>Method</label>
+                                        <select class="form-control" v-model="config.temp.modes[4].profile.method" required>
+                                            <option v-for="method in config.temp.modes[4].methods" :value="method">{{ method }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="col-md-3">
+                                        <label>Plugin</label>
+                                        <select class="form-control" v-model="config.temp.modes[4].profile.plugin" required>
+                                            <option v-for="plugin in config.temp.modes[4].plugins" :value="plugin.value">{{ plugin.name }}</option>
+                                        </select>
+                                    </div>
+                                    <div v-if="config.temp.modes[4].profile.plugin == 'obfs-local'" class="col-md-2 obfs">
+                                        <label>OBFS</label>
+                                        <select class="form-control" v-model="config.temp.modes[4].profile.simple_obfs" required>
+                                            <option v-for="obfs in config.temp.modes[4].plugins[1].obfs" :value="obfs.value">{{ obfs.name }}</option>
+                                        </select>
+                                    </div>
+                                    <div v-if="config.temp.modes[4].profile.plugin !== 'none' && config.temp.modes[4].profile.plugin.trim().length > 0" class="col-md-5">
                                         <label>SNI</label>
-                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[3].profile.sni" required>
+                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[4].profile.sni" required>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label>UDPGW Port</label>
+                                        <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[4].profile.udpgw.port" required>
                                     </div>
                                 </div>
                             </div>
@@ -443,6 +503,64 @@
                                     }
                                 },
                                 import_url: ""
+                            },
+                            {
+                                value: 4,
+                                name: "Shadowsocks",
+                                plugins: [
+                                    {
+                                        value: "none",
+                                        name: "None"
+                                    },
+                                    {
+                                        value: "obfs-local",
+                                        name: "Simple-OBFS",
+                                        obfs: [
+                                            {
+                                                value: "http",
+                                                name: "HTTP"
+                                            },
+                                            {
+                                                value: "tls",
+                                                name: "TLS"
+                                            }
+                                        ]
+                                    }
+                                ],
+                                methods: [
+                                    "chacha20-ietf-poly1305",
+                                    "aes-256-gcm",
+                                    "aes-128-gcm",
+                                    "aes-128-ctr",
+                                    "aes-192-ctr",
+                                    "aes-256-ctr",
+                                    "aes-128-cfb",
+                                    "aes-192-cfb",
+                                    "aes-256-cfb",
+                                    "camellia-128-cfb",
+                                    "camellia-192-cfb",
+                                    "camellia-256-cfb",
+                                    "chacha20-ietf",
+                                    "bf-cfb",
+                                    "chacha20",
+                                    "salsa20",
+                                    "rc4-md5"
+                                ],
+                                profile: {
+                                    ip: "",
+                                    host: "",
+                                    port: null,
+                                    password: "",
+                                    method: "",
+                                    plugin: "",
+                                    simple_obfs: "",
+                                    sni: "",
+                                    udpgw: {
+                                        ip: "127.0.0.1",
+                                        port: null
+                                    }
+                                },
+                                import_url: ""
                             }
                         ]
                     },
@@ -477,6 +595,9 @@
                     case 3:
                         this.getTrojanProfiles()
                         break
+                    case 4:
+                        this.getShadowsocksProfiles()
+                        break
                 }
             },
             getSshProfiles() {
@@ -507,6 +628,13 @@
                     this.config.profiles = res.data.data
                 })
             },
+            getShadowsocksProfiles() {
+                axios.post('api.php', {
+                    action: "get_shadowsocks_configs"
+                }).then((res) => {
+                    this.config.profiles = res.data.data
+                })
+            },
             getConfig() {
                 this.getSystemConfig().then((res) => {
                     this.config.system = res
@@ -523,6 +651,8 @@
                         case 3:
                             this.getTrojanConfig()
                             break
+                        case 4:
+                            this.getShadowsocksConfig()
                     }
                 })
             },
@@ -669,6 +799,35 @@
                     profile.udpgw.port = data.etc.udpgw.port
                 })
             },
+            getShadowsocksConfig() {
+                axios.post('api.php', {
+                    action: "get_shadowsocks_config",
+                    profile: this.config.profile
+                }).then((res) => {
+                    const temp = this.config.temp
+                    const profile = temp.modes[4].profile
+                    const data = res.data.data
+                    temp.mode = 4
+                    temp.profile = this.config.profile
+                    profile.ip = data.etc.ip
+                    profile.host = data.server
+                    profile.port = data.server_port
+                    profile.password = data.password
+                    profile.method = data.method
+                    profile.udpgw.port = data.etc.udpgw.port
+                    switch (data.plugin) {
+                        case 'obfs-local':
+                            const obfs_security = data.plugin_opts.split('obfs=')[1].split(';')[0]
+                            profile.plugin = data.plugin
+                            profile.simple_obfs = obfs_security
+                            profile.sni = data.plugin_opts.split('obfs-host=')[1]
+                            break;
+                        default:
+                            profile.plugin = 'none'
+                            break;
+                    }
+                })
+            },
             getSystemConfig() {
                 return new Promise((resolve) => {
                     axios.post('api.php', {
@@ -691,6 +850,9 @@
                         break
                     case 3:
                         this.saveTrojanConfig()
+                        break
+                    case 4:
+                        this.saveShadowsocksConfig()
                         break
                 }
             },
@@ -778,6 +940,27 @@
                     this.getProfiles(this.config.mode)
                 })
             },
+            saveShadowsocksConfig() {
+                axios.post('api.php', {
+                    action: "save_config",
+                    data: {
+                        mode: this.config.temp.mode,
+                        profile: this.config.temp.profile,
+                        config: this.config.temp.modes[4].profile
+                    }
+                }).then(() => {
+                    console.log("Shadowsocks config saved")
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'Shadowsocks config has been saved',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    this.config.profile = ""
+                    this.getProfiles(this.config.mode)
+                })
+            },
             importV2rayConfig() {
                 const protocol = this.config.temp.modes[1].profile.protocol
                 const importUrl = this.config.temp.modes[1].import_url
@@ -821,6 +1004,21 @@
                 profile.sni = sni
                 this.resolveServerHost()
             },
+            importShadowsocksConfig() {
+                const importUrl = this.config.temp.modes[4].import_url
+                const config = atob(importUrl.split("://")[1].split("#")[0])
+                const profile = this.config.temp.modes[4].profile
+                const host = config.split("@")[1].split(":")[0]
+                const port = config.split("@")[1].split(":")[1]
+                const method = config.split("@")[0].split(":")[0]
+                const password = config.split("@")[0].split(":")[1]
+                console.log(method)
+                profile.host = host
+                profile.port = port
+                profile.method = method
+                profile.password = password
+                this.resolveServerHost()
+            },
             resolveServerHost: _.debounce(function () {
                 switch (this.config.temp.mode) {
                     case 0:
@@ -856,6 +1054,15 @@
                             host: this.config.temp.modes[3].profile.host
                         }).then((res) => {
                             this.config.temp.modes[3].profile.ip = res.data.data[0]
+                        })
+                        break
+                    // shadowsocks
+                    case 4:
+                        axios.post('api.php', {
+                            action: 'resolve_host',
+                            host: this.config.temp.modes[4].profile.host
+                        }).then((res) => {
+                            this.config.temp.modes[4].profile.ip = res.data.data[0]
                         })
                         break
                 }

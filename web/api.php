@@ -104,6 +104,10 @@
                 $profile = $json['profile'];
                 get_config('trojan', $profile);
                 break;
+            case 'get_shadowsocks_config':
+                $profile = $json['profile'];
+                get_config('shadowsocks', $profile);
+                break;
             case 'get_v2ray_configs':
                 get_profiles('v2ray');
                 break;
@@ -115,6 +119,9 @@
                 break;
             case 'get_trojan_configs':
                 get_profiles('trojan');
+                break;
+            case 'get_shadowsocks_configs':
+                get_profiles('shadowsocks');
                 break;
             case 'start_libernet':
                 $system_config = file_get_contents($libernet_dir.'/system/config.json');
@@ -149,8 +156,14 @@
                     // trojan
                     case 3:
                         $trojan_config = file_get_contents($libernet_dir.'/bin/config/trojan/'.$system_config->tunnel->profile->trojan.'.json');
-                        $$trojan_config = json_decode($trojan_config);
+                        $trojan_config = json_decode($trojan_config);
                         exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->trojan.', Mode: Trojan"');
+                        break;
+                    // shadowsocks
+                    case 4:
+                        $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/'.$system_config->tunnel->profile->shadowsocks.'.json');
+                        $shadowsocks_config = json_decode($shadowsocks_config);
+                        exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->shadowsocks.', Mode: Shadowsocks"');
                         break;
                 }
                 exec('export LIBERNET_DIR='.$libernet_dir.' && '.$libernet_dir.'/bin/service.sh -sl');
@@ -269,6 +282,34 @@
                             file_put_contents($libernet_dir.'/bin/config/trojan/'.$profile.'.json', json_encode($trojan_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                             json_response('Trojan config saved');
                             break;
+                        // shadowsocks
+                        case 4:
+                            $plugin = $config['plugin'];
+                            $shadowsocks_config = null;
+                            switch ($plugin) {
+                                case 'obfs-local':
+                                    $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/templates/simple-obfs.json');
+                                    $shadowsocks_config = json_decode($shadowsocks_config);
+                                    // set obfs security
+                                    $shadowsocks_config->plugin_opts = str_replace('obfs_security', $config['simple_obfs'], $shadowsocks_config->plugin_opts);
+                                    // set obfs host
+                                    $shadowsocks_config->plugin_opts = str_replace('obfs_host', $config['sni'], $shadowsocks_config->plugin_opts);
+                                    break;
+                                default:
+                                    $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/templates/normal.json');
+                                    $shadowsocks_config = json_decode($shadowsocks_config);
+                                    break;
+                            }
+                            $shadowsocks_config->server = $config['host'];
+                            $shadowsocks_config->server_port = $config['port'];
+                            $shadowsocks_config->password = $config['password'];
+                            $shadowsocks_config->method = $config['method'];
+                            $shadowsocks_config->etc->ip = $config['ip'];
+                            $shadowsocks_config->etc->udpgw->ip = $config['udpgw']['ip'];
+                            $shadowsocks_config->etc->udpgw->port = $config['udpgw']['port'];
+                            file_put_contents($libernet_dir.'/bin/config/shadowsocks/'.$profile.'.json', json_encode($shadowsocks_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                            json_response('Shadowsocks config saved');
+                            break;
                     }
                 }
                 break;
@@ -317,6 +358,15 @@
                             $system_config->server = $trojan_config->etc->ip;
                             $system_config->tun2socks->udpgw->ip = $trojan_config->etc->udpgw->ip;
                             $system_config->tun2socks->udpgw->port = $trojan_config->etc->udpgw->port;
+                            break;
+                        // shadowsocks
+                        case 4:
+                            $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/'.$profile.'.json');
+                            $shadowsocks_config = json_decode($shadowsocks_config);
+                            $system_config->tunnel->profile->shadowsocks = $profile;
+                            $system_config->server = $shadowsocks_config->etc->ip;
+                            $system_config->tun2socks->udpgw->ip = $shadowsocks_config->etc->udpgw->ip;
+                            $system_config->tun2socks->udpgw->port = $shadowsocks_config->etc->udpgw->port;
                             break;
                     }
                     $system_config->tunnel->mode = $mode;

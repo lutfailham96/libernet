@@ -84,6 +84,15 @@ function service_trojan() {
   echo -e "Tun2socks service started!"
 }
 
+function service_shadowsocks() {
+  ${LIBERNET_DIR}/bin/shadowsocks.sh -r /dev/null 2>&1
+  echo -e "Shadowsocks service started!"
+  check_connection
+  service_tun2socks > /dev/null 2>&1
+  service_dns_resolver > /dev/null 2>&1
+  echo -e "Tun2socks service started!"
+}
+
 function stop_services() {
   case $TUNNEL_MODE in
     "0")
@@ -121,6 +130,13 @@ function stop_services() {
       echo -e "Stopping Trojan service ..."
       ${LIBERNET_DIR}/bin/trojan.sh -s
       ;;
+    "4")
+      # kill shadowsocks
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping Shadowsocks service"
+      echo -e "Stopping Shadowsocks service ..."
+      ${LIBERNET_DIR}/bin/shadowsocks.sh -s
+      ;;
   esac
   # kill tun2socks
   ${LIBERNET_DIR}/bin/tun2socks.sh -w
@@ -154,6 +170,11 @@ function start_services() {
       # write trojan to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "Starting Trojan service"
       service_trojan
+      ;;
+    "4")
+      # write shadowsocks to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Starting Shadowsocks service"
+      service_shadowsocks
       ;;
   esac
   # write service status: connected
@@ -203,6 +224,13 @@ function cancel_services() {
       "${LIBERNET_DIR}/bin/log.sh" -w "Stopping Trojan service"
       echo -e "Stopping Trojan service ..."
       ${LIBERNET_DIR}/bin/trojan.sh -s
+      ;;
+    "4")
+      # kill shadowsocks
+      # write to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "Stopping Shadowsocks service"
+      echo -e "Stopping Shadowsocks service ..."
+      ${LIBERNET_DIR}/bin/shadowsocks.sh -s
       ;;
   esac
   # write service status: stop
@@ -291,6 +319,9 @@ case $1 in
     ;;
   -tr)
     service_trojan
+    ;;
+  -ss)
+    service_shadowsocks
     ;;
   -ds)
     # write service status: stopping

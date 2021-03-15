@@ -132,6 +132,10 @@
                             {
                                 value: 3,
                                 name: "Trojan"
+                            },
+                            {
+                                value: 4,
+                                name: "Shadowsocks"
                             }
                         ]
                     },
@@ -223,6 +227,9 @@
                     case 3:
                         this.getTrojanProfiles()
                         break
+                    case 4:
+                        this.getShadowsocksProfiles()
+                        break
                 }
             },
             getSshProfiles() {
@@ -249,6 +256,13 @@
             getTrojanProfiles() {
                 axios.post('api.php', {
                     action: "get_trojan_configs"
+                }).then((res) => {
+                    this.config.profiles = res.data.data
+                })
+            },
+            getShadowsocksProfiles() {
+                axios.post('api.php', {
+                    action: "get_shadowsocks_configs"
                 }).then((res) => {
                     this.config.profiles = res.data.data
                 })
@@ -345,6 +359,10 @@
                         break
                     case 3:
                         this.config.profile = res.tunnel.profile.trojan
+                        break
+                    case 4:
+                        this.config.profile = res.tunnel.profile.shadowsocks
+                        break
                 }
             })
             this.getDashboardInfo().then(() => this.intervalGetDashboardInfo())
