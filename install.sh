@@ -29,9 +29,17 @@ function install_proprietary_packages() {
     && opkg install proprietary/${ARCH}/packages/*.ipk
 }
 
+function install_prerequisites() {
+  # replace dnsmasq to dnsmasq-full
+  [[ $(opkg list-installed dnsmasq | grep -c dnsmasq) != "0" ]] \
+    && opkg remove dnsmasq
+  # update packages index
+  opkg update
+}
+
 function install_requirements() {
   echo -e "Installing packages" \
-    && opkg update \
+    && install_prerequisites \
     && install_packages \
     && install_proprietary_binaries \
     && install_proprietary_packages
