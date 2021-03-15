@@ -274,7 +274,7 @@
                 }, 5000)
             },
             getDashboardInfo() {
-                setInterval(() => {
+                return new Promise((resolve) => {
                     axios.post('api.php', {
                         action: "get_dashboard_info"
                     }).then((res) => {
@@ -282,7 +282,13 @@
                         this.connection = res.data.data.status
                         this.log = res.data.data.log
                         this.$refs.log.scrollTop = this.$refs.log.scrollHeight
+                        resolve(res)
                     })
+                })
+            },
+            intervalGetDashboardInfo() {
+                setInterval(() => {
+                    this.getDashboardInfo()
                 }, 1000)
             }
         },
@@ -306,7 +312,7 @@
                         this.config.profile = res.tunnel.profile.trojan
                 }
             })
-            this.getDashboardInfo()
+            this.getDashboardInfo().then(() => this.intervalGetDashboardInfo())
             this.getWanIp()
         }
     })

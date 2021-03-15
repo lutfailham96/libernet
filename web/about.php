@@ -69,12 +69,18 @@
         },
         methods: {
             checkUpdate() {
-                setInterval(() => {
+                return new Promise((resolve) => {
                     axios.post('api.php', {
                         action: 'check_update'
                     }).then((res) => {
                         this.status = parseInt(res.data.data)
+                        resolve(res)
                     })
+                })
+            },
+            intervalCheckUpdate() {
+                setInterval(() => {
+                    this.checkUpdate()
                 }, 1000)
             },
             updateLibernet() {
@@ -86,7 +92,7 @@
             }
         },
         created() {
-            this.checkUpdate()
+            this.checkUpdate().then(() => this.intervalCheckUpdate())
         }
     })
 </script>
