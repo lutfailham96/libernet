@@ -241,10 +241,8 @@ function check_connection() {
 function auto_start() {
   while true; do
     if ip route show | grep -q default; then
-      # reset service log
-      "${LIBERNET_DIR}/bin/log.sh" -r
-      # reset update status
-      rm "${LIBERNET_DIR}/log/update.log"
+      # reset all service log
+      "${LIBERNET_DIR}/bin/log.sh" -ra
       # start Libernet service
       start_services
       break
