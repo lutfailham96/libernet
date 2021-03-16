@@ -1,5 +1,7 @@
 #!/bin/bash
 
+REPOSITORY_URL="git://github.com/lutfailham96/libernet.git"
+
 function update_libernet() {
   if git branch > /dev/null 2>&1; then
     update_libernet_cli
@@ -21,7 +23,7 @@ function update_libernet_web() {
   "${LIBERNET_DIR}/bin/log.sh" -u 1 \
     && cd /tmp \
     && rm -rf "${libernet_tmp}" \
-    && git clone git://github.com/lutfailham96/libernet.git \
+    && git clone "${REPOSITORY_URL}" \
     && cd "${libernet_tmp}" \
     && bash install.sh \
     && cd /tmp \
