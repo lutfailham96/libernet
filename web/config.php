@@ -809,125 +809,48 @@
                 })
             },
             saveConfig() {
-                switch (this.config.temp.mode) {
+                const configMode = this.config.temp.mode
+                const configProfile = this.config.temp.profile
+                let config, title
+                switch (configMode) {
                     case 0:
-                        this.saveSshConfig()
+                        config = this.config.temp.modes[0].profile
+                        title = "SSH config has been saved"
                         break
                     case 1:
-                        this.saveV2rayConfig()
+                        config = this.config.temp.modes[1].profile
+                        title = "V2Ray config has been saved"
                         break
                     case 2:
-                        this.saveSshSslConfig()
+                        config = this.config.temp.modes[2].profile
+                        title = "SSH-SSL config has been saved"
                         break
                     case 3:
-                        this.saveTrojanConfig()
+                        config = this.config.temp.modes[3].profile
+                        title = "Trojan config has been saved"
                         break
                     case 4:
-                        this.saveShadowsocksConfig()
+                        config = this.config.temp.modes[4].profile
+                        title = "Shadowsocks config has been saved"
                         break
                 }
-            },
-            saveSshConfig() {
                 axios.post('api.php', {
                     action: "save_config",
                     data: {
-                        mode: this.config.temp.mode,
-                        profile: this.config.temp.profile,
-                        config: this.config.temp.modes[0].profile
+                        mode: configMode,
+                        profile: configProfile,
+                        config: config
                     }
                 }).then(() => {
-                    console.log("SSH config saved")
+                    console.log(title)
                     Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'SSH config has been saved',
+                        position: "center",
+                        icon: "success",
+                        title: title,
                         showConfirmButton: false,
                         timer: 1500
                     })
-                    this.config.profile = ""
-                    this.getProfiles(this.config.mode)
-                })
-            },
-            saveV2rayConfig() {
-                axios.post('api.php', {
-                    action: "save_config",
-                    data: {
-                        mode: this.config.temp.mode,
-                        profile: this.config.temp.profile,
-                        config: this.config.temp.modes[1].profile
-                    }
-                }).then(() => {
-                    console.log("V2Ray config saved")
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'V2Ray config has been saved',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    this.config.profile = ""
-                    this.getProfiles(this.config.mode)
-                })
-            },
-            saveSshSslConfig() {
-                axios.post('api.php', {
-                    action: "save_config",
-                    data: {
-                        mode: this.config.temp.mode,
-                        profile: this.config.temp.profile,
-                        config: this.config.temp.modes[2].profile
-                    }
-                }).then(() => {
-                    console.log("SSH-SSL config saved")
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'SSH-SSL config has been saved',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    this.config.profile = ""
-                    this.getProfiles(this.config.mode)
-                })
-            },
-            saveTrojanConfig() {
-                axios.post('api.php', {
-                    action: "save_config",
-                    data: {
-                        mode: this.config.temp.mode,
-                        profile: this.config.temp.profile,
-                        config: this.config.temp.modes[3].profile
-                    }
-                }).then(() => {
-                    console.log("Trojan config saved")
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Trojan config has been saved',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    this.config.profile = ""
-                    this.getProfiles(this.config.mode)
-                })
-            },
-            saveShadowsocksConfig() {
-                axios.post('api.php', {
-                    action: "save_config",
-                    data: {
-                        mode: this.config.temp.mode,
-                        profile: this.config.temp.profile,
-                        config: this.config.temp.modes[4].profile
-                    }
-                }).then(() => {
-                    console.log("Shadowsocks config saved")
-                    Swal.fire({
-                        position: 'center',
-                        icon: 'success',
-                        title: 'Shadowsocks config has been saved',
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
+                    // reload config menu
                     this.config.profile = ""
                     this.getProfiles(this.config.mode)
                 })
