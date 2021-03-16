@@ -34,9 +34,9 @@ function install_prerequisites() {
   # update packages index
   opkg update
   # replace dnsmasq to dnsmasq-full
-  if [[ $(opkg list-installed dnsmasq | grep -c dnsmasq) != "0" ]]; then
-    opkg remove dnsmasq
-  fi
+  #if [[ $(opkg list-installed dnsmasq | grep -c dnsmasq) != "0" ]]; then
+  #  opkg remove dnsmasq
+  #fi
 }
 
 function install_requirements() {
@@ -67,6 +67,9 @@ function install_libernet() {
   if [[ -f "${LIBERNET_DIR}/bin/service.sh" && $(cat "${STATUS_LOG}") != "0" ]]; then
     "${LIBERNET_DIR}/bin/service.sh" -ds > /dev/null 2>&1
   fi
+  # removing directories that might contains garbage
+  rm -rf "${LIBERNET_WWW}"
+  # install Libernet
   echo -e "Installing Libernet" \
     && mkdir -p "${LIBERNET_DIR}" \
     && echo -e "Copying updater script" \

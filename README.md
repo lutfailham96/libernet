@@ -13,7 +13,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan,
 - Shadowsocks
 - go-tun2socks
 - badvpn-tun2socks (legacy)
-- dnsmasq-full
+- dnsmasq
 - https-dns-proxy
 - php7
 - php7-cgi
