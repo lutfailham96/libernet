@@ -582,55 +582,26 @@
                 this.config.temp.modes[1].profile.stream.path = decodeURIComponent(JSON.parse('"' + this.config.temp.modes[1].profile.stream.path + '"'))
             }, 500),
             getProfiles(mode) {
+                let action
                 switch (mode) {
                     case 0:
-                        this.getSshProfiles()
+                        action = "get_ssh_configs"
                         break
                     case 1:
-                        this.getV2rayProfiles()
+                        action = "get_v2ray_configs"
                         break
                     case 2:
-                        this.getSshSslProfiles()
+                        action = "get_sshl_configs"
                         break
                     case 3:
-                        this.getTrojanProfiles()
+                        action = "get_trojan_configs"
                         break
                     case 4:
-                        this.getShadowsocksProfiles()
+                        action = "get_shadowsocks_configs"
                         break
                 }
-            },
-            getSshProfiles() {
                 axios.post('api.php', {
-                    action: "get_ssh_configs"
-                }).then((res) => {
-                    this.config.profiles = res.data.data
-                })
-            },
-            getV2rayProfiles() {
-                axios.post('api.php', {
-                    action: "get_v2ray_configs"
-                }).then((res) => {
-                    this.config.profiles = res.data.data
-                })
-            },
-            getSshSslProfiles() {
-                axios.post('api.php', {
-                    action: "get_sshl_configs"
-                }).then((res) => {
-                    this.config.profiles = res.data.data
-                })
-            },
-            getTrojanProfiles() {
-                axios.post('api.php', {
-                    action: "get_trojan_configs"
-                }).then((res) => {
-                    this.config.profiles = res.data.data
-                })
-            },
-            getShadowsocksProfiles() {
-                axios.post('api.php', {
-                    action: "get_shadowsocks_configs"
+                    action: action
                 }).then((res) => {
                     this.config.profiles = res.data.data
                 })
