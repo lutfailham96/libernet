@@ -12,6 +12,7 @@ fi
 ARCH="$(grep 'DISTRIB_ARCH' /etc/openwrt_release | awk -F '=' '{print $2}' | sed "s/'//g")"
 LIBERNET_DIR="/root/libernet"
 LIBERNET_WWW="/www/libernet"
+STATUS_LOG="${LIBERNET_DIR}/log/status.log"
 
 function install_packages() {
   while IFS= read -r line; do
@@ -62,6 +63,10 @@ function add_libernet_environment() {
 }
 
 function install_libernet() {
+  # stop Libernet before install
+  if [[ -f "${LIBERNET_DIR}/bin/service.sh" && $(cat "${STATUS_LOG}") != "0" ]]; then
+    "${LIBERNET_DIR}/bin/service.sh" -ds > /dev/null 2>&1
+  fi
   echo -e "Installing Libernet" \
     && mkdir -p "${LIBERNET_DIR}" \
     && echo -e "Copying updater script" \
