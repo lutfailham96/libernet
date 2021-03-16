@@ -5,15 +5,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="lib/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-
-    <title>Libernet | Home</title>
+    <?php
+        $title = "Home";
+        include("head.php");
+    ?>
 </head>
 <body>
 <div id="app">
@@ -92,7 +87,7 @@
         <?php include('footer.php'); ?>
     </div>
 </div>
-<?php include('js.php'); ?>
+<?php include("javascript.php"); ?>
 <script>
     let vm = new Vue({
         el: '#app',

@@ -2,11 +2,9 @@
     include('config.inc.php');
     include('auth.php');
     $loginError = false;
-
     if ((isset($_SESSION['username'])) && (isset($_SESSION['password']))) {
         header("Location: index.php");
     }
-
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $username = $_POST['username'];
         $password = $_POST['password'];
@@ -22,15 +20,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="lib/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-
-    <title>Libernet | Login</title>
+    <?php
+        $title = "Login";
+        include("head.php");
+    ?>
 </head>
 <body>
 <div id="app">
@@ -65,4 +58,4 @@
         <?php include('footer.php'); ?>
     </div>
 </div>
-<?php include('js.php'); ?>
+<?php include("javascript.php"); ?>
