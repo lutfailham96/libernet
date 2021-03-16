@@ -65,6 +65,7 @@ function add_libernet_environment() {
 function install_libernet() {
   # stop Libernet before install
   if [[ -f "${LIBERNET_DIR}/bin/service.sh" && $(cat "${STATUS_LOG}") != "0" ]]; then
+    echo -e "Stopping Libernet"
     "${LIBERNET_DIR}/bin/service.sh" -ds > /dev/null 2>&1
   fi
   # removing directories that might contains garbage
