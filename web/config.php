@@ -906,7 +906,6 @@
                 const port = config.split("@")[1].split(":")[1]
                 const method = config.split("@")[0].split(":")[0]
                 const password = config.split("@")[0].split(":")[1]
-                console.log(method)
                 profile.host = host
                 profile.port = port
                 profile.method = method
