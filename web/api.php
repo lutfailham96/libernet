@@ -405,6 +405,10 @@
                             unlink($libernet_dir.'/bin/config/trojan/'.$profile.'.json');
                             json_response('Trojan config removed');
                             break;
+                        case 4:
+                            unlink($libernet_dir.'/bin/config/shadowsocks/'.$profile.'.json');
+                            json_response('Shadowsocks config removed');
+                            break;
                     }
                 }
                 break;
