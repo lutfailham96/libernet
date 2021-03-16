@@ -4,7 +4,7 @@ function update_libernet() {
   if git branch > /dev/null 2>&1; then
     update_libernet_cli
   else
-    echo -e "This is Libernet working directory, please use installer directory instead!"
+    echo -e "This is not Libernet installer directory, please use installer directory to update Libernet!"
   fi
 }
 
