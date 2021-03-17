@@ -61,6 +61,12 @@
                                             DNS resolver
                                         </label>
                                     </div>
+                                    <div class="form-check float-right">
+                                        <input class="form-check-input" type="checkbox" v-model="config.system.system.memory_cleaner" :disabled="status === true" id="memory-cleaner">
+                                        <label class="form-check-label" for="memory-cleaner">
+                                            Memory cleaner
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="col-12 row pb-2 pr-0">
                                     <div class="col-md-6">

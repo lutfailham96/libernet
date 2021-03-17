@@ -50,6 +50,9 @@ const app = new Vue({
                     },
                     tun2socks: {
                         legacy: false
+                    },
+                    system: {
+                        memory_cleaner: false
                     }
                 }
             }
@@ -150,7 +153,8 @@ const app = new Vue({
                         mode: this.config.mode,
                         profile: this.config.profile,
                         tun2socks_legacy: this.config.system.tun2socks.legacy,
-                        dns_resolver: this.config.system.tunnel.dns_resolver
+                        dns_resolver: this.config.system.tunnel.dns_resolver,
+                        memory_cleaner: this.config.system.system.memory_cleaner
                     }
                 }).then((res) => {
                     resolve(res)

@@ -17,6 +17,7 @@ declare -x ENABLE_HTTP
 CONNECTED=false
 DYNAMIC_PORT="$(grep 'port":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
 DNS_RESOLVER="$(grep 'dns_resolver":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+MEMORY_CLEANER="$(grep 'memory_cleaner":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 
 if [[ $TUNNEL_MODE == "0" ]]; then
   SSH_PROFILE="$(grep 'ssh":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
@@ -33,6 +34,15 @@ function service_dns_resolver() {
     "${LIBERNET_DIR}/bin/log.sh" -w "Starting DNS resolver service"
     ${LIBERNET_DIR}/bin/dns.sh -r > /dev/null 2>&1
     echo -e "DNS resolver service started!"
+  fi
+}
+
+function service_memory_cleaner() {
+  if [[ $MEMORY_CLEANER == 'true' ]]; then
+    # write to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Starting memory cleaner service"
+    ${LIBERNET_DIR}/bin/memory-cleaner.sh -r > /dev/null 2>&1
+    echo -e "Memory cleaner service started!"
   fi
 }
 
@@ -63,6 +73,7 @@ function service_ssh() {
   check_connection
   service_tun2socks > /dev/null 2>&1
   service_dns_resolver > /dev/null 2>&1
+  service_memory_cleaner > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -72,6 +83,7 @@ function service_ssh_ssl() {
   check_connection
   service_tun2socks > /dev/null 2>&1
   service_dns_resolver > /dev/null 2>&1
+  service_memory_cleaner > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -81,6 +93,7 @@ function service_trojan() {
   check_connection
   service_tun2socks > /dev/null 2>&1
   service_dns_resolver > /dev/null 2>&1
+  service_memory_cleaner > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -90,6 +103,7 @@ function service_shadowsocks() {
   check_connection
   service_tun2socks > /dev/null 2>&1
   service_dns_resolver > /dev/null 2>&1
+  service_memory_cleaner > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -144,6 +158,11 @@ function stop_services() {
   if [[ $DNS_RESOLVER == 'true' ]]; then
     "${LIBERNET_DIR}/bin/log.sh" -w "Stopping DNS resolver service"
     ${LIBERNET_DIR}/bin/dns.sh -s
+  fi
+  # kill memory cleaner service
+  if [[ $MEMORY_CLEANER == 'true' ]]; then
+    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping memory cleaner service"
+    ${LIBERNET_DIR}/bin/memory-cleaner.sh -s
   fi
 }
 
