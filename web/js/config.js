@@ -532,9 +532,9 @@ const app = new Vue({
             this.resolveServerHost()
         },
         importTrojanConfig() {
+            const profile = this.config.temp.modes[3].profile
             const importUrl = this.config.temp.modes[3].import_url
             const config = importUrl.split("://")[1]
-            const profile = this.config.temp.modes[3].profile
             const host = config.split("@")[1].split(":")[0]
             const port = config.split("@")[1].split(":")[1].split("/")[0]
             const password = config.split("@")[0]
