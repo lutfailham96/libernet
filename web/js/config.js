@@ -546,15 +546,17 @@ const app = new Vue({
             this.resolveServerHost()
         },
         importShadowsocksConfig() {
-            const importUrl = this.config.temp.modes[4].import_url
-            const config = atob(importUrl.split("://")[1].split("#")[0])
             const profile = this.config.temp.modes[4].profile
-            const host = config.split("@")[1].split(":")[0]
-            const port = config.split("@")[1].split(":")[1]
-            const method = config.split("@")[0].split(":")[0]
-            const password = config.split("@")[0].split(":")[1]
+            const importUrl = this.config.temp.modes[4].import_url
+            const config = atob(importUrl.split("://")[1].split("#")[0]).split("@")
+            const server = config[config.length - 1].split(":")
+            const host = server[0]
+            const port = server[1]
+            const user = config.splice(0, config.length - 1).join("@").split(":")
+            const method = user[0]
+            const password = user[1]
             profile.host = host
-            profile.port = port
+            profile.port = parseInt(port)
             profile.method = method
             profile.password = password
             this.resolveServerHost()
