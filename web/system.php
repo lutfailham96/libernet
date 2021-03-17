@@ -15,7 +15,7 @@
     <?php include('navbar.php'); ?>
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 col-md-12 mx-auto mt-4 mb-2">
+            <div class="col-lg-8 col-md-12 mx-auto mt-4 mb-2">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="text-center">System</h3>
