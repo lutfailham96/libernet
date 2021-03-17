@@ -14,21 +14,28 @@ function update_libernet_cli() {
   echo -e "Updating Libernet ..." \
     && git fetch origin master \
     && git reset --hard FETCH_HEAD \
-    && bash ./install.sh \
+    && bash install.sh \
     && echo -e "\nLibernet successfully updated!"
 }
 
 function update_libernet_web() {
-  libernet_tmp="/tmp/libernet"
-  "${LIBERNET_DIR}/bin/log.sh" -u 1 \
-    && cd /tmp \
-    && rm -rf "${libernet_tmp}" \
-    && git clone "${REPOSITORY_URL}" \
-    && cd "${libernet_tmp}" \
-    && bash install.sh \
-    && cd /tmp \
-    && rm -rf "${libernet_tmp}" \
-    && "${LIBERNET_DIR}/bin/log.sh" -u 2
+  DOWNLOADS_DIR="${HOME}/Downloads"
+  LIBERNET_TMP="${DOWNLOADS_DIR}/libernet"
+  # create & change working directory
+  mkdir -p "${DOWNLOADS_DIR}" \
+    && cd "${DOWNLOADS_DIR}"
+  # update Libernet
+  "${LIBERNET_DIR}/bin/log.sh" -u 1
+  if [[ -d "${LIBERNET_TMP}" ]]; then
+    cd "${LIBERNET_TMP}" \
+      && update_libernet_cli
+  else
+    git clone "${REPOSITORY_URL}" \
+      && cd "${LIBERNET_TMP}" \
+      && bash install.sh \
+      && echo -e "\nLibernet successfully updated!"
+  fi
+  "${LIBERNET_DIR}/bin/log.sh" -u 2
 }
 
 case $1 in
