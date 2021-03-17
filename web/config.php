@@ -24,7 +24,7 @@
                         <form @submit.prevent="getConfig">
                             <div class="form-group form-row my-auto">
                                 <div class="col-lg-4 col-md-4 form-row py-1">
-                                    <div class="col-lg-3 col-md-2 my-auto">
+                                    <div class="col-lg-4 col-md-3 my-auto">
                                         <label class="my-auto">Mode</label>
                                     </div>
                                     <div class="col">
@@ -34,7 +34,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-4 form-row py-1">
-                                    <div class="col-lg-3 col-md-2 my-auto">
+                                    <div class="col-lg-4 col-md-3 my-auto">
                                         <label class="my-auto">Config</label>
                                     </div>
                                     <div class="col">
@@ -43,8 +43,8 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-md-3 form-row py-1">
-                                    <div class="col">
+                                <div class="col-lg-4 col-md-3 form-row py-1">
+                                    <div class="col d-flex">
                                         <button type="submit" class="btn btn-secondary mr-1">Load</button>
                                         <button type="button" class="btn btn-danger ml-1" @click="deleteConfig">Delete</button>
                                     </div>
@@ -61,7 +61,7 @@
                                         <option v-for="mode in config.temp.modes" :value="mode.value">{{ mode.name }}</option>
                                     </select>
                                 </div>
-                                <div v-if="config.temp.mode === 0" class="col-md-6 pt-lg-4 pl-lg-3 my-lg-auto">
+                                <div v-if="config.temp.mode === 0" class="col-md-6 pt-md-4 pl-lg-3 my-auto">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" v-model="config.temp.modes[0].profile.enable_http" checked id="enable-http">
                                         <label class="form-check-label" for="enable-http">

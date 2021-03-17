@@ -24,7 +24,7 @@
                         <form @submit.prevent="runLibernet">
                             <div class="form-group form-row my-auto">
                                 <div class="col-lg-4 col-md-4 form-row py-1">
-                                    <div class="col-lg-3 col-md-2 my-auto">
+                                    <div class="col-lg-4 col-md-3 my-auto">
                                         <label class="my-auto">Mode</label>
                                     </div>
                                     <div class="col">
@@ -34,7 +34,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-4 col-md-4 form-row py-1">
-                                    <div class="col-lg-3 col-md-2 my-auto">
+                                    <div class="col-lg-4 col-md-3 my-auto">
                                         <label class="my-auto">Config</label>
                                     </div>
                                     <div class="col">

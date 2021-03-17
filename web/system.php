@@ -15,7 +15,7 @@
     <?php include('navbar.php'); ?>
     <div class="container">
         <div class="row">
-            <div class="col-lg-6 col-md-6 mx-auto mt-4 mb-2">
+            <div class="col-lg-6 col-md-12 mx-auto mt-4 mb-2">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="text-center">System</h3>
@@ -27,13 +27,13 @@
                                 <input type="text" class="form-control" placeholder="admin" v-model="username" disabled required>
                             </div>
                             <div class="row">
-                                <div class="col-lg-6 col-md-6">
+                                <div class="col-lg-6 col-md-12">
                                     <div class="form-group">
                                         <label>Password</label>
                                         <input type="password" class="form-control" placeholder="StrongPassword" v-model="password">
                                     </div>
                                 </div>
-                                <div class="col-lg-6 col-md-6">
+                                <div class="col-lg-6 col-md-12">
                                     <div class="form-group">
                                         <label>Password Confirmation</label>
                                         <input type="password" class="form-control" placeholder="StrongPassword" v-model="password_confirmation">
