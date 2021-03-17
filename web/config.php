@@ -23,16 +23,32 @@
                     <div class="card-header">
                         <form @submit.prevent="getConfig">
                             <div class="form-group form-row my-auto">
-                                <label class="my-auto mx-1">Mode</label>
-                                <select class="form-control w-25 mx-1" v-model.number="config.mode" required>
-                                    <option v-for="mode in config.temp.modes" :value="mode.value">{{ mode.name }}</option>
-                                </select>
-                                <label class="my-auto mx-1">Config</label>
-                                <select class="form-control w-25 mx-1" v-model="config.profile" required>
-                                    <option v-for="profile in config.profiles" :value="profile">{{ profile }}</option>
-                                </select>
-                                <button type="submit" class="btn btn-secondary mx-1">Load</button>
-                                <button type="button" class="btn btn-danger mx-1" @click="deleteConfig">Delete</button>
+                                <div class="col-lg-4 col-md-4 form-row py-1">
+                                    <div class="col-lg-3 col-md-2 my-auto">
+                                        <label class="my-auto">Mode</label>
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control" v-model.number="config.mode" required>
+                                            <option v-for="mode in config.temp.modes" :value="mode.value">{{ mode.name }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 form-row py-1">
+                                    <div class="col-lg-3 col-md-2 my-auto">
+                                        <label class="my-auto">Config</label>
+                                    </div>
+                                    <div class="col">
+                                        <select class="form-control" v-model="config.profile" required>
+                                            <option v-for="profile in config.profiles" :value="profile">{{ profile }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-3 form-row py-1">
+                                    <div class="col">
+                                        <button type="submit" class="btn btn-secondary mr-1">Load</button>
+                                        <button type="button" class="btn btn-danger ml-1" @click="deleteConfig">Delete</button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
