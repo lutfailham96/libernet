@@ -443,6 +443,16 @@
                 if (!$retval) {
                     json_response($output);
                 }
+                break;
+            case 'change_password':
+                $password = $json['password'];
+                $system_config = file_get_contents($libernet_dir.'/system/config.json');
+                $system_config = json_decode($system_config);
+                $system_config->system->password = $password;
+                $system_config = json_encode($system_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                file_put_contents($libernet_dir.'/system/config.json', $system_config);
+                json_response("Password changed");
+                break;
         }
     }
 ?>

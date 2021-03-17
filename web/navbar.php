@@ -15,6 +15,9 @@
             <li class="nav-item <?php if ($url === 'config.php') echo 'active'; ?>">
                 <a class="nav-link" href="config.php">Configuration</a>
             </li>
+            <li class="nav-item <?php if ($url === 'system.php') echo 'active'; ?>">
+                <a class="nav-link" href="system.php">System</a>
+            </li>
             <li class="nav-item <?php if ($url === 'about.php') echo 'active'; ?>">
                 <a class="nav-link" href="about.php">About</a>
             </li>
