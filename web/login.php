@@ -28,9 +28,9 @@
 <body>
 <div id="app">
     <div class="container">
-        <div class="row py-2 mt-lg-2">
+        <div class="row login">
             <div class="col-lg-6 col-md-12 mx-auto">
-                <div class="card">
+                <div class="card mb-2">
                     <div class="card-header">
                         <h3 class="text-center">Libernet</h3>
                     </div>
@@ -53,9 +53,9 @@
                         </form>
                     </div>
                 </div>
+                <?php include('footer.php'); ?>
             </div>
         </div>
-        <?php include('footer.php'); ?>
     </div>
 </div>
 <?php include("javascript.php"); ?>
