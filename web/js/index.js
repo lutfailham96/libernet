@@ -171,10 +171,16 @@ const app = new Vue({
             })
         },
         getWanIp() {
-            setInterval(() => {
+            return new Promise((resolve) => {
                 axios.get('http://ip-api.com/json?fields=query').then((res) => {
                     this.wan_ip = res.data.query
+                    resolve(res)
                 })
+            })
+        },
+        intervalGetWanIp() {
+            setInterval(() => {
+                this.getWanIp()
             }, 5000)
         },
         getDashboardInfo() {
@@ -245,6 +251,6 @@ const app = new Vue({
             }
         })
         this.getDashboardInfo().then(() => this.intervalGetDashboardInfo())
-        this.getWanIp()
+        this.getWanIp().then(() => this.intervalGetWanIp())
     }
 })
