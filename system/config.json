@@ -1,7 +1,7 @@
 {
     "tunnel": {
-        "autostart": false,
-        "dns_resolver": true,
+        "autostart": true,
+        "dns_resolver": false,
         "ping_loop": true,
         "mode": 0,
         "profile": {
