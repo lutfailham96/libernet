@@ -172,7 +172,7 @@ const app = new Vue({
         },
         getWanIp() {
             setInterval(() => {
-                axios.get('http://ip-api.com/json').then((res) => {
+                axios.get('http://ip-api.com/json?fields=query').then((res) => {
                     this.wan_ip = res.data.query
                 })
             }, 5000)
