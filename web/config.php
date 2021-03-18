@@ -348,7 +348,7 @@
                                         <label>SNI</label>
                                         <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[4].profile.sni" required>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                         <label>UDPGW Port</label>
                                         <input type="number" class="form-control" placeholder="7300" v-model.number="config.temp.modes[4].profile.udpgw.port" required>
                                     </div>
