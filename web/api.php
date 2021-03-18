@@ -301,6 +301,16 @@
                                     // set obfs host
                                     $shadowsocks_config->plugin_opts = str_replace('obfs_host', $config['sni'], $shadowsocks_config->plugin_opts);
                                     break;
+                                case 'ck-client':
+                                    $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/templates/cloak.json');
+                                    $shadowsocks_config = json_decode($shadowsocks_config);
+                                    // set cloak uid
+                                    $shadowsocks_config->plugin_opts = str_replace('cloak_uid', $config['cloak']['uid'], $shadowsocks_config->plugin_opts);
+                                    // set cloak public key
+                                    $shadowsocks_config->plugin_opts = str_replace('cloak_pub', $config['cloak']['public_key'], $shadowsocks_config->plugin_opts);
+                                    // set cloak host
+                                    $shadowsocks_config->plugin_opts = str_replace('cloak_host', $config['sni'], $shadowsocks_config->plugin_opts);
+                                    break;
                                 default:
                                     $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/templates/normal.json');
                                     $shadowsocks_config = json_decode($shadowsocks_config);

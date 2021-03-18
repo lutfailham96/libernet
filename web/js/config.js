@@ -172,6 +172,10 @@ const app = new Vue({
                                             name: "TLS"
                                         }
                                     ]
+                                },
+                                {
+                                    value: "ck-client",
+                                    name: "Cloak"
                                 }
                             ],
                             methods: [
@@ -202,6 +206,10 @@ const app = new Vue({
                                 plugin: "",
                                 simple_obfs: "",
                                 sni: "",
+                                cloak: {
+                                    uid: "",
+                                    public_key: ""
+                                },
                                 udpgw: {
                                     ip: "127.0.0.1",
                                     port: null
@@ -435,10 +443,15 @@ const app = new Vue({
                 profile.udpgw.port = data.etc.udpgw.port
                 switch (data.plugin) {
                     case 'obfs-local':
-                        const obfs_security = data.plugin_opts.split('obfs=')[1].split(';')[0]
                         profile.plugin = data.plugin
-                        profile.simple_obfs = obfs_security
+                        profile.simple_obfs = data.plugin_opts.split('obfs=')[1].split(';')[0]
                         profile.sni = data.plugin_opts.split('obfs-host=')[1]
+                        break;
+                    case 'ck-client':
+                        profile.plugin = data.plugin
+                        profile.cloak.uid = data.plugin_opts.split("UID=")[1].split(";")[0]
+                        profile.cloak.public_key = data.plugin_opts.split("PublicKey=")[1].split(";")[0]
+                        profile.sni = data.plugin_opts.split("ServerName=")[1].split(";")[0]
                         break;
                     default:
                         profile.plugin = 'none'

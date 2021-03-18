@@ -328,11 +328,21 @@
                                             <option v-for="plugin in config.temp.modes[4].plugins" :value="plugin.value">{{ plugin.name }}</option>
                                         </select>
                                     </div>
-                                    <div v-if="config.temp.modes[4].profile.plugin == 'obfs-local'" class="col-md-2 obfs">
+                                    <div v-if="config.temp.modes[4].profile.plugin == 'obfs-local'" class="obfs-local col-md-2">
                                         <label>OBFS</label>
                                         <select class="form-control" v-model="config.temp.modes[4].profile.simple_obfs" required>
                                             <option v-for="obfs in config.temp.modes[4].plugins[1].obfs" :value="obfs.value">{{ obfs.name }}</option>
                                         </select>
+                                    </div>
+                                    <div v-if="config.temp.modes[4].profile.plugin == 'ck-client'" class="ck-client col-md-9 form-row">
+                                        <div  class="col-md-5">
+                                            <label>UID</label>
+                                            <input type="text" class="form-control" placeholder="zvnyHMjSCf8qzK3Z2Zz6Cg==" v-model="config.temp.modes[4].profile.cloak.uid" required>
+                                        </div>
+                                        <div  class="col-md-7">
+                                            <label>Public Key</label>
+                                            <input type="text" class="form-control" placeholder="XN8kNqokmV4d72F90PXQZr8AL242PiSF4mI/EykMWWM=" v-model="config.temp.modes[4].profile.cloak.public_key" required>
+                                        </div>
                                     </div>
                                     <div v-if="config.temp.modes[4].profile.plugin !== 'none' && config.temp.modes[4].profile.plugin.trim().length > 0" class="col-md-5">
                                         <label>SNI</label>
