@@ -2,6 +2,7 @@
     "tunnel": {
         "autostart": false,
         "dns_resolver": true,
+        "ping_loop": true,
         "mode": 0,
         "profile": {
             "ssh": "",

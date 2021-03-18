@@ -46,7 +46,8 @@ const app = new Vue({
                 system: {
                     tunnel: {
                         autostart: false,
-                        dns_resolver: false
+                        dns_resolver: false,
+                        ping_loop: false
                     },
                     tun2socks: {
                         legacy: false
@@ -154,7 +155,8 @@ const app = new Vue({
                         profile: this.config.profile,
                         tun2socks_legacy: this.config.system.tun2socks.legacy,
                         dns_resolver: this.config.system.tunnel.dns_resolver,
-                        memory_cleaner: this.config.system.system.memory_cleaner
+                        memory_cleaner: this.config.system.system.memory_cleaner,
+                        ping_loop: this.config.system.tunnel.ping_loop
                     }
                 }).then((res) => {
                     resolve(res)

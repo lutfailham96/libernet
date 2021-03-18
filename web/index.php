@@ -86,6 +86,14 @@
                                         </label>
                                     </div>
                                 </div>
+                                <div class="col-md-12 pb-lg-1">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" v-model="config.system.tunnel.ping_loop" :disabled="status === true" id="ping-loop">
+                                        <label class="form-check-label" for="ping-loop">
+                                            PING loop
+                                        </label>
+                                    </div>
+                                </div>
                                 <div class="col-lg-6 col-md-6">
                                     <span>Status: </span><span :class="{ 'text-secondary': connection === 0, 'text-warning': connection === 1, 'text-success': connection === 2, 'text-info': connection === 3 }">{{ connectionText }}</span>
                                     <span v-if="connection === 2" class="text-secondary">{{ connectedTime }}</span>

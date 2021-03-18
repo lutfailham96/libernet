@@ -18,6 +18,7 @@ CONNECTED=false
 DYNAMIC_PORT="$(grep 'port":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
 DNS_RESOLVER="$(grep 'dns_resolver":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 MEMORY_CLEANER="$(grep 'memory_cleaner":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+PING_LOOP="$(grep 'ping_loop":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 
 if [[ $TUNNEL_MODE == "0" ]]; then
   SSH_PROFILE="$(grep 'ssh":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
@@ -43,6 +44,15 @@ function service_memory_cleaner() {
     "${LIBERNET_DIR}/bin/log.sh" -w "Starting memory cleaner service"
     ${LIBERNET_DIR}/bin/memory-cleaner.sh -r > /dev/null 2>&1
     echo -e "Memory cleaner service started!"
+  fi
+}
+
+function service_ping_loop() {
+  if [[ $PING_LOOP == 'true' ]]; then
+    # write to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Starting PING loop service"
+    ${LIBERNET_DIR}/bin/ping-loop.sh -r > /dev/null 2>&1
+    echo -e "PING loop service started!"
   fi
 }
 
@@ -74,6 +84,7 @@ function service_ssh() {
   service_tun2socks > /dev/null 2>&1
   service_dns_resolver > /dev/null 2>&1
   service_memory_cleaner > /dev/null 2>&1
+  service_ping_loop > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -84,6 +95,7 @@ function service_ssh_ssl() {
   service_tun2socks > /dev/null 2>&1
   service_dns_resolver > /dev/null 2>&1
   service_memory_cleaner > /dev/null 2>&1
+  service_ping_loop > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -94,6 +106,7 @@ function service_trojan() {
   service_tun2socks > /dev/null 2>&1
   service_dns_resolver > /dev/null 2>&1
   service_memory_cleaner > /dev/null 2>&1
+  service_ping_loop > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -104,6 +117,7 @@ function service_shadowsocks() {
   service_tun2socks > /dev/null 2>&1
   service_dns_resolver > /dev/null 2>&1
   service_memory_cleaner > /dev/null 2>&1
+  service_ping_loop > /dev/null 2>&1
   echo -e "Tun2socks service started!"
 }
 
@@ -163,6 +177,11 @@ function stop_services() {
   if [[ $MEMORY_CLEANER == 'true' ]]; then
     "${LIBERNET_DIR}/bin/log.sh" -w "Stopping memory cleaner service"
     ${LIBERNET_DIR}/bin/memory-cleaner.sh -s
+  fi
+  # kill ping loop service
+  if [[ $PING_LOOP == 'true' ]]; then
+    "${LIBERNET_DIR}/bin/log.sh" -w "Stopping PING loop service"
+    ${LIBERNET_DIR}/bin/ping-loop.sh -s
   fi
 }
 
