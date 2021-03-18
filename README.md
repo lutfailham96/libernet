@@ -49,7 +49,7 @@ git clone git://github.com/lutfailham96/libernet.git ~/Downloads/libernet
 ```
 - Run installation script:
 ```sh
-bash ~/Downloads/libernet/install.sh
+cd ~/Downloads/libernet && bash install.sh
 ```
 - Open Libernet on your browser: http://router-ip/libernet
 - Fill your tunnel server, save configuration & run Libernet
@@ -57,7 +57,7 @@ bash ~/Downloads/libernet/install.sh
 ## Updating
 - Just run updater script:
 ```sh
-bash ~/Downloads/libernet/update.sh
+cd ~/Downloads/libernet && bash update.sh
 ```
 - Updater script will updating Libernet to latest version
 
