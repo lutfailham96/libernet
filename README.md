@@ -34,17 +34,17 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan,
 ```sh
 opkg update && opkg install git
 ```
-- Prepare installation directory:
+- Prepare download directory:
 ```sh
-mkdir -p ~/Downloads && cd ~/Downloads
+mkdir -p ~/Downloads
 ```
 - Clone this repository:
 ```sh
-git clone git://github.com/lutfailham96/libernet.git
+git clone git://github.com/lutfailham96/libernet.git ~/Downloads/libernet
 ```
 - Run installation script:
 ```sh
-cd libernet && bash install.sh
+bash ~/Downloads/libernet/install.sh
 ```
 - Open Libernet on your browser: http://router-ip/libernet
 - Fill your tunnel server, save configuration & run Libernet
@@ -52,7 +52,7 @@ cd libernet && bash install.sh
 ## Updating
 - Just run updater script:
 ```sh
-cd ~/Downloads/libernet && bash update.sh
+bash ~/Downloads/libernet/update.sh
 ```
 - Updater script will updating Libernet to latest version
 
