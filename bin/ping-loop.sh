@@ -14,7 +14,7 @@ INTERVAL="3"
 HOST="bing.com"
 
 function http_ping() {
-  httping -qi "${INTERVAL}" "${HOST}"
+  httping -qi "${INTERVAL}" -t "${INTERVAL}" "${HOST}"
 }
 
 function loop() {
