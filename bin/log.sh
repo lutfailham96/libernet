@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Log Wrapper
+# Service Log Wrapper
 # by Lutfa Ilham
-# v1.1
+# v1.0
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -45,7 +45,7 @@ function reset_all_log() {
     && touch "${CONNECTED_FILE}"
 }
 
-case $1 in
+case "${1}" in
   -w)
     write_log "${2}"
     ;;
