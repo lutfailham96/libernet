@@ -5,22 +5,17 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="lib/vendor/bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="style.css">
-
-    <title>Libernet | About</title>
+    <?php
+        $title = "About";
+        include("head.php");
+    ?>
 </head>
 <body>
 <div id="app">
     <?php include('navbar.php'); ?>
     <div class="container">
         <div class="row">
-            <div class="col-lg-8 col-md-6 mx-auto mt-4 mb-2">
+            <div class="col-lg-8 col-md-12 mx-auto mt-4 mb-2">
                 <div class="card">
                     <div class="card-header">
                         <h3 class="text-center">About Libernet</h3>
@@ -59,43 +54,7 @@
         <?php include('footer.php'); ?>
     </div>
 </div>
-<?php include('js.php'); ?>
-<script>
-    let vm = new Vue({
-        el: "#app",
-        data() {
-            return {
-                status: 0
-            }
-        },
-        methods: {
-            checkUpdate() {
-                return new Promise((resolve) => {
-                    axios.post('api.php', {
-                        action: 'check_update'
-                    }).then((res) => {
-                        this.status = parseInt(res.data.data)
-                        resolve(res)
-                    })
-                })
-            },
-            intervalCheckUpdate() {
-                setInterval(() => {
-                    this.checkUpdate()
-                }, 1000)
-            },
-            updateLibernet() {
-                if (this.status !== 1) {
-                    axios.post('api.php', {
-                        action: 'update_libernet'
-                    })
-                }
-            }
-        },
-        created() {
-            this.checkUpdate().then(() => this.intervalCheckUpdate())
-        }
-    })
-</script>
+<?php include("javascript.php"); ?>
+<script src="js/about.js"></script>
 </body>
 </html>

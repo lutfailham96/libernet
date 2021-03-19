@@ -141,10 +141,16 @@
                     case 1:
                         $v2ray_config = file_get_contents($libernet_dir.'/bin/config/v2ray/'.$system_config->tunnel->profile->v2ray.'.json');
                         $v2ray_config = json_decode($v2ray_config);
-                        if ($v2ray_config->outbounds[0]->protocol === "trojan") {
-                            exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: trojan"');
-                        } elseif ($v2ray_config->outbounds[0]->protocol === 'vmess') {
-                            exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: vmess"');
+                        switch ($v2ray_config->outbounds[0]->protocol) {
+                            case "vmess":
+                                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: VMess"');
+                                break;
+                            case "vless":
+                                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: VLESS"');
+                                break;
+                            case "trojan":
+                                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: Trojan"');
+                                break;
                         }
                         break;
                     // ssh-ssl
@@ -295,6 +301,16 @@
                                     // set obfs host
                                     $shadowsocks_config->plugin_opts = str_replace('obfs_host', $config['sni'], $shadowsocks_config->plugin_opts);
                                     break;
+                                case 'ck-client':
+                                    $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/templates/cloak.json');
+                                    $shadowsocks_config = json_decode($shadowsocks_config);
+                                    // set cloak uid
+                                    $shadowsocks_config->plugin_opts = str_replace('cloak_uid', $config['cloak']['uid'], $shadowsocks_config->plugin_opts);
+                                    // set cloak public key
+                                    $shadowsocks_config->plugin_opts = str_replace('cloak_pub', $config['cloak']['public_key'], $shadowsocks_config->plugin_opts);
+                                    // set cloak host
+                                    $shadowsocks_config->plugin_opts = str_replace('cloak_host', $config['sni'], $shadowsocks_config->plugin_opts);
+                                    break;
                                 default:
                                     $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/templates/normal.json');
                                     $shadowsocks_config = json_decode($shadowsocks_config);
@@ -322,6 +338,8 @@
                     $mode = $data['mode'];
                     $tun2socks_legacy = $data['tun2socks_legacy'];
                     $dns_resolver = $data['dns_resolver'];
+                    $memory_cleaner = $data['memory_cleaner'];
+                    $ping_loop = $data['ping_loop'];
                     switch ($mode) {
                         // ssh
                         case 0:
@@ -372,6 +390,8 @@
                     $system_config->tunnel->mode = $mode;
                     $system_config->tun2socks->legacy = $tun2socks_legacy;
                     $system_config->tunnel->dns_resolver = $dns_resolver;
+                    $system_config->system->memory_cleaner = $memory_cleaner;
+                    $system_config->tunnel->ping_loop = $ping_loop;
                     $system_config = json_encode($system_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
                     file_put_contents($libernet_dir.'/system/config.json', $system_config);
                     json_response('Configuration applied');
@@ -398,6 +418,10 @@
                         case 3:
                             unlink($libernet_dir.'/bin/config/trojan/'.$profile.'.json');
                             json_response('Trojan config removed');
+                            break;
+                        case 4:
+                            unlink($libernet_dir.'/bin/config/shadowsocks/'.$profile.'.json');
+                            json_response('Shadowsocks config removed');
                             break;
                     }
                 }
@@ -431,6 +455,16 @@
                 if (!$retval) {
                     json_response($output);
                 }
+                break;
+            case 'change_password':
+                $password = $json['password'];
+                $system_config = file_get_contents($libernet_dir.'/system/config.json');
+                $system_config = json_decode($system_config);
+                $system_config->system->password = $password;
+                $system_config = json_encode($system_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+                file_put_contents($libernet_dir.'/system/config.json', $system_config);
+                json_response("Password changed");
+                break;
         }
     }
 ?>

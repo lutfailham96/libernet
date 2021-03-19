@@ -1,7 +1,8 @@
 {
     "tunnel": {
-        "autostart": false,
-        "dns_resolver": true,
+        "autostart": true,
+        "dns_resolver": false,
+        "ping_loop": true,
         "mode": 0,
         "profile": {
             "ssh": "",
@@ -35,6 +36,7 @@
     },
     "system": {
         "username": "admin",
-        "password": "libernet"
+        "password": "libernet",
+        "memory_cleaner": true
     }
 }
