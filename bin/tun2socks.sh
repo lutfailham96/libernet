@@ -106,15 +106,26 @@ function route_del_ip {
   echo -e "Routes removed!"
 }
 
-while getopts ":idrsyzvw" opt; do
-  case ${opt} in
-  v)
+function usage() {
+  cat <<EOF
+Usage:
+  -i  Initialize tun device
+  -d  Destroy tun device
+  -y  Route server, proxy & dns
+  -z  Remove route server, proxy & dns
+  -r  Run tun2socks
+  -s  Stop tun2socks
+EOF
+}
+
+case "${1}" in
+  -v)
     # start tun2socks service
     init_tun_dev \
       && route_add_ip \
       && start_tun2socks
     ;;
-  w)
+  -w)
     # stop tun2socks service
     echo -e "Stopping Tun2socks service ..."
     stop_tun2socks
@@ -125,32 +136,25 @@ while getopts ":idrsyzvw" opt; do
     echo -e "Removing tun device ..."
     destroy_tun_dev
     ;;
-  i)
+  -i)
     init_tun_dev
     ;;
-  d)
+  -d)
     destroy_tun_dev
     ;;
-  r)
+  -r)
     start_tun2socks
     ;;
-  s)
+  -s)
     stop_tun2socks
     ;;
-  y)
+  -y)
     route_add_ip
     ;;
-  z)
+  -z)
     route_del_ip
     ;;
   *)
-    echo -e "Usage:"
-    echo -e "\t-i\tInitialize tun device"
-    echo -e "\t-d\tDestroy tun device"
-    echo -e "\t-y\tRoute add server & dns"
-    echo -e "\t-z\tRoute del server & dns"
-    echo -e "\t-r\tRun tun2socks"
-    echo -e "\t-s\tStop tun2socks"
+    usage
     ;;
-  esac
-done
+esac
