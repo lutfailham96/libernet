@@ -13,10 +13,22 @@ SERVICE_NAME="V2Ray"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 V2RAY_PROFILE="$(grep 'v2ray":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 V2RAY_CONFIG="${LIBERNET_DIR}/bin/config/v2ray/${V2RAY_PROFILE}.json"
+V2RAY_PROTOCOL="$(grep 'protocol":' ${V2RAY_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | tail -n1)"
 
 function run() {
+  case "${V2RAY_PROTOCOL}" in
+    "vmess")
+      V2RAY_PROTOCOL="VMess"
+      ;;
+    "vless")
+      V2RAY_PROTOCOL="VLESS"
+      ;;
+    "trojan")
+      V2RAY_PROTOCOL="Trojan"
+      ;;
+  esac
   # write to service log
-  "${LIBERNET_DIR}/bin/log.sh" -w "Config: ${V2RAY_PROFILE}, Mode: ${SERVICE_NAME}"
+  "${LIBERNET_DIR}/bin/log.sh" -w "Config: ${V2RAY_PROFILE}, Mode: ${SERVICE_NAME}, Protocol: ${V2RAY_PROTOCOL}"
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
   screen -AmdS v2ray-client v2ray -c "${V2RAY_CONFIG}" \
