@@ -2,40 +2,52 @@
 
 # Trojan Wrapper
 # by Lutfa Ilham
-# v1.1
+# v1.0
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
   exit 1
 fi
 
+SERVICE_NAME="Trojan"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 TROJAN_PROFILE="$(grep 'trojan":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 TROJAN_CONFIG="${LIBERNET_DIR}/bin/config/trojan/${TROJAN_PROFILE}.json"
 
-function start_trojan() {
-  screen -AmdS trojan-client trojan-go -config "${TROJAN_CONFIG}"
+function run() {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Config: ${TROJAN_PROFILE}, Mode: ${SERVICE_NAME}"
+  "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
+  echo -e "Starting ${SERVICE_NAME} service ..."
+  screen -AmdS trojan-client trojan-go -config "${TROJAN_CONFIG}" \
+    && echo -e "${SERVICE_NAME} service started!"
 }
 
-function stop_trojan() {
+function stop() {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
+  echo -e "Stopping ${SERVICE_NAME} service ..."
   kill $(screen -list | grep trojan-client | awk -F '[.]' {'print $1'})
   killall trojan-go
+  echo -e "${SERVICE_NAME} service stopped!"
 }
 
-while getopts ":rs" opt; do
-  case ${opt} in
-  r)
-    start_trojan > /dev/null 2>&1
-    echo -e "Trojan started!"
+function usage() {
+  cat <<EOF
+Usage:
+  -r  Run ${SERVICE_NAME} service
+  -s  Stop ${SERVICE_NAME} service
+EOF
+}
+
+case "${1}" in
+  -r)
+    run
     ;;
-  s)
-    stop_trojan > /dev/null 2>&1
-    echo -e "Trojan stopped!"
+  -s)
+    stop
     ;;
   *)
-    echo -e "Usage:"
-    echo -e "\t-r\tRun Trojan"
-    echo -e "\t-s\tStop Trojan"
+    usage
     ;;
-  esac
-done
+esac
