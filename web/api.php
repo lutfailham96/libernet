@@ -126,52 +126,6 @@
             case 'start_libernet':
                 $system_config = file_get_contents($libernet_dir.'/system/config.json');
                 $system_config = json_decode($system_config);
-                // clear service log
-                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -r');
-                // write starting service log
-                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Starting Libernet service"');
-                switch ($system_config->tunnel->mode) {
-                    // ssh
-                    case 0:
-                        $ssh_config = file_get_contents($libernet_dir.'/bin/config/ssh/'.$system_config->tunnel->profile->ssh.'.json');
-                        $ssh_config = json_decode($ssh_config);
-                        exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->ssh.', Mode: SSH"');
-                        break;
-                    // v2ray
-                    case 1:
-                        $v2ray_config = file_get_contents($libernet_dir.'/bin/config/v2ray/'.$system_config->tunnel->profile->v2ray.'.json');
-                        $v2ray_config = json_decode($v2ray_config);
-                        switch ($v2ray_config->outbounds[0]->protocol) {
-                            case "vmess":
-                                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: VMess"');
-                                break;
-                            case "vless":
-                                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: VLESS"');
-                                break;
-                            case "trojan":
-                                exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->v2ray.', Mode: V2Ray, Protocol: Trojan"');
-                                break;
-                        }
-                        break;
-                    // ssh-ssl
-                    case 2:
-                        $sshl_config = file_get_contents($libernet_dir.'/bin/config/ssh_ssl/'.$system_config->tunnel->profile->ssh_ssl.'.json');
-                        $sshl_config = json_decode($sshl_config);
-                        exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->ssh_ssl.', Mode: SSH-SSL"');
-                        break;
-                    // trojan
-                    case 3:
-                        $trojan_config = file_get_contents($libernet_dir.'/bin/config/trojan/'.$system_config->tunnel->profile->trojan.'.json');
-                        $trojan_config = json_decode($trojan_config);
-                        exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->trojan.', Mode: Trojan"');
-                        break;
-                    // shadowsocks
-                    case 4:
-                        $shadowsocks_config = file_get_contents($libernet_dir.'/bin/config/shadowsocks/'.$system_config->tunnel->profile->shadowsocks.'.json');
-                        $shadowsocks_config = json_decode($shadowsocks_config);
-                        exec('export LIBERNET_DIR="'.$libernet_dir.'" && '.$libernet_dir.'/bin/log.sh -w "Config: '.$system_config->tunnel->profile->shadowsocks.', Mode: Shadowsocks"');
-                        break;
-                }
                 exec('export LIBERNET_DIR='.$libernet_dir.' && '.$libernet_dir.'/bin/service.sh -sl');
                 json_response('Libernet service started');
                 break;
