@@ -27,7 +27,7 @@ function run() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
-  setup_dns \
+  setup \
     && /etc/init.d/https-dns-proxy restart \
     && echo -e "${SERVICE_NAME} service started!"
 }
