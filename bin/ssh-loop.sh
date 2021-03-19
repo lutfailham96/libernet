@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# SSH Loop
+# SSH Loop Wrapper
 # by Lutfa Ilham
-# v1.1
+# v1.0
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
   exit 1
 fi
 
-function connect_ssh() {
+function connect() {
   sshpass -p "${2}" ssh \
     -4CND "${5}" \
     -p "${4}" \
@@ -18,7 +18,7 @@ function connect_ssh() {
     "${1}@${3}"
 }
 
-function connect_ssh_with_proxy() {
+function connect_with_proxy() {
   sshpass -p "${2}" ssh \
     -4CND "${5}" \
     -p "${4}" \
@@ -28,18 +28,18 @@ function connect_ssh_with_proxy() {
     "${1}@${3}"
 }
 
-case $1 in
+case "${1}" in
   -d)
     while true; do
       # command username password host port dynamic_port
-      connect_ssh $2 $3 $4 $5 $6
+      connect "${2}" "${3}" "${4}" "${5}" "${6}"
       sleep 3
     done
     ;;
   -e)
     while true; do
       # command username password host port dynamic_port proxy_ip proxy_port
-      connect_ssh_with_proxy $2 $3 $4 $5 $6 $7 $8
+      connect_with_proxy "${2}" "${3}" "${4}" "${5}" "${6}" "${7}" "${8}"
       sleep 3
     done
     ;;
