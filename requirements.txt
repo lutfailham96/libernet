@@ -1,4 +1,5 @@
 bash
+curl
 librt
 libpthread
 coreutils
