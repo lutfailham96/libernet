@@ -23,9 +23,9 @@ DYNAMIC_PORT="$(grep 'port":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g;
 function run() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Config: ${SSH_SSL_PROFILE}, Mode: ${SERVICE_NAME}"
-  "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
-  echo -e "Starting ${SERVICE_NAME} service ..."
   "${LIBERNET_DIR}/bin/stunnel.sh" -r "ssh" "${SSH_SSL_PROFILE}" "${SSH_SSL_HOST}" "${SSH_SSL_PORT}" "${SSH_SSL_SNI}" \
+    && "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service" \
+    && echo -e "Starting ${SERVICE_NAME} service ..." \
     && screen -AmdS ssh-ssl-connector "${LIBERNET_DIR}/bin/ssh-ssl-loop.sh" "${SSH_SSL_USER}" "${SSH_SSL_PASS}" "${DYNAMIC_PORT}" \
     && echo -e "${SERVICE_NAME} service started!"
 }
