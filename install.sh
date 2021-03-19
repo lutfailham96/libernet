@@ -10,9 +10,12 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 ARCH="$(grep 'DISTRIB_ARCH' /etc/openwrt_release | awk -F '=' '{print $2}' | sed "s/'//g")"
-LIBERNET_DIR="/root/libernet"
+LIBERNET_DIR="${HOME}/libernet"
 LIBERNET_WWW="/www/libernet"
 STATUS_LOG="${LIBERNET_DIR}/log/status.log"
+DOWNLOADS_DIR="${HOME}/Downloads"
+LIBERNET_TMP="${DOWNLOADS_DIR}/libernet"
+REPOSITORY_URL="git://github.com/lutfailham96/libernet.git"
 
 function install_packages() {
   while IFS= read -r line; do
@@ -123,10 +126,35 @@ function finish_install() {
   echo -e "Libernet successfully installed!\nLibernet URL: http://${router_ip}/libernet"
 }
 
-install_requirements \
-  && install_libernet \
-  && add_libernet_environment \
-  && enable_uhttp_php \
-  && configure_libernet_firewall \
-  && configure_libernet_service \
-  && finish_install
+function main_installer() {
+  install_requirements \
+    && install_libernet \
+    && add_libernet_environment \
+    && enable_uhttp_php \
+    && configure_libernet_firewall \
+    && configure_libernet_service \
+    && finish_install
+}
+
+function main() {
+  # install git if it's unavailable
+  if [[ $(opkg list-installed git | grep -c git) != "1" ]]; then
+    opkg update \
+      && opkg install git
+  fi
+  # create ~/Downloads directory if not exist
+  if [[ ! -d "${DOWNLOADS_DIR}" ]]; then
+    mkdir -p "${DOWNLOADS_DIR}"
+  fi
+  # install Libernet
+  if [[ ! -d "${LIBERNET_TMP}" ]]; then
+    git clone "${REPOSITORY_URL}" "${LIBERNET_TMP}" \
+      && cd "${LIBERNET_TMP}" \
+      && bash install.sh
+  else
+    cd "${LIBERNET_TMP}" \
+      && main_installer
+  fi
+}
+
+main
