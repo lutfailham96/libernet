@@ -19,7 +19,10 @@ REPOSITORY_URL="git://github.com/lutfailham96/libernet.git"
 
 function install_packages() {
   while IFS= read -r line; do
-    opkg install "${line}"
+    # install package if not installed yet
+    if [[ $(opkg list-installed "${line}" | grep -c "${line}") != "1" ]]; then
+      opkg install "${line}"
+    fi
   done < requirements.txt
 }
 
