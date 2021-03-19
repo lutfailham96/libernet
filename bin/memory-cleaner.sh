@@ -9,6 +9,7 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
+SERVICE_NAME="Memory Cleaner"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 INTERVAL="1h"
 
@@ -28,21 +29,35 @@ function clear_memory() {
 function loop() {
   while true; do
     clear_memory
-    sleep $INTERVAL
+    sleep "${INTERVAL}"
   done
 }
 
 function run() {
-  echo -e "Running memory cleaner service..."
-  screen -AmdS memory-cleaner "${LIBERNET_DIR}/bin/memory-cleaner.sh" -l
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
+  echo -e "Starting ${SERVICE_NAME} service ..."
+  screen -AmdS memory-cleaner "${LIBERNET_DIR}/bin/memory-cleaner.sh" -l \
+    && echo -e "${SERVICE_NAME} service started!"
 }
 
 function stop() {
-  echo -e "Stopping memory cleaner service ..."
-  kill $(screen -list | grep memory-cleaner | awk -F '[.]' {'print $1'}) > /dev/null 2>&1
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
+  echo -e "Stopping ${SERVICE_NAME} service ..."
+  kill $(screen -list | grep memory-cleaner | awk -F '[.]' {'print $1'})
+  echo -e "${SERVICE_NAME} service stopped!"
 }
 
-case $1 in
+function usage() {
+  cat <<EOF
+Usage:
+  -r  Run ${SERVICE_NAME} service
+  -s  Stop ${SERVICE_NAME} service
+EOF
+}
+
+case "${1}" in
   -r)
     run
     ;;
@@ -51,5 +66,8 @@ case $1 in
     ;;
   -l)
     loop
+    ;;
+  *)
+    usage
     ;;
 esac
