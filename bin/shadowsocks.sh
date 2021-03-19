@@ -19,6 +19,9 @@ function start_shadowsocks() {
 
 function stop_shadowsocks() {
   kill $(screen -list | grep ss-client | awk -F '[.]' {'print $1'})
+  # kill plugins
+  killall obfs-local
+  killall ck-client
 }
 
 while getopts ":rs" opt; do
