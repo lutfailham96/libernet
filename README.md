@@ -7,6 +7,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan,
 
 ## Requirements
 - bash
+- curl
 - screen
 - jq
 - Python 3
