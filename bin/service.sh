@@ -22,27 +22,38 @@ usbmode -s > /dev/null 2>&1
 
 function check_connection() {
   counter=0
-  while [[ "${counter}" -lt 3 ]]; do
+  max_retries=3
+  while [[ "${counter}" -lt "${max_retries}" ]]; do
     sleep 5
     # write connection checking to service log
     "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $[${counter} + 1]"
     echo -e "Checking connection, attempt: $[${counter} + 1]"
     if curl -so /dev/null -x "socks5://127.0.0.1:${DYNAMIC_PORT}"  "http://bing.com"; then
-      CONNECTED=true
       # write connection success to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">Socks connection available</span>"
       echo -e "Socks connection available!"
+      CONNECTED=true
       break
     fi
     counter=$[${counter} + 1]
+    # max retries reach
+    if [[ "${counter}" -eq "${max_retries}" ]]; then
+      # write not connectivity to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
+      echo -e "Socks connection unavailable!"
+      # cancel Libernet service
+      cancel_services
+      exit 1
+    fi
   done
-  if ! $CONNECTED; then
-    # write not connectivity to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
-    echo -e "Socks connection unavailable!"
-    # cancel Libernet service
-    cancel_services
-    exit 1
+}
+
+function run_other_services() {
+  if ${CONNECTED}; then
+    service_tun2socks
+    dns_resolver_service
+    memory_cleaner_service
+    ping_loop_service
   fi
 }
 
@@ -71,46 +82,31 @@ function service_tun2socks() {
 function ssh_service() {
   "${LIBERNET_DIR}/bin/ssh.sh" -r
   check_connection
-  service_tun2socks
-  dns_resolver_service
-  memory_cleaner_service
-  ping_loop_service
+  run_other_services
 }
 
 function v2ray_service() {
   "${LIBERNET_DIR}/bin/v2ray.sh" -r
   check_connection
-  service_tun2socks
-  dns_resolver_service
-  memory_cleaner_service
-  ping_loop_service
+  run_other_services
 }
 
 function ssh_ssl_service() {
   "${LIBERNET_DIR}/bin/ssh-ssl.sh" -r
   check_connection
-  service_tun2socks
-  dns_resolver_service
-  memory_cleaner_service
-  ping_loop_service
+  run_other_services
 }
 
 function trojan_service() {
   "${LIBERNET_DIR}/bin/trojan.sh" -r
   check_connection
-  service_tun2socks
-  dns_resolver_service
-  memory_cleaner_service
-  ping_loop_service
+  run_other_services
 }
 
 function shadowsocks_service() {
   "${LIBERNET_DIR}/bin/shadowsocks.sh" -r
   check_connection
-  service_tun2socks
-  dns_resolver_service
-  memory_cleaner_service
-  ping_loop_service
+  run_other_services
 }
 
 function openvpn_service() {
@@ -120,13 +116,13 @@ function openvpn_service() {
   route_log="${LIBERNET_DIR}/log/route.log"
   default_route="$(ip route show | grep default | grep -v ${tun_dev})"
   counter=0
-  while [[ "${counter}" -lt 3 ]]; do
+  max_retries=3
+  while [[ "${counter}" -lt "${max_retries}" ]]; do
     sleep 5
     # write connection checking to service log
     "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $[${counter} + 1]"
     echo -e "Checking connection, attempt: $[${counter} + 1]"
     if grep -q 'Initialization Sequence Completed' "${LIBERNET_DIR}/log/openvpn.log"; then
-      CONNECTED=true
       # write connection success to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">OpenVPN connection available</span>"
       echo -e "OpenVPN connection available!"
@@ -135,21 +131,23 @@ function openvpn_service() {
       # change default route to tunnel
       echo -e "${default_route}" > "${route_log}"
       ip route del ${default_route}
+      # run other services
+      dns_resolver_service
+      memory_cleaner_service
+      ping_loop_service
       break
     fi
     counter=$[${counter} + 1]
+    # max retries reach
+    if [[ "${counter}" -eq "${max_retries}" ]]; then
+      # write not connectivity to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">OpenVPN connection unavailable</span>"
+      echo -e "OpenVPN connection unavailable!"
+      # cancel Libernet service
+      cancel_services
+      exit 1
+    fi
   done
-  if ! $CONNECTED; then
-    # write not connectivity to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">OpenVPN connection unavailable</span>"
-    echo -e "OpenVPN connection unavailable!"
-    # cancel Libernet service
-    cancel_services
-    exit 1
-  fi
-  dns_resolver_service
-  memory_cleaner_service
-  ping_loop_service
 }
 
 function start_services() {
@@ -232,7 +230,7 @@ function stop_services() {
   # write service status: stop
   "${LIBERNET_DIR}/bin/log.sh" -s 0
   # write to service log
-  "${LIBERNET_DIR}/bin/log.sh" -w "Libernet service stopped"
+  "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: gray\">Libernet service stopped</span>"
   echo -e "Libernet services stopped!"
 }
 
