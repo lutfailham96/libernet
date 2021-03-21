@@ -262,7 +262,10 @@ const app = new Vue({
                     break
             }
         })
-        this.getDashboardInfo().then(() => this.intervalGetDashboardInfo())
+        this.getDashboardInfo().then(() => {
+            this.$refs.log.scrollTop = this.$refs.log.scrollHeight
+            this.intervalGetDashboardInfo()
+        })
         this.getWanIp().then(() => this.intervalGetWanIp())
     }
 })
