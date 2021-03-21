@@ -31,7 +31,7 @@ function check_connection() {
       CONNECTED=true
       # write connection success to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">Socks connection available</span>"
-      echo -e "Socks connection available"
+      echo -e "Socks connection available!"
       break
     fi
     counter=$[${counter} + 1]
@@ -39,7 +39,7 @@ function check_connection() {
   if ! $CONNECTED; then
     # write not connectivity to service log
     "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
-    echo -e "Socks connection unavailable"
+    echo -e "Socks connection unavailable!"
     # cancel Libernet service
     cancel_services
     exit 1
@@ -113,6 +113,45 @@ function shadowsocks_service() {
   ping_loop_service
 }
 
+function openvpn_service() {
+  "${LIBERNET_DIR}/bin/openvpn.sh" -r
+  # check connection
+  tun_dev="$(grep 'dev":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+  route_log="${LIBERNET_DIR}/log/route.log"
+  default_route="$(ip route show | grep default | grep -v ${tun_dev})"
+  counter=0
+  while [[ "${counter}" -lt 3 ]]; do
+    sleep 5
+    # write connection checking to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $[${counter} + 1]"
+    echo -e "Checking connection, attempt: $[${counter} + 1]"
+    if grep -q 'Initialization Sequence Completed' "${LIBERNET_DIR}/log/openvpn.log"; then
+      CONNECTED=true
+      # write connection success to service log
+      "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">OpenVPN connection available</span>"
+      echo -e "OpenVPN connection available!"
+      # write connected time
+      "${LIBERNET_DIR}/bin/log.sh" -c "$(date +"%s")"
+      # change default route to tunnel
+      echo -e "${default_route}" > "${route_log}"
+      ip route del ${default_route}
+      break
+    fi
+    counter=$[${counter} + 1]
+  done
+  if ! $CONNECTED; then
+    # write not connectivity to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">OpenVPN connection unavailable</span>"
+    echo -e "OpenVPN connection unavailable!"
+    # cancel Libernet service
+    cancel_services
+    exit 1
+  fi
+  dns_resolver_service
+  memory_cleaner_service
+  ping_loop_service
+}
+
 function start_services() {
   # clear service log
   "${LIBERNET_DIR}/bin/log.sh" -r
@@ -135,6 +174,9 @@ function start_services() {
       ;;
     "4")
       shadowsocks_service
+      ;;
+    "5")
+      openvpn_service
       ;;
   esac
   # write service status: connected
@@ -165,10 +207,15 @@ function stop_services() {
     "4")
       "${LIBERNET_DIR}/bin/shadowsocks.sh" -s
       ;;
+    "5")
+      "${LIBERNET_DIR}/bin/openvpn.sh" -s
+      ;;
   esac
   if [[ "${1}" != '-c' ]]; then
-    # kill tun2socks
-    "${LIBERNET_DIR}/bin/tun2socks.sh" -w
+    # kill tun2socks if not openvpn
+    if [[ "${TUNNEL_MODE}" != '5' ]]; then
+      "${LIBERNET_DIR}/bin/tun2socks.sh" -w
+    fi
     # kill memory cleaner service
     if [[ "${MEMORY_CLEANER}" == 'true' ]]; then
       "${LIBERNET_DIR}/bin/memory-cleaner.sh" -s
@@ -236,6 +283,9 @@ case "${1}" in
     ;;
   -ss)
     shadowsocks_service
+    ;;
+  -so)
+    openvpn_service
     ;;
   -sl)
     start_services
