@@ -86,24 +86,22 @@ const app = new Vue({
     watch: {
         'config.mode': function (mode) {
             this.getProfiles(mode)
-            // this.config.profile = ""
         }
     },
     methods: {
         runLibernet() {
-            // this.status = !this.status
             if (!this.status) {
-                // this.status = true
+                // apply configuration
                 this.applyConfig().then(() => {
-                    axios.post('api.php', {
-                        action: "start_libernet"
-                    }).then(() => {
-                        console.log('Libernet service started!')
-                    })
                     // set auto start Libernet
                     axios.post('api.php', {
                         action: "set_auto_start",
                         status: this.config.system.tunnel.autostart
+                    }).then(() => {
+                        // start Libernet service
+                        axios.post('api.php', {
+                            action: "start_libernet"
+                        })
                     })
                 })
             } else {
@@ -111,15 +109,11 @@ const app = new Vue({
                     case 1:
                         axios.post('api.php', {
                             action: "cancel_libernet"
-                        }).then(() => {
-                            console.log('Libernet service canceled!')
                         })
                         break
                     case 2:
                         axios.post('api.php', {
                             action: "stop_libernet"
-                        }).then(() => {
-                            console.log('Libernet service stopped!')
                         })
                         break
                 }
