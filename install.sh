@@ -9,6 +9,7 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
+HOME="/root"
 ARCH="$(grep 'DISTRIB_ARCH' /etc/openwrt_release | awk -F '=' '{print $2}' | sed "s/'//g")"
 LIBERNET_DIR="${HOME}/libernet"
 LIBERNET_WWW="/www/libernet"
