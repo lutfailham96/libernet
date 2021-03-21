@@ -27,7 +27,7 @@ function install_packages() {
 }
 
 function install_proprietary_binaries() {
-  echo -e "Installing proprietary binaries" \
+  echo -e "Installing proprietary binaries"
   while IFS= read -r line; do
     if ! which ${line}; then
       bin="/usr/bin/${line}"
