@@ -127,9 +127,9 @@ EOF
 case "${1}" in
   -v)
     # start tun2socks service
-    init_tun_dev \
-      && route_add_ip \
-      && start_tun2socks
+    init_tun_dev
+    route_add_ip
+    start_tun2socks
     ;;
   -w)
     # stop tun2socks service
