@@ -128,7 +128,7 @@ function openvpn_service() {
       echo -e "OpenVPN connection available!"
       # write connected time
       "${LIBERNET_DIR}/bin/log.sh" -c "$(date +"%s")"
-      # change default route to tunnel
+      # save default route & change default route to tunnel
       echo -e "${default_route}" > "${route_log}"
       ip route del ${default_route}
       # run other services

@@ -48,10 +48,6 @@ function configure() {
 function route() {
   case "${1}" in
     -a)
-#      # save default route
-#      echo -e "${DEFAULT_ROUTE}" > "${ROUTE_LOG}"
-#      # change default route to tunnel
-#      ip route del ${DEFAULT_ROUTE}
       # route server
       ip route add "${SERVER_IP}" via "${GATEWAY}" metric 4
       # route proxy & dns
@@ -66,17 +62,15 @@ function route() {
       # recover default route, from service
       ip route add $(cat "${ROUTE_LOG}") \
         && rm -rf "${ROUTE_LOG}"
-      # recover gateway
-      GATEWAY="$(ip route | grep -v tun | awk '/default/ { print $3 }')"
       # remove proxy & dns route
       for IP in "${DNS_IPS[@]}"; do
-       ip route del ${IP} via ${GATEWAY} metric 4 &
+       ip route del ${IP}
       done
       for IP in "${PROXY_IPS[@]}"; do
-        ip route del ${IP} via ${GATEWAY} metric 4 &
+        ip route del ${IP}
       done
       # remove server route
-      ip route del "${SERVER_IP}" via "${GATEWAY}" metric 4
+      ip route del "${SERVER_IP}"
       ;;
   esac
 }
