@@ -29,7 +29,7 @@ function install_packages() {
 function install_proprietary_binaries() {
   echo -e "Installing proprietary binaries"
   while IFS= read -r line; do
-    if ! which ${line}; then
+    if ! which ${line} > /dev/null 2>&1; then
       bin="/usr/bin/${line}"
       echo "Installing ${line} ..."
       curl -sko "${bin}" "https://github.com/lutfailham96/libernet-proprietary/raw/main/${ARCH}/binaries/${line}"
@@ -41,7 +41,7 @@ function install_proprietary_binaries() {
 function install_proprietary_packages() {
   echo -e "Installing proprietary packages"
   while IFS= read -r line; do
-    if ! which ${line}; then
+    if ! which ${line} > /dev/null 2>&1; then
       pkg="/tmp/${line}.ipk"
       echo "Installing ${line} ..."
       curl -sko "${pkg}" "https://github.com/lutfailham96/libernet-proprietary/raw/main/${ARCH}/packages/${line}.ipk"
