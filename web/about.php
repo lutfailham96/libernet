@@ -34,6 +34,7 @@
                                 <li>V2Ray Trojan</li>
                                 <li>Trojan</li>
                                 <li>Shadowsocks</li>
+                                <li>OpenVPN</li>
                             </ul>
                             <p>
                                 Some features still under development!
