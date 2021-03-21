@@ -266,6 +266,6 @@ const app = new Vue({
             this.$refs.log.scrollTop = this.$refs.log.scrollHeight
             this.intervalGetDashboardInfo()
         })
-        this.getWanIp().then(() => this.intervalGetWanIp())
+        this.getWanIp().then(() => this.intervalGetWanIp()).catch(() => this.intervalGetWanIp())
     }
 })
