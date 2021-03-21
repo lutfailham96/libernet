@@ -103,7 +103,7 @@ const app = new Vue({
                             action: "start_libernet"
                         })
                         // refresh browser to prevent unwanted error
-                        location.reload()
+                        setTimeout(() => location.reload(), 500)
                     })
                 })
             } else {
@@ -259,6 +259,9 @@ const app = new Vue({
             }
         })
         this.getDashboardInfo().then(() => {
+            this.$refs.log.scrollTop = this.$refs.log.scrollHeight
+            this.intervalGetDashboardInfo()
+        }).catch(() => {
             this.$refs.log.scrollTop = this.$refs.log.scrollHeight
             this.intervalGetDashboardInfo()
         })
