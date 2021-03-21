@@ -108,6 +108,10 @@
                 $profile = $json['profile'];
                 get_config('shadowsocks', $profile);
                 break;
+            case 'get_openvpn_config':
+                $profile = $json['profile'];
+                get_config('openvpn', $profile);
+                break;
             case 'get_v2ray_configs':
                 get_profiles('v2ray');
                 break;
@@ -122,6 +126,9 @@
                 break;
             case 'get_shadowsocks_configs':
                 get_profiles('shadowsocks');
+                break;
+            case 'get_openvpn_configs':
+                get_profiles('openvpn');
                 break;
             case 'start_libernet':
                 $system_config = file_get_contents($libernet_dir.'/system/config.json');
@@ -280,6 +287,11 @@
                             file_put_contents($libernet_dir.'/bin/config/shadowsocks/'.$profile.'.json', json_encode($shadowsocks_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                             json_response('Shadowsocks config saved');
                             break;
+                        // openvpn
+                        case 5:
+                            file_put_contents($libernet_dir.'/bin/config/openvpn/'.$profile.'.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                            json_response('OpenVPN config saved');
+                            break;
                     }
                 }
                 break;
@@ -340,6 +352,14 @@
                             $system_config->tun2socks->udpgw->ip = $shadowsocks_config->etc->udpgw->ip;
                             $system_config->tun2socks->udpgw->port = $shadowsocks_config->etc->udpgw->port;
                             break;
+                        // openvpn
+                        case 5:
+                            $openvpn_config = file_get_contents($libernet_dir.'/bin/config/openvpn/'.$profile.'.json');
+                            $openvpn_config = json_decode($openvpn_config);
+                            $system_config->tunnel->profile->openvpn = $profile;
+                            $system_config->tun2socks->udpgw->ip = $openvpn_config->udpgw->ip;
+                            $system_config->tun2socks->udpgw->port = $openvpn_config->udpgw->port;
+                            break;
                     }
                     $system_config->tunnel->mode = $mode;
                     $system_config->tun2socks->legacy = $tun2socks_legacy;
@@ -376,6 +396,10 @@
                         case 4:
                             unlink($libernet_dir.'/bin/config/shadowsocks/'.$profile.'.json');
                             json_response('Shadowsocks config removed');
+                            break;
+                        case 5:
+                            unlink($libernet_dir.'/bin/config/openvpn/'.$profile.'.json');
+                            json_response('OpenVPN config removed');
                             break;
                     }
                 }

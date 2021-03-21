@@ -216,6 +216,22 @@ const app = new Vue({
                                 }
                             },
                             import_url: ""
+                        },
+                        {
+                            value: 5,
+                            name: "OpenVPN",
+                            profile: {
+                                status: 0,
+                                ovpn: "",
+                                username: "",
+                                password: "",
+                                ssl: false,
+                                sni: "",
+                                udpgw: {
+                                    ip: "127.0.0.1",
+                                    port: null
+                                }
+                            }
                         }
                     ]
                 },
@@ -254,6 +270,9 @@ const app = new Vue({
                 case 4:
                     action = "get_shadowsocks_configs"
                     break
+                case 5:
+                    action = "get_openvpn_configs"
+                    break
             }
             axios.post('api.php', {
                 action: action
@@ -279,6 +298,10 @@ const app = new Vue({
                         break
                     case 4:
                         this.getShadowsocksConfig()
+                        break
+                    case 5:
+                        this.getOpenvpnConfig()
+                        break
                 }
             })
         },
@@ -459,6 +482,24 @@ const app = new Vue({
                 }
             })
         },
+        getOpenvpnConfig() {
+            axios.post('api.php', {
+                action: "get_openvpn_config",
+                profile: this.config.profile
+            }).then((res) => {
+                const temp = this.config.temp
+                const profile = temp.modes[5].profile
+                const data = res.data.data
+                temp.mode = 5
+                temp.profile = this.config.profile
+                profile.ovpn = data.ovpn
+                profile.username = data.username
+                profile.password = data.password
+                profile.ssl = data.ssl
+                profile.sni = data.sni
+                profile.udpgw.port = data.udpgw.port
+            })
+        },
         getSystemConfig() {
             return new Promise((resolve) => {
                 axios.post('api.php', {
@@ -492,6 +533,10 @@ const app = new Vue({
                 case 4:
                     config = this.config.temp.modes[4].profile
                     title = "Shadowsocks config has been saved"
+                    break
+                case 5:
+                    config = this.config.temp.modes[5].profile
+                    title = "OpenVPN config has been saved"
                     break
             }
             axios.post('api.php', {
