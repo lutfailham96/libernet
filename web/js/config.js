@@ -226,11 +226,7 @@ const app = new Vue({
                                 username: "",
                                 password: "",
                                 ssl: false,
-                                sni: "",
-                                udpgw: {
-                                    ip: "127.0.0.1",
-                                    port: null
-                                }
+                                sni: ""
                             }
                         }
                     ]
@@ -497,7 +493,6 @@ const app = new Vue({
                 profile.password = data.password
                 profile.ssl = data.ssl
                 profile.sni = data.sni
-                profile.udpgw.port = data.udpgw.port
             })
         },
         getSystemConfig() {
