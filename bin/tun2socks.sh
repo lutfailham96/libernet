@@ -64,7 +64,7 @@ function start_tun2socks {
   echo ${DEFAULT_ROUTE} > ${ROUTE_LOG} \
     && ip route del ${DEFAULT_ROUTE}
   # add default route to tun2socks
-  route add default gw ${TUN_ADDRESS} metric 6
+  ip route add default via ${TUN_ADDRESS} metric 6
   echo -e "Tun2socks started!"
   # write connected time
   "${LIBERNET_DIR}/bin/log.sh" -c "$(date +"%s")"
@@ -82,19 +82,19 @@ function stop_tun2socks {
   ip route add $(cat "${ROUTE_LOG}") \
     && rm -rf "${ROUTE_LOG}"
   # remove default route to tun2socks
-  route del default gw ${TUN_ADDRESS} metric 6
+  ip route del default via ${TUN_ADDRESS} metric 6
   echo -e "Tun2socks stopped!"
 }
 
 function route_add_ip {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: routing server, proxy and DNS IPs"
-  route add ${SERVER_IP} gw ${GATEWAY} metric 4 &
+  ip route add ${SERVER_IP} via ${GATEWAY} metric 4 &
   for IP in "${PROXY_IPS[@]}"; do
-    route add ${IP} gw ${GATEWAY} metric 4 &
+    ip route add ${IP} via ${GATEWAY} metric 4 &
   done
   for IP in "${DNS_IPS[@]}"; do
-    route add ${IP} gw ${GATEWAY} metric 4 &
+    ip route add ${IP} via ${GATEWAY} metric 4 &
   done
   echo -e "Routes initialized!"
 }
@@ -103,12 +103,12 @@ function route_del_ip {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: removing routes"
   for IP in "${DNS_IPS[@]}"; do
-    route del ${IP} gw ${GATEWAY} metric 4 &
+    ip route del ${IP} &
   done
   for IP in "${PROXY_IPS[@]}"; do
-    route del ${IP} gw ${GATEWAY} metric 4 &
+    ip route del ${IP} &
   done
-  route del ${SERVER_IP} gw ${GATEWAY} metric 4 &
+  ip route del ${SERVER_IP} &
   echo -e "Routes removed!"
 }
 
@@ -135,8 +135,6 @@ case "${1}" in
     # stop tun2socks service
     echo -e "Stopping Tun2socks service ..."
     stop_tun2socks
-    # retrieve old gateway
-    GATEWAY="$(ip route | grep -v tun | awk '/default/ { print $3 }')"
     echo -e "Removing routes ..."
     route_del_ip
     echo -e "Removing tun device ..."
