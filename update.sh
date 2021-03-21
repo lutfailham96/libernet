@@ -38,7 +38,7 @@ function update_libernet_web() {
   if [[ -d "${LIBERNET_TMP}" ]]; then
     update_libernet
   else
-    git clone "${REPOSITORY_URL}" "${LIBERNET_TMP}" \
+    git clone --depth 1 "${REPOSITORY_URL}" "${LIBERNET_TMP}" \
       && cd "${LIBERNET_TMP}" \
       && bash install.sh \
       && echo -e "\nLibernet successfully updated!"
