@@ -614,6 +614,15 @@ const app = new Vue({
             profile.password = password
             this.resolveServerHost()
         },
+        importOvpnConfig(event) {
+            const file = event.target.files[0]
+            const reader = new FileReader()
+            reader.readAsText(file)
+            reader.onload = e => {
+                this.$emit("load", e.target.result)
+                this.config.temp.modes[5].profile.ovpn = e.target.result
+            }
+        },
         resolveServerHost: _.debounce(function () {
             switch (this.config.temp.mode) {
                 case 0:

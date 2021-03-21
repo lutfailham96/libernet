@@ -357,6 +357,13 @@
 
                             <div v-if="config.temp.mode === 5" class="openvpn pb-lg-2">
                                 <div class="form-row pb-lg-2">
+                                    <label>Import OVPN from file</label>
+                                    <div class="col-md-12 custom-file">
+                                        <input type="file" class="custom-file-input" accept=".ovpn, .conf" id="ovpn-file" @change="importOvpnConfig">
+                                        <label class="custom-file-label" for="ovpn-file">Choose file</label>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
                                     <div class="col-md-12">
                                         <label>OVPN</label>
                                         <textarea class="form-control" rows="10" v-model="config.temp.modes[5].profile.ovpn" required></textarea>
