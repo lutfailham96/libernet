@@ -27,30 +27,45 @@ function install_packages() {
 }
 
 function install_proprietary_binaries() {
-  echo -e "Copying proprietary binaries" \
-    && cp -arvf proprietary/${ARCH}/binaries/* /usr/bin/
+  echo -e "Installing proprietary binaries" \
+  while IFS= read -r line; do
+    if ! which ${line}; then
+      bin="/usr/bin/${line}"
+      echo "Installing ${line} ..."
+      curl -sko "${bin}" "https://github.com/lutfailham96/libernet-proprietary/raw/main/${ARCH}/binaries/${line}"
+      chmod +x "${bin}"
+    fi
+  done < binaries.txt
 }
 
 function install_proprietary_packages() {
-  echo -e "Installing proprietary packages" \
-    && opkg install proprietary/${ARCH}/packages/*.ipk
+  echo -e "Installing proprietary packages"
+  while IFS= read -r line; do
+    if ! which ${line}; then
+      pkg="/tmp/${line}.ipk"
+      echo "Installing ${line} ..."
+      curl -sko "${pkg}" "https://github.com/lutfailham96/libernet-proprietary/raw/main/${ARCH}/packages/${line}.ipk"
+      opkg install "${pkg}"
+      rm -rf "${pkg}"
+    fi
+  done < packages.txt
+}
+
+function install_proprietary() {
+  install_proprietary_binaries
+  install_proprietary_packages
 }
 
 function install_prerequisites() {
   # update packages index
   opkg update
-  # replace dnsmasq to dnsmasq-full
-  #if [[ $(opkg list-installed dnsmasq | grep -c dnsmasq) != "0" ]]; then
-  #  opkg remove dnsmasq
-  #fi
 }
 
 function install_requirements() {
   echo -e "Installing packages" \
     && install_prerequisites \
     && install_packages \
-    && install_proprietary_binaries \
-    && install_proprietary_packages
+    && install_proprietary
 }
 
 function enable_uhttp_php() {
@@ -151,7 +166,7 @@ function main() {
   fi
   # install Libernet
   if [[ ! -d "${LIBERNET_TMP}" ]]; then
-    git clone "${REPOSITORY_URL}" "${LIBERNET_TMP}" \
+    git clone --depth 1 "${REPOSITORY_URL}" "${LIBERNET_TMP}" \
       && cd "${LIBERNET_TMP}" \
       && bash install.sh
   else
