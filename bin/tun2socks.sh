@@ -2,7 +2,7 @@
 
 # Tun2socks Wrapper
 # by Lutfa Ilham
-# v1.1
+# v1.0
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -32,6 +32,12 @@ DEFAULT_ROUTE="$(ip route show | grep default)"
 function init_tun_dev {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: initializing tun device"
+  # remove tun dev if already exist
+  if ifconfig "${TUN_DEV}" > /dev/null 2>&1; then
+    ifconfig ${TUN_DEV} down
+    ip tuntap del dev ${TUN_DEV} mode tun
+  fi
+  # finally init tun dev
   ip tuntap add dev ${TUN_DEV} mode tun
   ifconfig ${TUN_DEV} mtu ${TUN_MTU}
   echo -e "Tun device initialized!"
