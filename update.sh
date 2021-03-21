@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Libernet Updater
+# by Lutfa Ilham
+# v1.0
+
 DOWNLOADS_DIR="${HOME}/Downloads"
 LIBERNET_TMP="${DOWNLOADS_DIR}/libernet"
 REPOSITORY_URL="git://github.com/lutfailham96/libernet.git"
