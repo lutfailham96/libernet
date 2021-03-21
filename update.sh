@@ -26,7 +26,7 @@ function update_libernet() {
 
 function update_libernet_cli() {
   echo -e "Updating Libernet ..." \
-    && git fetch origin master \
+    && git fetch origin main \
     && git reset --hard FETCH_HEAD \
     && bash install.sh \
     && echo -e "\nLibernet successfully updated!"
