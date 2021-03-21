@@ -35,6 +35,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan,
 - V2Ray Trojan
 - Trojan
 - Shadowsocks
+- OpenVPN
 
 ## Installation
 - If you don't have bash & curl on OpenWRT, please install first:
