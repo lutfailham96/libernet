@@ -101,6 +101,10 @@ const app = new Vue({
                         // start Libernet service
                         axios.post('api.php', {
                             action: "start_libernet"
+                        }).then(() => {
+                            // refresh browser only on openvpn mode to prevent error
+                            if (this.config.mode === 5)
+                                location.reload()
                         })
                     })
                 })
