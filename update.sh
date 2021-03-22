@@ -4,6 +4,7 @@
 # by Lutfa Ilham
 # v1.0
 
+HOME="/root"
 DOWNLOADS_DIR="${HOME}/Downloads"
 LIBERNET_TMP="${DOWNLOADS_DIR}/libernet"
 REPOSITORY_URL="git://github.com/lutfailham96/libernet.git"
@@ -26,7 +27,7 @@ function update_libernet() {
 
 function update_libernet_cli() {
   echo -e "Updating Libernet ..." \
-    && git fetch origin master \
+    && git fetch origin main \
     && git reset --hard FETCH_HEAD \
     && bash install.sh \
     && echo -e "\nLibernet successfully updated!"
