@@ -19,7 +19,7 @@ function run() {
   "${LIBERNET_DIR}/bin/log.sh" -w "Config: ${SHADOWSOCKS_PROFILE}, Mode: ${SERVICE_NAME}"
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
-  screen -AmdS ss-client ss-local -c "${SHADOWSOCKS_CONFIG}" \
+  screen -AmdS ss-client bash -c "while true; do ss-local -c \"${SHADOWSOCKS_CONFIG}\"; sleep 3; done" \
     && echo -e "${SERVICE_NAME} service started!"
 }
 
@@ -28,6 +28,7 @@ function stop() {
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
   echo -e "Stopping ${SERVICE_NAME} service ..."
   kill $(screen -list | grep ss-client | awk -F '[.]' {'print $1'})
+  killall ss-local
   # kill plugins
   killall obfs-local
   killall ck-client
