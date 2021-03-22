@@ -19,7 +19,7 @@ function run() {
   "${LIBERNET_DIR}/bin/log.sh" -w "Config: ${TROJAN_PROFILE}, Mode: ${SERVICE_NAME}"
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
-  screen -AmdS trojan-client trojan-go -config "${TROJAN_CONFIG}" \
+  screen -AmdS trojan-client bash -c "while true; do trojan-go -config \"${TROJAN_CONFIG}\"; sleep 3; done" \
     && echo -e "${SERVICE_NAME} service started!"
 }
 
