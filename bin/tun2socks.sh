@@ -56,9 +56,9 @@ function start_tun2socks {
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting tun2socks service"
   ifconfig ${TUN_DEV} ${TUN_GATEWAY} netmask ${TUN_NETMASK} up
   if [[ $TUN2SOCKS_MODE == "false" ]]; then
-    screen -AmdS go-tun2socks go-tun2socks -loglevel error -proxyServer "${SOCKS_SERVER}" -proxyType socks -tunName "${TUN_DEV}" -tunAddr "${TUN_ADDRESS}" -tunGw "${TUN_GATEWAY}" -tunMask "${TUN_NETMASK}"
+    screen -AmdS go-tun2socks go-tun2socks -loglevel none -proxyServer "${SOCKS_SERVER}" -proxyType socks -tunName "${TUN_DEV}" -tunAddr "${TUN_ADDRESS}" -tunGw "${TUN_GATEWAY}" -tunMask "${TUN_NETMASK}"
   else
-    screen -AmdS badvpn-tun2socks badvpn-tun2socks --tundev ${TUN_DEV} --netif-ipaddr ${TUN_ADDRESS} --netif-netmask ${TUN_NETMASK} --socks-server-addr ${SOCKS_SERVER} --udpgw-remote-server-addr "${UDPGW}"
+    screen -AmdS badvpn-tun2socks badvpn-tun2socks --loglevel 0 --tundev ${TUN_DEV} --netif-ipaddr ${TUN_ADDRESS} --netif-netmask ${TUN_NETMASK} --socks-server-addr ${SOCKS_SERVER} --udpgw-remote-server-addr "${UDPGW}"
   fi
   # removing default route
   echo ${DEFAULT_ROUTE} > ${ROUTE_LOG} \
