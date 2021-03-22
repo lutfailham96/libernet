@@ -87,7 +87,7 @@ function run() {
   fi
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
-  screen -AmdS openvpn bash -c "openvpn \"${OPENVPN_CFG}\" > ${LIBERNET_DIR}/log/openvpn.log" \
+  screen -AmdS openvpn bash -c "while true; do openvpn \"${OPENVPN_CFG}\" > \"${LIBERNET_DIR}/log/openvpn.log\"; sleep 3; done" \
     && echo -e "${SERVICE_NAME} service started!"
 }
 
