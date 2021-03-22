@@ -14,10 +14,7 @@
         }
     },
     "server": "",
-    "dns_servers": [
-        "94.140.14.14",
-        "94.140.15.15"
-    ],
+    "dns_servers": [],
     "proxy_servers": [],
     "tun2socks": {
         "legacy": true,
