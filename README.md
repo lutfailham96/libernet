@@ -56,6 +56,17 @@ bash ~/Downloads/libernet/update.sh
 ```
 - Updater script will updating Libernet to latest version
 
+## Fresh Install / Fresh Update
+- Remove Libernet installer directory
+```sh
+rm -rf ~/Downloads/libernet
+```
+- Run Libernet online installer
+```sh
+bash -c "$(curl -sko - 'https://raw.githubusercontent.com/lutfailham96/libernet/main/install.sh')"
+```
+- Latest version Libernet will be installed on your system
+
 ## Default Username & Password
 - Username: admin
 - Password: libernet
