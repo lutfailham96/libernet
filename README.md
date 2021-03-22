@@ -68,6 +68,9 @@ bash -c "$(curl -sko - 'https://raw.githubusercontent.com/lutfailham96/libernet/
 ```
 - Latest version Libernet will be installed on your system
 
+## Installation Note
+Don't forget to always clear browser cache after installing or upgrading Libernet to prevent unwanted error.
+
 ## Default Username & Password
 - Username: admin
 - Password: libernet
