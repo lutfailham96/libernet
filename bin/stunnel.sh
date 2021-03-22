@@ -38,7 +38,7 @@ function run() {
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
   configure "${1}" "${2}" "${3}" "${4}" "${5}" \
-    && screen -AmdS stunnel stunnel "${STUNNEL_CONFIG}" \
+    && screen -AmdS stunnel bash -c "while true; do stunnel \"${STUNNEL_CONFIG}\"; sleep 3; done" \
     && echo -e "${SERVICE_NAME} service started!"
 }
 
