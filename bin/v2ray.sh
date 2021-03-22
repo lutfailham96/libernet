@@ -31,7 +31,7 @@ function run() {
   "${LIBERNET_DIR}/bin/log.sh" -w "Config: ${V2RAY_PROFILE}, Mode: ${SERVICE_NAME}, Protocol: ${V2RAY_PROTOCOL}"
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
-  screen -AmdS v2ray-client v2ray -c "${V2RAY_CONFIG}" \
+  screen -AmdS v2ray-client bash -c "while true; do v2ray -c \"${V2RAY_CONFIG}\"; sleep 3; done" \
     && echo -e "${SERVICE_NAME} service started!"
 }
 
@@ -40,6 +40,7 @@ function stop() {
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
   echo -e "Stopping ${SERVICE_NAME} service ..."
   kill $(screen -list | grep v2ray-client | awk -F '[.]' {'print $1'})
+  killall v2ray
   echo -e "${SERVICE_NAME} service stopped!"
 }
 
