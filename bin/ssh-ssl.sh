@@ -37,8 +37,6 @@ function stop() {
   # kill ssh-ssl background service
   kill $(screen -list | grep ssh-ssl-connector | awk -F '[.]' {'print $1'})
   "${LIBERNET_DIR}/bin/stunnel.sh" -s
-  # force kill stunnel
-  killall stunnel
   echo -e "${SERVICE_NAME} service stopped!"
 }
 
