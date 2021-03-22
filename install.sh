@@ -9,6 +9,7 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
+HOME="/root"
 ARCH="$(grep 'DISTRIB_ARCH' /etc/openwrt_release | awk -F '=' '{print $2}' | sed "s/'//g")"
 LIBERNET_DIR="${HOME}/libernet"
 LIBERNET_WWW="/www/libernet"
@@ -139,6 +140,16 @@ function configure_libernet_service() {
   /etc/init.d/https-dns-proxy disable
 }
 
+function setup_system_logs() {
+  echo -e "Setup system logs"
+  logs=("status.log" "service.log" "connected.log")
+  for log in "${logs[@]}"; do
+    if [[ ! -f "${LIBERNET_DIR}/log/${log}" ]]; then
+      touch "${LIBERNET_DIR}/log/${log}"
+    fi
+  done
+}
+
 function finish_install() {
   router_ip="$(ifconfig br-lan | grep 'inet addr:' | awk '{print $2}' | awk -F ':' '{print $2}')"
   echo -e "Libernet successfully installed!\nLibernet URL: http://${router_ip}/libernet"
@@ -151,6 +162,7 @@ function main_installer() {
     && enable_uhttp_php \
     && configure_libernet_firewall \
     && configure_libernet_service \
+    && setup_system_logs \
     && finish_install
 }
 
