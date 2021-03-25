@@ -17,9 +17,6 @@ DNS_RESOLVER="$(grep 'dns_resolver":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 
 MEMORY_CLEANER="$(grep 'memory_cleaner":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 PING_LOOP="$(grep 'ping_loop":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
 
-# Restore failing service first
-usbmode -s > /dev/null 2>&1
-
 function check_connection() {
   counter=0
   max_retries=3
@@ -240,6 +237,8 @@ function cancel_services() {
 
 function auto_start() {
   while true; do
+    # switch usb mode until active
+    usbmode -s
     if ip route show | grep -q default; then
       # reset all service log
       "${LIBERNET_DIR}/bin/log.sh" -ra
@@ -255,7 +254,7 @@ function auto_start() {
 function enable_auto_start() {
   if ! grep -q "service.sh -as" /etc/rc.local; then
     echo -e "Enable Libernet auto start ..."
-    sed -i "s/exit 0/$(echo "export LIBERNET_DIR=\"${LIBERNET_DIR}\" \&\& ${LIBERNET_DIR}/bin/service.sh -as > /dev/null 2>\&1 \&" | sed 's/\//\\\//g')\nexit 0/g" /etc/rc.local \
+    sed -i "s/exit 0/$(echo "export LIBERNET_DIR=\"${LIBERNET_DIR}\" \&\& screen -AmdS libernet ${LIBERNET_DIR}/bin/service.sh -as > /dev/null 2>\&1 \&" | sed 's/\//\\\//g')\nexit 0/g" /etc/rc.local \
       && echo -e "Libernet auto start enabled!"
   fi
 }
