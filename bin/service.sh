@@ -238,7 +238,7 @@ function cancel_services() {
 function auto_start() {
   while true; do
     # switch usb mode until active
-    usbmode -s
+    usbmode -s > /dev/null 2>&1 &
     if ip route show | grep -q default; then
       # reset all service log
       "${LIBERNET_DIR}/bin/log.sh" -ra
