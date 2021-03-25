@@ -235,6 +235,11 @@ const app = new Vue({
             }
         }
     },
+    computed: {
+        openvpn_auth_user_pass() {
+            return this.config.temp.modes[5].profile.ovpn.includes("auth-user-pass")
+        },
+    },
     watch: {
         'config.mode': function (mode) {
             this.getProfiles(mode)

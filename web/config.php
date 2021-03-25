@@ -369,7 +369,7 @@
                                         <textarea class="form-control" rows="10" v-model="config.temp.modes[5].profile.ovpn" required></textarea>
                                     </div>
                                 </div>
-                                <div class="form-row pb-lg-2">
+                                <div v-if="openvpn_auth_user_pass" class="form-row pb-lg-2">
                                     <div class="col-md-6">
                                         <label>Username</label>
                                         <input type="text" class="form-control" placeholder="libernet" v-model="config.temp.modes[5].profile.username" required>
