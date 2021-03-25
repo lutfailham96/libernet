@@ -252,11 +252,11 @@ function auto_start() {
 }
 
 function enable_auto_start() {
-  if ! grep -q "service.sh -as" /etc/rc.local; then
-    echo -e "Enable Libernet auto start ..."
-    sed -i "s/exit 0/$(echo "export LIBERNET_DIR=\"${LIBERNET_DIR}\" \&\& screen -AmdS libernet ${LIBERNET_DIR}/bin/service.sh -as > /dev/null 2>\&1 \&" | sed 's/\//\\\//g')\nexit 0/g" /etc/rc.local \
-      && echo -e "Libernet auto start enabled!"
-  fi
+  # force re-enable
+  echo -e "Enable Libernet auto start ..."
+  sed -i "/service.sh -as/d" /etc/rc.local
+  sed -i "s/exit 0/$(echo "export LIBERNET_DIR=\"${LIBERNET_DIR}\" \&\& screen -AmdS libernet ${LIBERNET_DIR}/bin/service.sh -as > /dev/null 2>\&1 \&" | sed 's/\//\\\//g')\nexit 0/g" /etc/rc.local \
+    && echo -e "Libernet auto start enabled!"
 }
 
 function disable_auto_start() {
