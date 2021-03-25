@@ -1,0 +1,17 @@
+resolution_type: GETDNS_RESOLUTION_STUB
+round_robin_upstreams: 1
+appdata_dir: "/var/lib/stubby"
+tls_authentication: GETDNS_AUTHENTICATION_REQUIRED
+tls_query_padding_blocksize: 128
+edns_client_subnet_private: 1
+idle_timeout: 10000
+listen_addresses:
+  - 127.0.0.1@5453
+  - 0::1@5453
+dns_transport_list:
+  - GETDNS_TRANSPORT_TLS
+upstream_recursive_servers:
+  - address_data: 94.140.14.14
+    tls_auth_name: "dns.adguard.com"
+  - address_data: 94.140.15.15
+    tls_auth_name: "dns.adguard.com"

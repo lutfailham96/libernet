@@ -11,24 +11,14 @@ fi
 
 SERVICE_NAME="DNS Resolver"
 
-function setup() {
-  # reset dns settings
-  while uci -q delete https-dns-proxy.@https-dns-proxy[0]; do :; done
-  # setup dns servers
-  uci set https-dns-proxy.dns="https-dns-proxy"
-  uci set https-dns-proxy.dns.bootstrap_dns="94.140.14.14,94.140.15.15"
-  uci set https-dns-proxy.dns.resolver_url="https://dns.adguard.com/dns-query"
-  uci set https-dns-proxy.dns.listen_addr="127.0.0.1"
-  uci set https-dns-proxy.dns.listen_port="5053"
-  uci commit https-dns-proxy
-}
-
 function run() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
-  setup \
-    && /etc/init.d/https-dns-proxy restart \
+  # initialize iptables
+  iptables -t nat -A OUTPUT -p udp --dport 53 -j DNAT --to-destination 127.0.0.1:5453
+  iptables -t nat -A OUTPUT -p tcp --dport 53 -j DNAT --to-destination 127.0.0.1:5453
+  screen -AmdS stubby stubby -C "${LIBERNET_DIR}/bin/config/dns/stubby.yml" -v 0 \
     && echo -e "${SERVICE_NAME} service started!"
 }
 
@@ -36,7 +26,11 @@ function stop() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
   echo -e "Stopping ${SERVICE_NAME} service ..."
-  /etc/init.d/https-dns-proxy stop
+  # remove iptables
+  iptables -t nat -D OUTPUT -p udp --dport 53 -j DNAT --to-destination 127.0.0.1:5453
+  iptables -t nat -D OUTPUT -p tcp --dport 53 -j DNAT --to-destination 127.0.0.1:5453
+  kill $(screen -list | grep stubby | awk -F '[.]' {'print $1'})
+  killall stubby
   echo -e "${SERVICE_NAME} service stopped!"
 }
 

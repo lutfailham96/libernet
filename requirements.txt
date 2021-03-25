@@ -11,7 +11,7 @@ kmod-tun
 openssh-client
 shadowsocks-libev-ss-local
 dnsmasq
-https-dns-proxy
+stubby
 php7
 php7-cgi
 php7-mod-json

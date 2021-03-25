@@ -136,8 +136,8 @@ function configure_libernet_firewall() {
 
 function configure_libernet_service() {
   echo -e "Configuring Libernet service"
-  # disable dns resolver startup
-  /etc/init.d/https-dns-proxy disable
+  # disable stubby dns-over-tls
+  /etc/init.d/stubby disable
 }
 
 function setup_system_logs() {
