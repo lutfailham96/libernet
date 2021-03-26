@@ -239,9 +239,9 @@ function auto_start() {
   while true; do
     # switch usb mode until active
     usbmode -s > /dev/null 2>&1 &
+    # reset all service log
+    "${LIBERNET_DIR}/bin/log.sh" -ra
     if ip route show | grep -q default; then
-      # reset all service log
-      "${LIBERNET_DIR}/bin/log.sh" -ra
       # start Libernet service
       start_services
       break
