@@ -15,12 +15,13 @@
     <?php include('navbar.php'); ?>
     <div class="container">
         <div class="row py-2">
-            <div class="col-lg-8 col-md-12 mx-auto">
-                <div class="text-center">
-                    <h3>Home</h3>
-                </div>
+            <div class="col-lg-8 col-md-12 mx-auto mt-3">
                 <div class="card">
                     <div class="card-header">
+                        <div class="text-center">
+                            <h3>Home</h3>
+                        </div>
+                        <hr>
                         <form @submit.prevent="runLibernet">
                             <div class="form-group form-row my-auto">
                                 <div class="col-lg-4 col-md-4 form-row py-1">
