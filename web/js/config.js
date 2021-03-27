@@ -304,6 +304,8 @@ const app = new Vue({
                         this.getOpenvpnConfig()
                         break
                 }
+                // resolve server host
+                this.resolveServerHost()
             })
         },
         deleteConfig() {
