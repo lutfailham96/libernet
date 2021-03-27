@@ -2,7 +2,7 @@
 
 # HTTP Injector for Python3
 # modded by Lutfa Ilham
-# v1.1
+# v1.0
 # credit: https://github.com/mientz/python-http-injector
 
 import socket
