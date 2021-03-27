@@ -75,5 +75,14 @@ Don't forget to always clear browser cache after installing or upgrading Liberne
 - Username: admin
 - Password: libernet
 
-## Additional Information
-In home menu, check 'Use tun2socks legacy' to use badvpn-tun2socks or uncheck to use go-tun2socks instead.
+## Dashboard Information
+- Tun2socks legacy
+  - check to use badvpn-tun2socks (udp)
+  - uncheck to use go-tun2socks (tcp)
+- DNS resolver
+  - DNS over TLS (Adguard: ads blocker)
+- Ping loop
+  - looping ping based http connection over internet
+- Memory cleaner
+  - clean memory or ram cache every 1 hour
+- Auto start Libernet on boot
