@@ -136,8 +136,15 @@ function configure_libernet_firewall() {
 
 function configure_libernet_service() {
   echo -e "Configuring Libernet service"
-  # disable stubby dns-over-tls
+  # disable services startup
+  # DoT
   /etc/init.d/stubby disable
+  # shadowsocks
+  /etc/init.d/shadowsocks-libev disable
+  # openvpn
+  /etc/init.d/openvpn disable
+  # stunnel
+  /etc/init.d/stunnel disable
 }
 
 function setup_system_logs() {
