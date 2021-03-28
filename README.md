@@ -77,8 +77,8 @@ Don't forget to always clear browser cache after installing or upgrading Liberne
 
 ## Dashboard Information
 - Tun2socks legacy
-  - check to use badvpn-tun2socks (udp)
-  - uncheck to use go-tun2socks (tcp)
+  - check to use badvpn-tun2socks (tcp+udp)
+  - uncheck to use go-tun2socks (tcp only)
 - DNS resolver
   - DNS over TLS (Adguard: ads blocker)
 - Ping loop
