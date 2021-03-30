@@ -80,7 +80,7 @@ function enable_uhttp_php() {
 function add_libernet_environment() {
   if ! grep -q LIBERNET_DIR /etc/profile; then
     echo -e "Adding Libernet environment" \
-      && echo -e "# Libernet\nexport LIBERNET_DIR=${LIBERNET_DIR}" | tee -a '/etc/profile'
+      && echo -e "\n# Libernet\nexport LIBERNET_DIR=${LIBERNET_DIR}" | tee -a '/etc/profile'
   fi
 }
 
