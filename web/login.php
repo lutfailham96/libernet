@@ -38,17 +38,27 @@
                         <form action="" method="post">
                             <?php
                                 if ($loginError) {
-                                    echo '<div class="alert alert-danger" role="alert">Invalid username & password!</div>';
+                                    echo '<div class="alert alert-danger" role="alert">Invalid username & password combination!</div>';
                                 }
                             ?>
                             <div class="form-group">
-                                <input type="text" class="form-control" placeholder="Username" name="username" required>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Username" name="username" required>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <input type="password" class="form-control" placeholder="Password" name="password" required>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                                    </div>
+                                    <input type="password" class="form-control" placeholder="Password" name="password" required>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-primary btn-block">Login</button>
+                                <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-sign-in"></i> Login</button>
                             </div>
                         </form>
                     </div>
