@@ -1,6 +1,10 @@
 body {
-    background-color: #eeeeee;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-image: url("../img/background.jpg");
 }
+
 .login {
     min-height: 75vh;
     display: flex;
