@@ -102,8 +102,8 @@
                                 <div class="col-lg-6 col-md-6">
                                     <span>WAN IP: {{ wan_ip }}</span>
                                 </div>
-                                <div class="col-lg-12 col-md-6">
-                                    <span :class="{ 'text-secondary': status }">TX | RX: {{ total_data.tx }} | {{ total_data.rx }}</span>
+                                <div v-if="connection === 2" class="col-lg-12 col-md-6">
+                                    <span>TX | RX: </span><span class="text-secondary">{{ total_data.tx }} | {{ total_data.rx }}</span>
                                 </div>
                                 <div class="col pt-2">
                                     <pre ref="log" v-html="log" class="form-control text-left" style="height: 15rem; background-color: #e9ecef"></pre>
