@@ -13,6 +13,10 @@ const app = new Vue({
                 seconds: 0
             },
             wan_ip: "",
+            total_data: {
+                tx: 0,
+                rx: 0
+            },
             config: {
                 mode: 0,
                 profile: "",
@@ -200,6 +204,8 @@ const app = new Vue({
                         this.updateConnectedTime()
                     }
                     this.log = res.data.data.log
+                    this.total_data.tx = res.data.data.total_data.tx
+                    this.total_data.rx = res.data.data.total_data.rx
                     this.$refs.log.scrollTop = this.$refs.log.scrollHeight
                     resolve(res)
                 })

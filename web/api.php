@@ -148,10 +148,17 @@
                 $status = file_get_contents($libernet_dir.'/log/status.log');
                 $log = file_get_contents($libernet_dir.'/log/service.log');
                 $connected = file_get_contents($libernet_dir.'/log/connected.log');
+                // use hard coded tun device
+                exec("ifconfig tun1 | grep 'bytes:' | awk '{print $3, $4}' | sed 's/(//g; s/)//g'", $rx);
+                exec("ifconfig tun1 | grep 'bytes:' | awk '{print $7, $8}' | sed 's/(//g; s/)//g'", $tx);
                 json_response(array(
                     'status' => intval($status),
                     'log' => $log,
-                    'connected' => $connected
+                    'connected' => $connected,
+                    'total_data' => [
+                        'tx' => implode($tx),
+                        'rx' => implode($rx),
+                    ]
                 ));
                 break;
             case 'save_config':
