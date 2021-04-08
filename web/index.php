@@ -19,7 +19,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="text-center">
-                            <h3>Home</h3>
+                            <h3><i class="fa fa-home"></i> Home</h3>
                         </div>
                         <hr>
                         <form @submit.prevent="runLibernet">

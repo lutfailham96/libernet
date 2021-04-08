@@ -19,7 +19,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="text-center">
-                            <h3>Configuration</h3>
+                            <h3><i class="fa fa-gears"></i> Configuration</h3>
                         </div>
                         <hr>
                         <form @submit.prevent="getConfig">

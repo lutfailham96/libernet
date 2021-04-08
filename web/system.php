@@ -18,7 +18,9 @@
             <div class="col-lg-8 col-md-12 mx-auto mt-4 mb-2">
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="text-center">System</h3>
+                        <div class="text-center">
+                            <h3><i class="fa fa-user"></i> System</h3>
+                        </div>
                     </div>
                     <div class="card-body">
                         <form @submit.prevent="changePassword">
