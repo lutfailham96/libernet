@@ -1,0 +1,7 @@
+badvpn-tun2socks
+ck-client
+corkscrew
+go-tun2socks
+obfs-local
+sshpass
+trojan-go

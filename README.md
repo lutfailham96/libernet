@@ -3,7 +3,7 @@
 </p>
 
 # Libernet
-Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan, Shadowsocks on OpenWRT with ease.
+Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan, Shadowsocks, OpenVPN on OpenWRT with ease.
 
 ## Requirements
 - bash
@@ -25,6 +25,7 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan,
 - php7-mod-session
 - php7-mod-json
 - httping
+- openvpn-openssl
 
 ## Working Features:
 - SSH with proxy

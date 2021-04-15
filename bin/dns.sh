@@ -9,10 +9,12 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-function setup_dns() {
+SERVICE_NAME="DNS Resolver"
+
+function setup() {
   # reset dns settings
   while uci -q delete https-dns-proxy.@https-dns-proxy[0]; do :; done
-  # setup dns
+  # setup dns servers
   uci set https-dns-proxy.dns="https-dns-proxy"
   uci set https-dns-proxy.dns.bootstrap_dns="94.140.14.14,94.140.15.15"
   uci set https-dns-proxy.dns.resolver_url="https://dns.adguard.com/dns-query"
@@ -21,29 +23,39 @@ function setup_dns() {
   uci commit https-dns-proxy
 }
 
-function start_dns() {
-  setup_dns \
-    && /etc/init.d/https-dns-proxy restart
+function run() {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
+  echo -e "Starting ${SERVICE_NAME} service ..."
+  setup \
+    && /etc/init.d/https-dns-proxy restart \
+    && echo -e "${SERVICE_NAME} service started!"
 }
 
-function stop_dns() {
+function stop() {
+  # write to service log
+  "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
+  echo -e "Stopping ${SERVICE_NAME} service ..."
   /etc/init.d/https-dns-proxy stop
+  echo -e "${SERVICE_NAME} service stopped!"
 }
 
-while getopts ":rs" opt; do
-  case ${opt} in
-  r)
-    start_dns > /dev/null 2>&1
-    echo -e "DNS resolver started!"
+function usage() {
+  cat <<EOF
+Usage:
+  -r  Run ${SERVICE_NAME} service
+  -s  Stop ${SERVICE_NAME} service
+EOF
+}
+
+case "${1}" in
+  -r)
+    run
     ;;
-  s)
-    stop_dns > /dev/null 2>&1
-    echo -e "DNS resolver stopped!"
+  -s)
+    stop
     ;;
   *)
-    echo -e "Usage:"
-    echo -e "\t-r\tRun DNS resolver"
-    echo -e "\t-s\tStop DNS resolver"
+    usage
     ;;
-  esac
-done
+esac

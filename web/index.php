@@ -54,7 +54,7 @@
                     <div class="card-body">
                         <div class="card-body py-0 px-0">
                             <div class="row">
-                                <div class="col-lg-6 col-md-6 pb-lg-1">
+                                <div v-if="config.mode !== 5" class="col-lg-6 col-md-6 pb-lg-1">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" v-model="config.system.tun2socks.legacy" :disabled="status === true" id="tun2socks-legacy">
                                         <label class="form-check-label" for="tun2socks-legacy">

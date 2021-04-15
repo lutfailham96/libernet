@@ -23,7 +23,7 @@
                     <div class="card-body">
                         <div>
                             <p>
-                                Libernet is open source web app for tunneling internet using SSH, V2Ray on OpenWRT with ease.
+                                Libernet is open source web app for tunneling internet on OpenWRT with ease.
                             </p>
                             <span>Working features:</span>
                             <ul class="m-2">
@@ -34,6 +34,7 @@
                                 <li>V2Ray Trojan</li>
                                 <li>Trojan</li>
                                 <li>Shadowsocks</li>
+                                <li>OpenVPN</li>
                             </ul>
                             <p>
                                 Some features still under development!

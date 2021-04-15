@@ -355,6 +355,46 @@
                                 </div>
                             </div>
 
+                            <div v-if="config.temp.mode === 5" class="openvpn pb-lg-2">
+                                <div class="form-row pb-lg-2">
+                                    <label>Import OVPN from file</label>
+                                    <div class="col-md-12 custom-file">
+                                        <input type="file" class="custom-file-input" accept=".ovpn, .conf" id="ovpn-file" @change="importOvpnConfig">
+                                        <label class="custom-file-label" for="ovpn-file">Choose file</label>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-12">
+                                        <label>OVPN</label>
+                                        <textarea class="form-control" rows="10" v-model="config.temp.modes[5].profile.ovpn" required></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Username</label>
+                                        <input type="text" class="form-control" placeholder="libernet" v-model="config.temp.modes[5].profile.username" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Password</label>
+                                        <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[5].profile.password" required>
+                                    </div>
+                                </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-12 pl-4">
+                                        <input class="form-check-input" type="checkbox" v-model="config.temp.modes[5].profile.ssl" id="enable-ssl">
+                                        <label class="form-check-label" for="enable-ssl">
+                                            Enable SSL
+                                        </label>
+                                    </div>
+                                </div>
+                                <div v-if="config.temp.modes[5].profile.ssl" class="form-row pb-lg-2">
+                                    <div class="col-md-4">
+                                        <label>SNI</label>
+                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model="config.temp.modes[5].profile.sni" required>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div class="form-group pb-lg-2 text-center">
                                 <label>Config Name</label>
                                 <input type="text" class="form-control text-center" placeholder="bypass-filter" v-model="config.temp.profile" required>

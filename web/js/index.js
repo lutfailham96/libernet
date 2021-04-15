@@ -40,6 +40,10 @@ const app = new Vue({
                         {
                             value: 4,
                             name: "Shadowsocks"
+                        },
+                        {
+                            value: 5,
+                            name: "OpenVPN"
                         }
                     ]
                 },
@@ -138,6 +142,9 @@ const app = new Vue({
                     break
                 case 4:
                     action = "get_shadowsocks_configs"
+                    break
+                case 5:
+                    action = "get_openvpn_configs"
                     break
             }
             axios.post('api.php', {
@@ -250,9 +257,15 @@ const app = new Vue({
                 case 4:
                     this.config.profile = res.tunnel.profile.shadowsocks
                     break
+                case 5:
+                    this.config.profile = res.tunnel.profile.openvpn
+                    break
             }
         })
-        this.getDashboardInfo().then(() => this.intervalGetDashboardInfo())
+        this.getDashboardInfo().then(() => {
+            this.$refs.log.scrollTop = this.$refs.log.scrollHeight
+            this.intervalGetDashboardInfo()
+        })
         this.getWanIp().then(() => this.intervalGetWanIp())
     }
 })

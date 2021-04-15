@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Libernet Updater
+# by Lutfa Ilham
+# v1.0
+
 DOWNLOADS_DIR="${HOME}/Downloads"
 LIBERNET_TMP="${DOWNLOADS_DIR}/libernet"
 REPOSITORY_URL="git://github.com/lutfailham96/libernet.git"
@@ -38,7 +42,7 @@ function update_libernet_web() {
   if [[ -d "${LIBERNET_TMP}" ]]; then
     update_libernet
   else
-    git clone "${REPOSITORY_URL}" "${LIBERNET_TMP}" \
+    git clone --depth 1 "${REPOSITORY_URL}" "${LIBERNET_TMP}" \
       && cd "${LIBERNET_TMP}" \
       && bash install.sh \
       && echo -e "\nLibernet successfully updated!"

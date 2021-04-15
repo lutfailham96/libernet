@@ -2,7 +2,7 @@
 
 # Tun2socks Wrapper
 # by Lutfa Ilham
-# v1.1
+# v1.0
 
 if [ "$(id -u)" != "0" ]; then
   echo "This script must be run as root" 1>&2
@@ -32,6 +32,12 @@ DEFAULT_ROUTE="$(ip route show | grep default)"
 function init_tun_dev {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: initializing tun device"
+  # remove tun dev if already exist
+  if ifconfig "${TUN_DEV}" > /dev/null 2>&1; then
+    ifconfig ${TUN_DEV} down
+    ip tuntap del dev ${TUN_DEV} mode tun
+  fi
+  # finally init tun dev
   ip tuntap add dev ${TUN_DEV} mode tun
   ifconfig ${TUN_DEV} mtu ${TUN_MTU}
   echo -e "Tun device initialized!"
@@ -106,15 +112,26 @@ function route_del_ip {
   echo -e "Routes removed!"
 }
 
-while getopts ":idrsyzvw" opt; do
-  case ${opt} in
-  v)
+function usage() {
+  cat <<EOF
+Usage:
+  -i  Initialize tun device
+  -d  Destroy tun device
+  -y  Route server, proxy & dns
+  -z  Remove route server, proxy & dns
+  -r  Run tun2socks
+  -s  Stop tun2socks
+EOF
+}
+
+case "${1}" in
+  -v)
     # start tun2socks service
     init_tun_dev \
       && route_add_ip \
       && start_tun2socks
     ;;
-  w)
+  -w)
     # stop tun2socks service
     echo -e "Stopping Tun2socks service ..."
     stop_tun2socks
@@ -125,32 +142,25 @@ while getopts ":idrsyzvw" opt; do
     echo -e "Removing tun device ..."
     destroy_tun_dev
     ;;
-  i)
+  -i)
     init_tun_dev
     ;;
-  d)
+  -d)
     destroy_tun_dev
     ;;
-  r)
+  -r)
     start_tun2socks
     ;;
-  s)
+  -s)
     stop_tun2socks
     ;;
-  y)
+  -y)
     route_add_ip
     ;;
-  z)
+  -z)
     route_del_ip
     ;;
   *)
-    echo -e "Usage:"
-    echo -e "\t-i\tInitialize tun device"
-    echo -e "\t-d\tDestroy tun device"
-    echo -e "\t-y\tRoute add server & dns"
-    echo -e "\t-z\tRoute del server & dns"
-    echo -e "\t-r\tRun tun2socks"
-    echo -e "\t-s\tStop tun2socks"
+    usage
     ;;
-  esac
-done
+esac
