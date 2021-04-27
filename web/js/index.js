@@ -182,7 +182,7 @@ const app = new Vue({
         },
         getWanIp() {
             return new Promise((resolve) => {
-                axios.get('http://ip-api.com/json').then((res) => {
+                axios.get('http://ip-api.com/json?fields=query,country').then((res) => {
                     this.wan_ip = res.data.query
                     this.wan_country = "(" + res.data.country + ")"
                     resolve(res)
