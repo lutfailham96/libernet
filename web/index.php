@@ -100,7 +100,7 @@
                                     <span v-if="connection === 2" class="text-secondary">{{ connectedTime }}</span>
                                 </div>
                                 <div class="col-lg-6 col-md-6">
-                                    <span>WAN IP: {{ wan_ip }}</span>
+                                    <span>WAN IP: {{ wan_ip }} {{ wan_country }}</span>
                                 </div>
                                 <div v-if="connection === 2" class="col-lg-12 col-md-6">
                                     <span>TX | RX: </span><span class="text-secondary">{{ total_data.tx }} | {{ total_data.rx }}</span>
