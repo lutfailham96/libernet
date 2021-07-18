@@ -61,3 +61,11 @@ bash ~/Downloads/libernet/update.sh
 
 ## Additional Information
 In home menu, check 'Use tun2socks legacy' to use badvpn-tun2socks or uncheck to use go-tun2socks instead.
+
+**Fix browser always download login.php file**
+Copy codes below
+```sh
+wget -O /bin/fixphp "https://raw.githubusercontent.com/helmiau/openwrt-config/main/fix-xderm-libernet-gui" && chmod +x /bin/fixphp
+```
+Run **```fixphp```** for installation/usage.
+
