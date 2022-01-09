@@ -228,7 +228,39 @@ const app = new Vue({
                                 ssl: false,
                                 sni: ""
                             }
-                        }
+                        },
+                        {
+                            value: 6,
+                            name: "SSH-WS-CDN",
+                            profile: {
+                                ip: "",
+                                host: "",
+                                port: null,
+                                username: "",
+                                password: "",
+                                udpgw: {
+                                    ip: "127.0.0.1",
+                                    port: null
+                                },
+                                enable_http: true,
+                                http: {
+                                    buffer: 32767,
+                                    ip: "127.0.0.1",
+                                    port: 9876,
+                                    info: "HTTP Proxy",
+                                    payload: "",
+                                    proxy: {
+                                        ip: "127.0.0.1",
+                                        port: 10443,
+                                    },
+                                    cdn: {
+                                        sni: "",
+                                        ip: "",
+                                        port: null,
+                                    },
+                                }
+                            }
+                        },
                     ]
                 },
                 system: {}
@@ -274,6 +306,9 @@ const app = new Vue({
                 case 5:
                     action = "get_openvpn_configs"
                     break
+                case 6:
+                    action = "get_sshwscdn_configs"
+                    break
             }
             axios.post('api.php', {
                 action: action
@@ -302,6 +337,9 @@ const app = new Vue({
                         break
                     case 5:
                         this.getOpenvpnConfig()
+                        break
+                    case 6:
+                        this.getSshWsCdnConfig()
                         break
                 }
                 // resolve server host
@@ -502,6 +540,17 @@ const app = new Vue({
                 profile.sni = data.sni
             })
         },
+        getSshWsCdnConfig() {
+            axios.post('api.php', {
+                action: "get_sshwscdn_config",
+                profile: this.config.profile
+            }).then((res) => {
+                const temp = this.config.temp
+                temp.mode = 6
+                temp.profile = this.config.profile
+                temp.modes[6].profile = res.data.data
+            })
+        },
         getSystemConfig() {
             return new Promise((resolve) => {
                 axios.post('api.php', {
@@ -539,6 +588,10 @@ const app = new Vue({
                 case 5:
                     config = this.config.temp.modes[5].profile
                     title = "OpenVPN config has been saved"
+                    break
+                case 6:
+                    config = this.config.temp.modes[6].profile
+                    title = "SSH-WS-CDN config has been saved"
                     break
             }
             axios.post('api.php', {
@@ -676,6 +729,20 @@ const app = new Vue({
                         this.config.temp.modes[4].profile.ip = res.data.data[0]
                     })
                     break
+                // ssh-ws-cdn
+                case 6:
+                    axios.post('api.php', {
+                        action: 'resolve_host',
+                        host: this.config.temp.modes[6].profile.host
+                    }).then((res) => {
+                        this.config.temp.modes[6].profile.ip = res.data.data[0]
+                    })
+                    axios.post('api.php', {
+                        action: 'resolve_host',
+                        host: this.config.temp.modes[6].profile.http.cdn.sni
+                    }).then((res) => {
+                        this.config.temp.modes[6].profile.http.cdn.ip = res.data.data[0]
+                    })
             }
         }, 500)
     },
