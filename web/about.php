@@ -31,6 +31,7 @@
                             <ul class="m-2">
                                 <li>SSH with proxy</li>
                                 <li>SSH-SSL</li>
+                                <li>SSH-Websocket-CDN</li>
                                 <li>V2Ray VMess</li>
                                 <li>V2Ray VLESS</li>
                                 <li>V2Ray Trojan</li>
