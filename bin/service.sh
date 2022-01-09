@@ -147,6 +147,12 @@ function openvpn_service() {
   done
 }
 
+function ssh_ws_cdn_service() {
+  "${LIBERNET_DIR}/bin/ssh-ws-cdn.sh" -r
+  check_connection
+  run_other_services
+}
+
 function start_services() {
   # clear service log
   "${LIBERNET_DIR}/bin/log.sh" -r
@@ -172,6 +178,9 @@ function start_services() {
       ;;
     "5")
       openvpn_service
+      ;;
+    "6")
+      ssh_ws_cdn_service
       ;;
   esac
   # write service status: connected
@@ -204,6 +213,9 @@ function stop_services() {
       ;;
     "5")
       "${LIBERNET_DIR}/bin/openvpn.sh" -s
+      ;;
+    "6")
+      "${LIBERNET_DIR}/bin/ssh-ws-cdn.sh" -s
       ;;
   esac
   if [[ "${1}" != '-c' ]]; then
@@ -283,6 +295,9 @@ case "${1}" in
     ;;
   -so)
     openvpn_service
+    ;;
+  -swc)
+    ssh_ws_cdn_service
     ;;
   -sl)
     start_services
