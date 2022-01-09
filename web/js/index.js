@@ -49,7 +49,11 @@ const app = new Vue({
                         {
                             value: 5,
                             name: "OpenVPN"
-                        }
+                        },
+                        {
+                            value: 6,
+                            name: "SSH-WS-CDN",
+                        },
                     ]
                 },
                 system: {
@@ -146,6 +150,9 @@ const app = new Vue({
                     break
                 case 5:
                     action = "get_openvpn_configs"
+                    break
+                case 6:
+                    action = "get_sshwscdn_configs"
                     break
             }
             axios.post('api.php', {
@@ -263,6 +270,9 @@ const app = new Vue({
                     break
                 case 5:
                     this.config.profile = res.tunnel.profile.openvpn
+                    break
+                case 6:
+                    this.config.profile = res.tunnel.profile.ssh_ws_cdn
                     break
             }
         })
