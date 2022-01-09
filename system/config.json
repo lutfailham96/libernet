@@ -10,10 +10,12 @@
             "ssh_ssl": "",
             "trojan": "",
             "shadowsocks": "",
-            "openvpn": ""
+            "openvpn": "",
+            "ssh_ws_cdn": ""
         }
     },
     "server": "",
+    "cdn_server": "",
     "dns_servers": [],
     "proxy_servers": [],
     "tun2socks": {
