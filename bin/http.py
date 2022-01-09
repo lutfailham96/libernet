@@ -130,7 +130,8 @@ class Server:
         try:
             self.tx_chan[self.s].send(netdata)
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
     def on_outbounddata(self):
         netdata = self.netdata
@@ -148,7 +149,8 @@ class Server:
                             self.rx_chan[self.s].send(self.request[self.s])
                             self.request[self.s] = ''
                     except Exception as e:
-                        print(e)
+                        # print(e)
+                        pass
                 netdata = 'HTTP/1.1 200 Connection established\r\n\r\n'
             netdata = netdata.encode('ascii')
         except Exception as e:
@@ -164,7 +166,8 @@ class Server:
         try:
             self.tx_chan[self.s].send(netdata)
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
     def main_loop(self):
         self.sockets.append(self.server)
@@ -182,7 +185,7 @@ class Server:
                 try:
                     self.netdata = self.s.recv(self.buffer_size)
                 except Exception as e:
-                    print(e)
+                    # print(e)
                     self.netdata = ''.encode('ascii')
 
                 if len(self.netdata) <= 0:
