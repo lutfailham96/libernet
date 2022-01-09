@@ -102,8 +102,14 @@
                                 <div class="col-lg-6 col-md-6">
                                     <span>WAN IP: {{ wan_ip }} {{ wan_country }}</span>
                                 </div>
-                                <div v-if="connection === 2" class="col-lg-12 col-md-6">
+                                <div class="col-lg-6 col-md-6 d-sm-block d-md-block d-lg-none">
+                                    <span>WAN ISP: {{ wan_isp }}</span>
+                                </div>
+                                <div v-if="connection === 2" class="col-lg-6 col-md-6">
                                     <span>TX | RX: </span><span class="text-secondary">{{ total_data.tx }} | {{ total_data.rx }}</span>
+                                </div>
+                                <div class="col-lg-6 col-md-6 d-none d-lg-block d-xl-block">
+                                    <span>WAN ISP: {{ wan_isp }}</span>
                                 </div>
                                 <div class="col pt-2">
                                     <pre ref="log" v-html="log" class="form-control text-left" style="height: 15rem; background-color: #e9ecef"></pre>
