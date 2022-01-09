@@ -24,6 +24,7 @@ UDPGW_PORT="$(grep 'port":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s
 UDPGW="${UDPGW_IP}:${UDPGW_PORT}"
 GATEWAY="$(ip route | grep -v tun | awk '/default/ { print $3 }')"
 SERVER_IP="$(grep 'server":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '1p')"
+CDN_IP="$(grep 'cdn_server":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '1p')"
 readarray -t PROXY_IPS < <(jq -r '.proxy_servers[]' < ${SYSTEM_CONFIG})
 readarray -t DNS_IPS < <(jq -r '.dns_servers[]' < ${SYSTEM_CONFIG})
 ROUTE_LOG="${LIBERNET_DIR}/log/route.log"
@@ -90,6 +91,7 @@ function route_add_ip {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Tun2socks: routing server, proxy and DNS IPs"
   ip route add ${SERVER_IP} via ${GATEWAY} metric 4 &
+  ip route add ${CDN_IP} via ${GATEWAY} metric 4 &
   for IP in "${PROXY_IPS[@]}"; do
     ip route add ${IP} via ${GATEWAY} metric 4 &
   done
