@@ -112,6 +112,10 @@
                 $profile = $json['profile'];
                 get_config('openvpn', $profile);
                 break;
+            case 'get_sshwscdn_config':
+                $profile = $json['profile'];
+                get_config('ssh_ws_cdn', $profile);
+                break;
             case 'get_v2ray_configs':
                 get_profiles('v2ray');
                 break;
@@ -129,6 +133,9 @@
                 break;
             case 'get_openvpn_configs':
                 get_profiles('openvpn');
+                break;
+            case 'get_sshwscdn_configs':
+                get_profiles('ssh_ws_cdn');
                 break;
             case 'start_libernet':
                 $system_config = file_get_contents($libernet_dir.'/system/config.json');
@@ -299,6 +306,11 @@
                             file_put_contents($libernet_dir.'/bin/config/openvpn/'.$profile.'.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                             json_response('OpenVPN config saved');
                             break;
+                        // ssh-ws-cdn
+                        case 6:
+                            file_put_contents($libernet_dir.'/bin/config/ssh_ws_cdn/'.$profile.'.json', json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+                            json_response('SSH-WS-CDN config saved');
+                            break;
                     }
                 }
                 break;
@@ -367,6 +379,16 @@
                             $system_config->tun2socks->udpgw->ip = $openvpn_config->udpgw->ip;
                             $system_config->tun2socks->udpgw->port = $openvpn_config->udpgw->port;
                             break;
+                        // ssh-ws-cdn
+                        case 6:
+                            $ssh_ws_cdn_config = file_get_contents($libernet_dir.'/bin/config/ssh_ws_cdn/'.$profile.'.json');
+                            $ssh_ws_cdn_config = json_decode($ssh_ws_cdn_config);
+                            $system_config->tunnel->profile->ssh_ws_cdn = $profile;
+                            $system_config->server = $ssh_ws_cdn_config->ip;
+                            $system_config->cdn_server = $ssh_ws_cdn_config->http->cdn->ip;
+                            $system_config->tun2socks->udpgw->ip = $ssh_ws_cdn_config->udpgw->ip;
+                            $system_config->tun2socks->udpgw->port = $ssh_ws_cdn_config->udpgw->port;
+                            break;
                     }
                     $system_config->tunnel->mode = $mode;
                     $system_config->tun2socks->legacy = $tun2socks_legacy;
@@ -407,6 +429,10 @@
                         case 5:
                             unlink($libernet_dir.'/bin/config/openvpn/'.$profile.'.json');
                             json_response('OpenVPN config removed');
+                            break;
+                        case 6;
+                            unlink($libernet_dir.'/bin/config/ssh_ws_cdn/'.$profile.'.json');
+                            json_response('SSH-WS-CDN config removed');
                             break;
                     }
                 }
