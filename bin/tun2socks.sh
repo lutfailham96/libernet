@@ -110,6 +110,7 @@ function route_del_ip {
   for IP in "${PROXY_IPS[@]}"; do
     ip route del ${IP} &
   done
+  ip route del ${CDN_IP} &
   ip route del ${SERVER_IP} &
   echo -e "Routes removed!"
 }
