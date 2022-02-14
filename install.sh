@@ -70,11 +70,16 @@ function install_requirements() {
 }
 
 function enable_uhttp_php() {
-  echo -e "Enabling uhttp php execution" \
-    && sed -i '/^#.*php-cgi/s/^#//' '/etc/config/uhttpd' \
-    && uci commit uhttpd \
-    && echo -e "Restarting uhttp service" \
-    && /etc/init.d/uhttpd restart
+  if ! grep -q ".php=/usr/bin/php-cgi" /etc/config/uhttpd; then
+    echo -e "Enabling uhttp php execution" \
+      && uci set uhttpd.main.interpreter='.php=/usr/bin/php-cgi' \
+      && uci add_list uhttpd.main.index_page='index.php' \
+      && uci commit uhttpd \
+      && echo -e "Restarting uhttp service" \
+      && /etc/init.d/uhttpd restart
+  else
+    echo -e "uhttp php already enabled, skipping ..."
+  fi
 }
 
 function add_libernet_environment() {
