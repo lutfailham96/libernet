@@ -30,7 +30,7 @@
                                     </div>
                                     <div class="col">
                                         <select class="form-control" v-model.number="config.mode" required>
-                                            <option v-for="mode in config.temp.modes" :value="mode.value">{{ mode.name }}</option>
+                                            <option v-for="mode in sortedModes" :value="mode.value">{{ mode.name }}</option>
                                         </select>
                                     </div>
                                 </div>
