@@ -2,7 +2,7 @@
 
 # Libernet Updater
 # by Lutfa Ilham
-# v1.0
+# v1.0.0
 
 HOME="/root"
 DOWNLOADS_DIR="${HOME}/Downloads"
