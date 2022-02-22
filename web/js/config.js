@@ -271,6 +271,10 @@ const app = new Vue({
         openvpn_auth_user_pass() {
             return this.config.temp.modes[5].profile.ovpn.includes("auth-user-pass")
         },
+        sortedModes() {
+            const modes = [...this.config.temp.modes];
+            return modes.sort((a, b) => (a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0))
+        }
     },
     watch: {
         'config.mode': function (mode) {
@@ -313,12 +317,18 @@ const app = new Vue({
             axios.post('api.php', {
                 action: action
             }).then((res) => {
-                this.config.profiles = res.data.data
+                if (res.data.data.length > 0) {
+                    this.config.profiles = res.data.data
+                } else {
+                    this.config.profiles = ['--- Empty ---']
+                }
+                this.config.profile = this.config.profiles[0]
             })
         },
         getConfig() {
             this.getSystemConfig().then((res) => {
                 this.config.system = res
+                if (this.config.profile === '--- Empty ---') return
                 switch (this.config.mode) {
                     case 0:
                         this.getSshConfig()
@@ -747,6 +757,7 @@ const app = new Vue({
         }, 500)
     },
     created() {
-        this.getProfiles(0)
+        this.config.mode = this.sortedModes[0].value
+        this.getProfiles(this.sortedModes[0].value)
     }
 })
