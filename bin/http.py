@@ -1,8 +1,8 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 
 # HTTP Injector for Python3
 # modded by Lutfa Ilham
-# v1.0
+# v1.0.0
 # credit: https://github.com/mientz/python-http-injector
 
 import socket
