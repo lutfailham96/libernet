@@ -23,6 +23,7 @@
             }
             closedir($handle);
         }
+        sort($profiles);
         json_response($profiles);
     }
 
