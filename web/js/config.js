@@ -759,6 +759,7 @@ const app = new Vue({
     },
     created() {
         this.config.mode = this.sortedModes[0].value
+        this.config.temp.mode = this.sortedModes[0].value
         this.getProfiles(this.sortedModes[0].value)
     }
 })
