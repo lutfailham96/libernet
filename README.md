@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.ibb.co/TwD8Vyy/Screenshot-from-2021-03-18-21-24-17.png" alt="dashboard" />
+  <img src="https://i.ibb.co/ccZHLCR/Screenshot-from-2022-02-22-13-50-31.png" alt="dashboard" />
 </p>
 
 # Libernet
