@@ -16,6 +16,9 @@ php7
 php7-cgi
 php7-mod-json
 php7-mod-session
+php8
+php8-cgi
+php8-mod-session
 python3
 httping
 stunnel

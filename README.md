@@ -24,6 +24,9 @@ Libernet is open source web app for tunneling internet using SSH, V2Ray, Trojan,
 - php7-cgi
 - php7-mod-session
 - php7-mod-json
+- php8 [OpenWRT 21.xx.x]
+- php8-cgi [OpenWRT 21.xx.x] 
+- php8-mod-session [OpenWRT 21.xx.x]
 - httping
 - openvpn-openssl
 
