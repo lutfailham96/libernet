@@ -168,8 +168,8 @@ const app = new Vue({
                     this.config.profiles = res.data.data
                 } else {
                     this.config.profiles = ['--- Empty ---']
+                    this.config.profile = this.config.profiles[0]
                 }
-                this.config.profile = this.config.profiles[0]
             })
         },
         applyConfig() {
