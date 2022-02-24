@@ -59,7 +59,7 @@
                                 <div class="col-md-6">
                                     <label>Mode</label>
                                     <select v-model.number="config.temp.mode" class="form-control" required>
-                                        <option v-for="mode in config.temp.modes" :value="mode.value">{{ mode.name }}</option>
+                                        <option v-for="mode in sortedModes" :value="mode.value">{{ mode.name }}</option>
                                     </select>
                                 </div>
                                 <div v-if="config.temp.mode === 0" class="col-md-6 pt-md-4 pl-lg-3 my-auto">
