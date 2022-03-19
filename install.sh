@@ -16,7 +16,7 @@ LIBERNET_WWW="/www/libernet"
 STATUS_LOG="${LIBERNET_DIR}/log/status.log"
 DOWNLOADS_DIR="${HOME}/Downloads"
 LIBERNET_TMP="${DOWNLOADS_DIR}/libernet"
-REPOSITORY_URL="git://github.com/lutfailham96/libernet.git"
+REPOSITORY_URL="https://github.com/lutfailham96/libernet"
 
 function install_packages() {
   while IFS= read -r line; do
@@ -183,6 +183,10 @@ function main() {
   if [[ $(opkg list-installed git | grep -c git) != "1" ]]; then
     opkg update \
       && opkg install git
+  fi
+  if [[ $(opkg list-installed git-http | grep -c git-http) != "1" ]]; then
+    opkg update \
+      && opkg install git-http
   fi
   # create ~/Downloads directory if not exist
   if [[ ! -d "${DOWNLOADS_DIR}" ]]; then
