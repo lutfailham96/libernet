@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # PING Loop Wrapper
 # by Lutfa Ilham
@@ -10,22 +10,22 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SERVICE_NAME="PING loop"
-SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
+#SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 INTERVAL="3"
 HOST="bing.com"
 
-function http_ping() {
+http_ping() {
   httping -qi "${INTERVAL}" -t "${INTERVAL}" "${HOST}"
 }
 
-function loop() {
+loop() {
   while true; do
     http_ping
     sleep $INTERVAL
   done
 }
 
-function run() {
+run() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
@@ -33,15 +33,15 @@ function run() {
     && echo -e "${SERVICE_NAME} service started!"
 }
 
-function stop() {
+stop() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
   echo -e "Stopping ${SERVICE_NAME} service ..."
-  kill $(screen -list | grep ping-loop | awk -F '[.]' {'print $1'}) > /dev/null 2>&1
+  kill "$(screen -list | grep ping-loop | awk -F '[.]' '{print $1}')" > /dev/null 2>&1
   echo -e "${SERVICE_NAME} service stopped!"
 }
 
-function usage() {
+usage() {
   cat <<EOF
 Usage:
   -r  Run ${SERVICE_NAME} service
