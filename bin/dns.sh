@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # DNS Wrapper
 # by Lutfa Ilham
@@ -11,7 +11,7 @@ fi
 
 SERVICE_NAME="DNS Resolver"
 
-function run() {
+run() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
@@ -22,19 +22,19 @@ function run() {
     && echo -e "${SERVICE_NAME} service started!"
 }
 
-function stop() {
+stop() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
   echo -e "Stopping ${SERVICE_NAME} service ..."
   # remove iptables
   iptables -w -t nat -D OUTPUT ! -d 127.0.0.1 -p udp --dport 53 -j REDIRECT --to-ports 5453
   iptables -w -t nat -D OUTPUT ! -d 127.0.0.1 -p tcp --dport 53 -j REDIRECT --to-ports 5453
-  kill $(screen -list | grep stubby | awk -F '[.]' {'print $1'})
+  kill "$(screen -list | grep stubby | awk -F '[.]' '{print $1}')"
   killall stubby
   echo -e "${SERVICE_NAME} service stopped!"
 }
 
-function usage() {
+usage() {
   cat <<EOF
 Usage:
   -r  Run ${SERVICE_NAME} service
