@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Memory Cleaner Wrapper
 # by Lutfa Ilham
@@ -10,10 +10,10 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SERVICE_NAME="Memory Cleaner"
-SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
+#SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 INTERVAL="1h"
 
-function clear_memory() {
+clear_memory() {
   clear \
     && sync \
     && echo -e "Memory usage before:" \
@@ -26,14 +26,14 @@ function clear_memory() {
     && free
 }
 
-function loop() {
+loop() {
   while true; do
     clear_memory
     sleep "${INTERVAL}"
   done
 }
 
-function run() {
+run() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
@@ -41,15 +41,15 @@ function run() {
     && echo -e "${SERVICE_NAME} service started!"
 }
 
-function stop() {
+stop() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
   echo -e "Stopping ${SERVICE_NAME} service ..."
-  kill $(screen -list | grep memory-cleaner | awk -F '[.]' {'print $1'})
+  kill "$(screen -list | grep memory-cleaner | awk -F '[.]' '{print $1}')"
   echo -e "${SERVICE_NAME} service stopped!"
 }
 
-function usage() {
+usage() {
   cat <<EOF
 Usage:
   -r  Run ${SERVICE_NAME} service
