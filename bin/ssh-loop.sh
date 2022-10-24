@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # SSH Loop Wrapper
 # by Lutfa Ilham
@@ -9,16 +9,24 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-function connect() {
+connect() {
   sshpass -p "${2}" ssh \
     -4CND "${5}" \
     -p "${4}" \
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
     "${1}@${3}"
+  # using local port-forwarder to directly access vps
+  #sshpass -p "${2}" ssh \
+  #  -L 0.0.0.0:2222:127.0.0.1:22 \
+  #  -4CND "0.0.0.0:${5}" \
+  #  -p "${4}" \
+  #  -o StrictHostKeyChecking=no \
+  #  -o UserKnownHostsFile=/dev/null \
+  #  "${1}@${3}"
 }
 
-function connect_with_proxy() {
+connect_with_proxy() {
   sshpass -p "${2}" ssh \
     -4CND "${5}" \
     -p "${4}" \
@@ -26,6 +34,15 @@ function connect_with_proxy() {
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
     "${1}@${3}"
+  # using local port-forwarder to directly access vps & using netcat as proxy program
+  #sshpass -p "${2}" ssh \
+  #  -L 0.0.0.0:2222:127.0.0.1:22 \
+  #  -4CND "0.0.0.0:${5}" \
+  #  -p "${4}" \
+  #  -o ProxyCommand="ncat -4 --proxy-type http --proxy ${6}:${7} %h %p" \
+  #  -o StrictHostKeyChecking=no \
+  #  -o UserKnownHostsFile=/dev/null \
+  #  "${1}@${3}"
 }
 
 case "${1}" in
