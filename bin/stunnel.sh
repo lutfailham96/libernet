@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Stunnel Wrapper
 # by Lutfa Ilham
@@ -12,7 +12,7 @@ fi
 SERVICE_NAME="Stunnel"
 STUNNEL_DIR="${LIBERNET_DIR}/bin/config/stunnel"
 
-function configure() {
+configure() {
   STUNNEL_MODE="${1}"
   STUNNEL_PROFILE="${2}"
   STUNNEL_HOST="${3}"
@@ -30,10 +30,10 @@ function configure() {
   # updating sni value
   sed -i "s/^sni = .*/sni = ${STUNNEL_SNI}/g" "${STUNNEL_CONFIG}"
   # updating cert value
-  sed -i "s/^cert = .*/cert = $(echo ${LIBERNET_DIR}/bin/config/stunnel/stunnel.pem | sed 's/\//\\\//g')/g" "${STUNNEL_CONFIG}"
+  sed -i "s/^cert = .*/cert = $(echo "${LIBERNET_DIR}/bin/config/stunnel/stunnel.pem" | sed 's/\//\\\//g')/g" "${STUNNEL_CONFIG}"
 }
 
-function run() {
+run() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
@@ -42,16 +42,16 @@ function run() {
     && echo -e "${SERVICE_NAME} service started!"
 }
 
-function stop() {
+stop() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
   echo -e "Stopping ${SERVICE_NAME} service ..."
-  kill $(screen -list | grep stunnel | awk -F '[.]' {'print $1'})
+  kill "$(screen -list | grep stunnel | awk -F '[.]' '{print $1}')"
   killall stunnel
   echo -e "${SERVICE_NAME} service stopped!"
 }
 
-function usage() {
+usage() {
   cat <<EOF
 Usage:
   -r  Run ${SERVICE_NAME} service
