@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Libernet Service Wrapper
 # by Lutfa Ilham
@@ -10,21 +10,23 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-TUNNEL_MODE="$(grep 'mode":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+TUNNEL_MODE=$(grep 'mode":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
 CONNECTED=false
-DYNAMIC_PORT="$(grep 'port":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)"
-DNS_RESOLVER="$(grep 'dns_resolver":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
-MEMORY_CLEANER="$(grep 'memory_cleaner":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
-PING_LOOP="$(grep 'ping_loop":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+DYNAMIC_PORT=$(grep 'port":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g' | head -1)
+DNS_RESOLVER=$(grep 'dns_resolver":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
+MEMORY_CLEANER=$(grep 'memory_cleaner":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
+PING_LOOP=$(grep 'ping_loop":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
+STATUS_FILE="${LIBERNET_DIR}/log/status.log"
+LOCK_FILE="/tmp/libernet.lock"
 
-function check_connection() {
+check_connection() {
   counter=0
   max_retries=3
-  while [[ "${counter}" -lt "${max_retries}" ]]; do
+  while [[ "${counter}" -lt "${max_retries}" && $(cat "${STATUS_FILE}") == '1' ]]; do
     sleep 5
     # write connection checking to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $[${counter} + 1]"
-    echo -e "Checking connection, attempt: $[${counter} + 1]"
+    "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $((counter + 1))"
+    echo -e "Checking connection, attempt: $((counter + 1))"
     if curl -so /dev/null -x "socks5://127.0.0.1:${DYNAMIC_PORT}" "http://bing.com"; then
       # write connection success to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">Socks connection available</span>"
@@ -32,20 +34,32 @@ function check_connection() {
       CONNECTED=true
       break
     fi
-    counter=$[${counter} + 1]
-    # max retries reach
-    if [[ "${counter}" -eq "${max_retries}" ]]; then
-      # write not connectivity to service log
-      "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
-      echo -e "Socks connection unavailable!"
-      # cancel Libernet service
-      cancel_services
-      exit 1
-    fi
+    counter=$((counter + 1))
   done
+
+  # max retries reach
+  if [[ "${counter}" -ge "${max_retries}" ]]; then
+    # write not connectivity to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
+    echo -e "Socks connection unavailable!"
+    # cancel Libernet service
+    cancel_services
+    rm -f "${LOCK_FILE}"
+    exit 1
+  fi
+
+  # cancelling process
+  if [[ $(cat "${STATUS_FILE}") == '3' ]]; then
+    # write not connectivity to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: yellow\">Cancelling connection</span>"
+    echo -e "Cancelling connection!"
+    cancel_services
+    rm -f "${LOCK_FILE}"
+    exit 1
+  fi
 }
 
-function run_other_services() {
+run_other_services() {
   if ${CONNECTED}; then
     service_tun2socks
     dns_resolver_service
@@ -54,71 +68,71 @@ function run_other_services() {
   fi
 }
 
-function dns_resolver_service() {
+dns_resolver_service() {
   if [[ "${DNS_RESOLVER}" == 'true' ]]; then
     "${LIBERNET_DIR}/bin/dns.sh" -r
   fi
 }
 
-function memory_cleaner_service() {
+memory_cleaner_service() {
   if [[ "${MEMORY_CLEANER}" == 'true' ]]; then
     "${LIBERNET_DIR}/bin/memory-cleaner.sh" -r
   fi
 }
 
-function ping_loop_service() {
+ping_loop_service() {
   if [[ "${PING_LOOP}" == 'true' ]]; then
     "${LIBERNET_DIR}/bin/ping-loop.sh" -r
   fi
 }
 
-function service_tun2socks() {
+service_tun2socks() {
   "${LIBERNET_DIR}/bin/tun2socks.sh" -v
 }
 
-function ssh_service() {
+ssh_service() {
   "${LIBERNET_DIR}/bin/ssh.sh" -r
   check_connection
   run_other_services
 }
 
-function v2ray_service() {
+v2ray_service() {
   "${LIBERNET_DIR}/bin/v2ray.sh" -r
   check_connection
   run_other_services
 }
 
-function ssh_ssl_service() {
+ssh_ssl_service() {
   "${LIBERNET_DIR}/bin/ssh-ssl.sh" -r
   check_connection
   run_other_services
 }
 
-function trojan_service() {
+trojan_service() {
   "${LIBERNET_DIR}/bin/trojan.sh" -r
   check_connection
   run_other_services
 }
 
-function shadowsocks_service() {
+shadowsocks_service() {
   "${LIBERNET_DIR}/bin/shadowsocks.sh" -r
   check_connection
   run_other_services
 }
 
-function openvpn_service() {
+openvpn_service() {
   "${LIBERNET_DIR}/bin/openvpn.sh" -r
   # check connection
-  tun_dev="$(grep 'dev":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+  tun_dev=$(grep 'dev":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
   route_log="${LIBERNET_DIR}/log/route.log"
-  default_route="$(ip route show | grep default | grep -v ${tun_dev})"
+  default_route=$(ip route show | grep default | grep -v "${tun_dev}")
   counter=0
   max_retries=3
   while [[ "${counter}" -lt "${max_retries}" ]]; do
     sleep 5
     # write connection checking to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $[${counter} + 1]"
-    echo -e "Checking connection, attempt: $[${counter} + 1]"
+    "${LIBERNET_DIR}/bin/log.sh" -w "Checking connection, attempt: $((counter + 1))"
+    echo -e "Checking connection, attempt: $((counter + 1))"
     if grep -q 'Initialization Sequence Completed' "${LIBERNET_DIR}/log/openvpn.log"; then
       # write connection success to service log
       "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: green\">OpenVPN connection available</span>"
@@ -127,14 +141,14 @@ function openvpn_service() {
       "${LIBERNET_DIR}/bin/log.sh" -c "$(date +"%s")"
       # save default route & change default route to tunnel
       echo -e "${default_route}" > "${route_log}"
-      ip route del ${default_route}
+      ip route del "${default_route}"
       # run other services
       dns_resolver_service
       memory_cleaner_service
       ping_loop_service
       break
     fi
-    counter=$[${counter} + 1]
+    counter=$((counter + 1))
     # max retries reach
     if [[ "${counter}" -eq "${max_retries}" ]]; then
       # write not connectivity to service log
@@ -142,18 +156,30 @@ function openvpn_service() {
       echo -e "OpenVPN connection unavailable!"
       # cancel Libernet service
       cancel_services
+      rm -f "${LOCK_FILE}"
       exit 1
     fi
   done
 }
 
-function ssh_ws_cdn_service() {
+ssh_ws_cdn_service() {
   "${LIBERNET_DIR}/bin/ssh-ws-cdn.sh" -r
   check_connection
   run_other_services
 }
 
-function start_services() {
+start_services() {
+  # setup lock file
+  if [[ -f "${LOCK_FILE}" ]]; then
+    echo -e "Unable to open lock file (${LOCK_FILE})"
+    exit 1
+  fi
+  if [[ $(cat "${STATUS_FILE}") != '0' ]]; then
+    echo -e "Libernet service already running ..."
+    exit 1
+  fi
+  touch "${LIBERNET_DIR}"
+
   # clear service log
   "${LIBERNET_DIR}/bin/log.sh" -r
   # write service status: running
@@ -190,7 +216,7 @@ function start_services() {
   echo -e "Libernet service started!"
 }
 
-function stop_services() {
+stop_services() {
   # write service status: stopping
   "${LIBERNET_DIR}/bin/log.sh" -s 3
   # write to service log
@@ -243,11 +269,11 @@ function stop_services() {
   echo -e "Libernet services stopped!"
 }
 
-function cancel_services() {
+cancel_services() {
   stop_services -c
 }
 
-function auto_start() {
+auto_start() {
   while true; do
     # switch usb mode until active
     usbmode -s > /dev/null 2>&1 &
@@ -263,7 +289,7 @@ function auto_start() {
   done
 }
 
-function enable_auto_start() {
+enable_auto_start() {
   # force re-enable
   echo -e "Enable Libernet auto start ..."
   sed -i "/service.sh -as/d" /etc/rc.local
@@ -271,7 +297,7 @@ function enable_auto_start() {
     && echo -e "Libernet auto start enabled!"
 }
 
-function disable_auto_start() {
+disable_auto_start() {
   echo -e "Disable Libernet auto start ..."
   sed -i "/service.sh -as/d" /etc/rc.local \
     && echo -e "Libernet auto start disabled!"
@@ -318,3 +344,5 @@ case "${1}" in
     auto_start
     ;;
 esac
+
+rm -f "${LOCK_FILE}"
