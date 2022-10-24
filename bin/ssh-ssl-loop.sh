@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # SSH-SSL Loop Wrapper
 # by Lutfa Ilham
@@ -9,13 +9,21 @@ if [ "$(id -u)" != "0" ]; then
   exit 1
 fi
 
-function connect() {
+connect() {
   sshpass -p "${2}" ssh \
     -4CND "${3}" \
     -p 10443 \
     -o StrictHostKeyChecking=no \
     -o UserKnownHostsFile=/dev/null \
     "${1}@127.0.0.1"
+  # using local port-forwarder to directly access vps
+  #sshpass -p "${2}" ssh \
+  #  -L 0.0.0.0:2222:127.0.0.1:22 \
+  #  -4CND "${3}" \
+  #  -p 10443 \
+  #  -o StrictHostKeyChecking=no \
+  #  -o UserKnownHostsFile=/dev/null \
+  #  "${1}@127.0.0.1"
 }
 
 while true; do
