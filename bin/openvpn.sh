@@ -12,10 +12,10 @@ fi
 SERVICE_NAME="OpenVPN"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 OPENVPN_PROFILE=$(grep 'openvpn":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
-OPENVPN_CONFIG="${LIBERNET_DIR}/bin/config/openvpn/${OPENVPN_PROFILE}.json"
+OPENVPN_CONFIG="${LIBERNET_DIR}/config/openvpn/${OPENVPN_PROFILE}.json"
 OPENVPN_OVPN=$(grep 'ovpn":' "${OPENVPN_CONFIG}" | awk -F ': "' '{ print $2 }' | sed 's/",//g')
-OPENVPN_CFG="${LIBERNET_DIR}/bin/config/openvpn/${OPENVPN_PROFILE}.ovpn"
-OPENVPN_CRED="${LIBERNET_DIR}/bin/config/openvpn/${OPENVPN_PROFILE}.txt"
+OPENVPN_CFG="${LIBERNET_DIR}/config/openvpn/${OPENVPN_PROFILE}.ovpn"
+OPENVPN_CRED="${LIBERNET_DIR}/config/openvpn/${OPENVPN_PROFILE}.txt"
 OPENVPN_HOST=$(echo -e "${OPENVPN_OVPN}" | grep 'remote ' | awk '{print $2}')
 OPENVPN_PORT=$(echo -e "${OPENVPN_OVPN}" | grep 'remote ' | awk '{print $3}')
 OPENVPN_USER=$(grep 'username":' "${OPENVPN_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')

@@ -12,7 +12,7 @@ fi
 SERVICE_NAME="SSH-WS-CDN"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 SSH_WS_CDN_PROFILE=$(grep 'ssh_ws_cdn":' "${SYSTEM_CONFIG}"  | awk '{print $2}' | sed 's/,//g; s/"//g')
-SSH_WS_CDN_CONFIG="${LIBERNET_DIR}/bin/config/ssh_ws_cdn/${SSH_WS_CDN_PROFILE}.json"
+SSH_WS_CDN_CONFIG="${LIBERNET_DIR}/config/ssh_ws_cdn/${SSH_WS_CDN_PROFILE}.json"
 SSH_WS_CDN_HOST=$(grep 'host":' "${SSH_WS_CDN_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
 SSH_WS_CDN_PORT=$(grep 'port":' "${SSH_WS_CDN_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '1p')
 SSH_WS_CDN_USER=$(grep 'username":' "${SSH_WS_CDN_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')

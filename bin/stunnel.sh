@@ -10,7 +10,7 @@ if [ "$(id -u)" != "0" ]; then
 fi
 
 SERVICE_NAME="Stunnel"
-STUNNEL_DIR="${LIBERNET_DIR}/bin/config/stunnel"
+STUNNEL_DIR="${LIBERNET_DIR}/config/stunnel"
 
 configure() {
   STUNNEL_MODE="${1}"
@@ -24,13 +24,13 @@ configure() {
     mkdir "${STUNNEL_DIR}/${STUNNEL_MODE}"
   fi
   # copying from template
-  cp -af "${LIBERNET_DIR}/bin/config/stunnel/templates/stunnel.conf" "${STUNNEL_CONFIG}"
+  cp -af "${LIBERNET_DIR}/config/stunnel/templates/stunnel.conf" "${STUNNEL_CONFIG}"
   # updating host & port value
   sed -i "s/^connect = .*/connect = ${STUNNEL_HOST}:${STUNNEL_PORT}/g" "${STUNNEL_CONFIG}"
   # updating sni value
   sed -i "s/^sni = .*/sni = ${STUNNEL_SNI}/g" "${STUNNEL_CONFIG}"
   # updating cert value
-  sed -i "s/^cert = .*/cert = $(echo "${LIBERNET_DIR}/bin/config/stunnel/stunnel.pem" | sed 's/\//\\\//g')/g" "${STUNNEL_CONFIG}"
+  sed -i "s/^cert = .*/cert = $(echo "${LIBERNET_DIR}/config/stunnel/stunnel.pem" | sed 's/\//\\\//g')/g" "${STUNNEL_CONFIG}"
 }
 
 run() {

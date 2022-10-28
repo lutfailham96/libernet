@@ -18,7 +18,7 @@ run() {
   # initialize iptables
   iptables -w -t nat -A OUTPUT ! -d 127.0.0.1 -p udp --dport 53 -j REDIRECT --to-ports 5453
   iptables -w -t nat -A OUTPUT ! -d 127.0.0.1 -p tcp --dport 53 -j REDIRECT --to-ports 5453
-  screen -AmdS stubby stubby -C "${LIBERNET_DIR}/bin/config/dns/stubby.yml" -v 0 \
+  screen -AmdS stubby stubby -C "${LIBERNET_DIR}/config/dns/stubby.yml" -v 0 \
     && echo -e "${SERVICE_NAME} service started!"
 }
 

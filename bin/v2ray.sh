@@ -12,7 +12,7 @@ fi
 SERVICE_NAME="V2Ray"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 V2RAY_PROFILE=$(grep 'v2ray":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
-V2RAY_CONFIG="${LIBERNET_DIR}/bin/config/v2ray/${V2RAY_PROFILE}.json"
+V2RAY_CONFIG="${LIBERNET_DIR}/config/v2ray/${V2RAY_PROFILE}.json"
 V2RAY_PROTOCOL=$(grep 'protocol":' "${V2RAY_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g' | tail -n1)
 
 run() {

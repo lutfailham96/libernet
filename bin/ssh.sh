@@ -12,7 +12,7 @@ fi
 SERVICE_NAME="SSH"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 SSH_PROFILE=$(grep 'ssh":' "${SYSTEM_CONFIG}"  | awk '{print $2}' | sed 's/,//g; s/"//g')
-SSH_CONFIG="${LIBERNET_DIR}/bin/config/ssh/${SSH_PROFILE}.json"
+SSH_CONFIG="${LIBERNET_DIR}/config/ssh/${SSH_PROFILE}.json"
 SSH_HOST=$(grep 'host":' "${SSH_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
 SSH_PORT=$(grep 'port":' "${SSH_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '1p')
 SSH_USER=$(grep 'username":' "${SSH_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')

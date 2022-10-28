@@ -12,10 +12,10 @@ fi
 SERVICE_NAME="HTTP Proxy"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 SSH_PROFILE=$(grep 'ssh":' "${SYSTEM_CONFIG}"  | awk '{print $2}' | sed 's/,//g; s/"//g')
-SSH_CONFIG="${LIBERNET_DIR}/bin/config/ssh/${SSH_PROFILE}.json"
+SSH_CONFIG="${LIBERNET_DIR}/config/ssh/${SSH_PROFILE}.json"
 if [ "${ENABLE_WS_CDN}" ]; then
   SSH_PROFILE=$(grep 'ssh_ws_cdn":' "${SYSTEM_CONFIG}"  | awk '{print $2}' | sed 's/,//g; s/"//g')
-  SSH_CONFIG="${LIBERNET_DIR}/bin/config/ssh_ws_cdn/${SSH_PROFILE}.json"
+  SSH_CONFIG="${LIBERNET_DIR}/config/ssh_ws_cdn/${SSH_PROFILE}.json"
 fi
 LISTEN_PORT=$(grep 'port":' "${SSH_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '3p')
 

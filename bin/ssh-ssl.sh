@@ -12,7 +12,7 @@ fi
 SERVICE_NAME="SSH-SSL"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 SSH_SSL_PROFILE=$(grep 'ssh_ssl":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
-SSH_SSL_CONFIG="${LIBERNET_DIR}/bin/config/ssh_ssl/${SSH_SSL_PROFILE}.json"
+SSH_SSL_CONFIG="${LIBERNET_DIR}/config/ssh_ssl/${SSH_SSL_PROFILE}.json"
 SSH_SSL_HOST=$(grep 'host":' "${SSH_SSL_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
 SSH_SSL_PORT=$(grep 'port":' "${SSH_SSL_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g' | sed -n '1p')
 SSH_SSL_USER=$(grep 'username":' "${SSH_SSL_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')

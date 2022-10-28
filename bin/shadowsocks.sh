@@ -12,7 +12,7 @@ fi
 SERVICE_NAME="Shadowsocks"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 SHADOWSOCKS_PROFILE=$(grep 'shadowsocks":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
-SHADOWSOCKS_CONFIG="${LIBERNET_DIR}/bin/config/shadowsocks/${SHADOWSOCKS_PROFILE}.json"
+SHADOWSOCKS_CONFIG="${LIBERNET_DIR}/config/shadowsocks/${SHADOWSOCKS_PROFILE}.json"
 
 run() {
   # write to service log
