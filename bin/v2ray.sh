@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # V2Ray Wrapper
 # by Lutfa Ilham
@@ -11,11 +11,11 @@ fi
 
 SERVICE_NAME="V2Ray"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
-V2RAY_PROFILE="$(grep 'v2ray":' ${SYSTEM_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g')"
+V2RAY_PROFILE=$(grep 'v2ray":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
 V2RAY_CONFIG="${LIBERNET_DIR}/bin/config/v2ray/${V2RAY_PROFILE}.json"
-V2RAY_PROTOCOL="$(grep 'protocol":' ${V2RAY_CONFIG} | awk '{print $2}' | sed 's/,//g; s/"//g' | tail -n1)"
+V2RAY_PROTOCOL=$(grep 'protocol":' "${V2RAY_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g' | tail -n1)
 
-function run() {
+run() {
   case "${V2RAY_PROTOCOL}" in
     "vmess")
       V2RAY_PROTOCOL="VMess"
@@ -35,16 +35,16 @@ function run() {
     && echo -e "${SERVICE_NAME} service started!"
 }
 
-function stop() {
+stop() {
   # write to service log
   "${LIBERNET_DIR}/bin/log.sh" -w "Stopping ${SERVICE_NAME} service"
   echo -e "Stopping ${SERVICE_NAME} service ..."
-  kill $(screen -list | grep v2ray-client | awk -F '[.]' {'print $1'})
+  kill "$(screen -list | grep v2ray-client | awk -F '[.]' '{print $1}')"
   killall v2ray
   echo -e "${SERVICE_NAME} service stopped!"
 }
 
-function usage() {
+usage() {
   cat <<EOF
 Usage:
   -r  Run ${SERVICE_NAME} service
