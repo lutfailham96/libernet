@@ -39,22 +39,22 @@ check_connection() {
     counter=$((counter + 1))
   done
 
-  # max retries reach
-  if [[ "${counter}" -ge "${max_retries}" ]]; then
-    # write not connectivity to service log
-    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
-    echo -e "Socks connection unavailable!"
-    # cancel Libernet service
-    cancel_services
-    rm -f "${LOCK_FILE}"
-    exit 1
-  fi
-
   # cancelling process
   if [[ $(cat "${STATUS_FILE}") == '3' ]]; then
     # write not connectivity to service log
     "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: yellow\">Cancelling connection</span>"
     echo -e "Cancelling connection!"
+    cancel_services
+    rm -f "${LOCK_FILE}"
+    exit 1
+  fi
+
+  # max retries reach
+  if [[ "${counter}" -ge "${max_retries}" && $(cat "${STATUS_FILE}") != '2' ]]; then
+    # write not connectivity to service log
+    "${LIBERNET_DIR}/bin/log.sh" -w "<span style=\"color: red\">Socks connection unavailable</span>"
+    echo -e "Socks connection unavailable!"
+    # cancel Libernet service
     cancel_services
     rm -f "${LOCK_FILE}"
     exit 1
