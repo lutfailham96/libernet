@@ -274,10 +274,48 @@
                                         <input type="text" class="form-control" placeholder="StrongPassword" v-model="config.temp.modes[3].profile.password" required>
                                     </div>
                                 </div>
+                                <div class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Transport</label>
+                                        <select class="custom-select" v-model="config.temp.modes[3].profile.transport" required>
+                                            <option v-for="transport in config.temp.modes[3].profile.transport_types" :value="transport.value">{{ transport.name }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div v-if="config.temp.modes[3].profile.transport === 'websocket'" class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>Websocket Host</label>
+                                        <input type="text" class="form-control" placeholder="my-server.tld" v-model.number="config.temp.modes[3].profile.websocket.host" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>Websocket Path</label>
+                                        <input type="text" class="form-control" placeholder="/ws-trojan" v-model.number="config.temp.modes[3].profile.websocket.path" required>
+                                    </div>
+                                </div>
+                                <div v-if="config.temp.modes[3].profile.transport === 'websocket'" class="form-row pb-lg-2">
+                                    <div class="col-md-12">
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" v-model="config.temp.modes[3].profile.cdn.enabled" checked id="enable-trojan-cdn">
+                                            <label class="form-check-label" for="enable-trojan-cdn">
+                                                Enable CDN
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div v-if="config.temp.modes[3].profile.cdn.enabled" class="form-row pb-lg-2">
+                                    <div class="col-md-6">
+                                        <label>CDN IP</label>
+                                        <input type="text" class="form-control" placeholder="104.102.x.x" v-model.number="config.temp.modes[3].profile.cdn.ip" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label>CDN Port</label>
+                                        <input type="number" class="form-control" placeholder="443" v-model.number="config.temp.modes[3].profile.cdn.port" required>
+                                    </div>
+                                </div>
                                 <div class="form-row">
                                     <div class="col-md-6">
                                         <label>SNI</label>
-                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[3].profile.sni" required>
+                                        <input type="text" class="form-control" placeholder="unblocked-web.tld" v-model.number="config.temp.modes[3].profile.sni" @input="resolveServerHost" required>
                                     </div>
                                     <div class="col-md-6">
                                         <label>UDPGW Port</label>

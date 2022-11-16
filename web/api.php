@@ -253,6 +253,9 @@
                         // trojan
                         case 3:
                             $trojan_config = file_get_contents($libernet_dir.'/config/trojan/templates/trojan.json');
+                            if ($config['cdn']['enabled']) {
+                                $trojan_config = file_get_contents($libernet_dir.'/config/trojan/templates/trojan-go-proxy.json');
+                            }
                             $trojan_config = json_decode($trojan_config);
                             $trojan_config->remote_addr = $config['host'];
                             $trojan_config->remote_port = $config['port'];
@@ -261,6 +264,22 @@
                             $trojan_config->etc->ip = $config['ip'];
                             $trojan_config->etc->udpgw->ip = $config['udpgw']['ip'];
                             $trojan_config->etc->udpgw->port = $config['udpgw']['port'];
+                            if ($config['transport'] == 'websocket') {
+                                $trojan_config->websocket->enabled = true;
+                                $trojan_config->websocket->host = $config['websocket']['host'];
+                                $trojan_config->websocket->path = $config['websocket']['path'];
+                                if ($config['cdn']['enabled']) {
+                                    $trojan_config->remote_port = $config['port'];
+                                    $trojan_config->ssl->sni = $config['host'];
+                                    $trojan_config->etc->proxy->proxy_enabled = true;
+                                    $trojan_config->etc->proxy->real_host = $config['host'];
+                                    $trojan_config->etc->proxy->real_ip = $config['ip'];
+                                    $trojan_config->etc->proxy->real_port = $config['port'];
+                                    $trojan_config->etc->proxy->proxy_sni = $config['sni'];
+                                    $trojan_config->etc->proxy->proxy_remote_ip = $config['cdn']['ip'];
+                                    $trojan_config->etc->proxy->proxy_remote_port = $config['cdn']['port'];
+                                }
+                            }
                             file_put_contents($libernet_dir.'/config/trojan/'.$profile.'.json', json_encode($trojan_config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
                             json_response('Trojan config saved');
                             break;

@@ -144,6 +144,26 @@ const app = new Vue({
                                 port: null,
                                 password: "",
                                 sni: "",
+                                transport: "",
+                                transport_types: [
+                                  {
+                                        value: "none",
+                                        name: "None"
+                                    },
+                                    {
+                                        value: "websocket",
+                                        name: "Websocket"
+                                    }
+                                ],
+                                websocket: {
+                                    host: "",
+                                    path: ""
+                                },
+                                cdn: {
+                                    enabled: false,
+                                    ip: "",
+                                    port: null
+                                },
                                 udpgw: {
                                     ip: "127.0.0.1",
                                     port: null
@@ -498,6 +518,22 @@ const app = new Vue({
                 profile.password = data.password[0]
                 profile.sni = data.ssl.sni
                 profile.udpgw.port = data.etc.udpgw.port
+                profile.transport = data.transport
+                profile.websocket.enabled = data.websocket.enabled
+                if (profile.websocket.enabled) {
+                    profile.transport = 'websocket'
+                    profile.websocket.host = data.websocket.host
+                    profile.websocket.path = data.websocket.path
+                    profile.cdn.enabled = data.etc.proxy.proxy_enabled
+                    if (profile.cdn.enabled) {
+                        profile.sni = data.etc.proxy.proxy_sni
+                        profile.cdn.ip = data.etc.proxy.proxy_remote_ip
+                        profile.cdn.port = data.etc.proxy.proxy_remote_port
+                        profile.host = data.etc.proxy.real_host
+                        profile.ip = data.etc.proxy.real_ip
+                        profile.port = data.etc.proxy.real_port
+                    }
+                }
             })
         },
         getShadowsocksConfig() {
@@ -729,6 +765,12 @@ const app = new Vue({
                         host: this.config.temp.modes[3].profile.host
                     }).then((res) => {
                         this.config.temp.modes[3].profile.ip = res.data.data[0]
+                    })
+                    axios.post('api.php', {
+                        action: 'resolve_host',
+                        host: this.config.temp.modes[3].profile.sni
+                    }).then((res) => {
+                        this.config.temp.modes[3].profile.cdn.ip = res.data.data[0]
                     })
                     break
                 // shadowsocks
