@@ -13,7 +13,6 @@ SERVICE_NAME="Trojan"
 SYSTEM_CONFIG="${LIBERNET_DIR}/system/config.json"
 TROJAN_PROFILE=$(grep 'trojan":' "${SYSTEM_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
 TROJAN_CONFIG="${LIBERNET_DIR}/config/trojan/${TROJAN_PROFILE}.json"
-TROJAN_CONFIG="/opt/libernet/config/trojan/tetew.json"
 PROXY_ENABLED=$(grep 'proxy_enabled":' "${TROJAN_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
 PROXY_TYPE=$(grep 'proxy_type":' "${TROJAN_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
 PROXY_SNI=$(grep 'proxy_sni":' "${TROJAN_CONFIG}" | awk '{print $2}' | sed 's/,//g; s/"//g')
