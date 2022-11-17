@@ -269,7 +269,10 @@
                                 $trojan_config->websocket->host = $config['websocket']['host'];
                                 $trojan_config->websocket->path = $config['websocket']['path'];
                                 if ($config['cdn']['enabled']) {
-                                    $trojan_config->remote_port = $config['port'];
+                                    $tmp_trojan_config = file_get_contents($libernet_dir.'/config/trojan/templates/trojan-go-proxy.json');
+                                    $tmp_trojan_config = json_decode($tmp_trojan_config);
+                                    $trojan_config->remote_addr = $tmp_trojan_config->remote_addr;
+                                    $trojan_config->remote_port = $tmp_trojan_config->remote_port;
                                     $trojan_config->ssl->sni = $config['host'];
                                     $trojan_config->etc->proxy->proxy_enabled = true;
                                     $trojan_config->etc->proxy->real_host = $config['host'];
