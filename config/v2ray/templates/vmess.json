@@ -1,0 +1,88 @@
+{
+  "log": {
+    "loglevel": "none"
+  },
+  "policy": {
+    "levels": {
+      "0": {
+        "handshake": 4,
+        "connIdle": 300,
+        "uplinkOnly": 2,
+        "downlinkOnly": 5,
+        "statsUserUplink": false,
+        "statsUserDownlink": false,
+        "bufferSize": 10240
+      }
+    },
+    "system": {
+      "statsInboundUplink": false,
+      "statsInboundDownlink": false,
+      "statsOutboundUplink": false,
+      "statsOutboundDownlink": false
+    }
+  },
+  "inbounds": [
+    {
+      "listen": "127.0.0.1",
+      "port": 1080,
+      "protocol": "socks",
+      "settings": {
+        "auth": "noauth",
+        "udp": true,
+        "ip": "127.0.0.1",
+        "userLevel": 0
+      },
+      "tag": "socks"
+    }
+  ],
+  "outbounds": [
+    {
+      "sendThrough": "0.0.0.0",
+      "protocol": "vmess",
+      "settings": {
+        "vnext": [
+          {
+            "address": "",
+            "port": 0,
+            "users": [
+              {
+                "id": "",
+                "alterId": 0,
+                "security": "",
+                "level": 0
+              }
+            ]
+          }
+        ]
+      },
+      "tag": "vmess",
+      "streamSettings": {
+        "network": "",
+        "security": "",
+        "tlsSettings": {
+          "allowInsecure": true,
+          "serverName": ""
+        },
+        "wsSettings": {
+          "path": "",
+          "headers": {
+            "Host": ""
+          }
+        },
+        "httpSettings": {
+          "host": [
+            ""
+          ],
+          "path": ""
+        }
+      }
+    }
+  ],
+  "etc": {
+    "ip": "",
+    "udpgw": {
+      "ip": "",
+      "port": 0
+    }
+  }
+}
