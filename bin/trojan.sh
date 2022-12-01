@@ -27,7 +27,7 @@ run() {
   "${LIBERNET_DIR}/bin/log.sh" -w "Starting ${SERVICE_NAME} service"
   echo -e "Starting ${SERVICE_NAME} service ..."
   if [ "${PROXY_ENABLED}" = 'true' ]; then
-    screen -AmdS trojan-go-proxy bash -c "while true; do \"${LIBERNET_DIR}/bin/go-http\" -tls -sni \"${PROXY_SNI}\" -l \"${LISTEN_IP}:${LISTEN_PORT}\" -r \"${REMOTE_IP}:${REMOTE_PORT}\" -k \"${PROXY_TYPE}\"; sleep 3; done" \
+    screen -AmdS trojan-go-proxy bash -c "while true; do \"${LIBERNET_DIR}/bin/go-http\" -tls -sni \"${PROXY_SNI}\" -l \"${LISTEN_IP}:${LISTEN_PORT}\" -r \"${REMOTE_IP}:${REMOTE_PORT}\" -k \"${PROXY_TYPE}\" -lv 1; sleep 3; done" \
       && screen -AmdS trojan-go-client bash -c "while true; do trojan-go -config \"${TROJAN_CONFIG}\"; sleep 3; done" \
       && echo -e "${SERVICE_NAME} service started!"
   else
