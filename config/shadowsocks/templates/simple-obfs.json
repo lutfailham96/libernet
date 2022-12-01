@@ -1,0 +1,20 @@
+{
+  "mode": "tcp_and_udp",
+  "server": "",
+  "server_port": 0,
+  "local_address": "127.0.0.1",
+  "local_port": 1080,
+  "password": "",
+  "timeout": 300,
+  "method": "",
+  "fast_open": false,
+  "plugin": "obfs-local",
+  "plugin_opts": "obfs=obfs_security;obfs-host=obfs_host",
+  "etc": {
+    "ip": "",
+    "udpgw": {
+      "ip": "",
+      "port": 0
+    }
+  }
+}
