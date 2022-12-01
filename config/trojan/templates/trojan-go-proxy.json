@@ -1,25 +1,26 @@
 {
-    "run_type": "client",
-    "local_addr": "127.0.0.1",
-    "local_port": 1080,
-    "remote_addr": "127.0.0.1",
-    "remote_port": 9876,
-    "password": [
-        ""
-    ],
-    "ssl": {
-        "verify": false,
-        "verify_hostname": false,
-        "sni": ""
-    },
-    "websocket": {
-        "enabled": false,
-        "path": "",
-        "host": ""
-    },
-    "mux": {
-        "enabled": false
-    },
+  "run_type": "client",
+  "local_addr": "127.0.0.1",
+  "local_port": 1080,
+  "remote_addr": "127.0.0.1",
+  "remote_port": 9876,
+  "password": [
+    ""
+  ],
+  "log_level": 5,
+  "ssl": {
+    "verify": false,
+    "verify_hostname": false,
+    "sni": ""
+  },
+  "websocket": {
+    "enabled": false,
+    "path": "",
+    "host": ""
+  },
+  "mux": {
+    "enabled": false
+  },
   "tcp": {
     "no_delay": true,
     "keep_alive": true,
