@@ -88,3 +88,9 @@ Don't forget to always clear browser cache after installing or upgrading Liberne
   - clean memory or ram cache every 1 hour
 - Auto start Libernet on boot
 
+<h4 align="left">If this project is useful for you, you can give me a cup of coffee :)</h4>
+<p>
+  <a href="https://paypal.me/lutfailham">
+      <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="paypal">
+  </a>
+</p>
